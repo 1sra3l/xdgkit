@@ -1,3 +1,4 @@
+# package info
 [package]
 name = "xdgkit"
 version = "0.0.1"
@@ -11,6 +12,17 @@ license-file = "LICENSE"
 repository = "https://github.com/1sra3l/xdgkit"
 homepage = "https://fredesktop.org"
 
+# library files
+[lib]
+name = "libxdgkit"
+path = "src/lib.rs" 
+
+# binary file
+[[bin]]
+name = "xdgkit"
+path = "src/main.rs"
+
+# dependencies
 [dependencies]
 # ini file reader
 tini = "1.0"
