@@ -1,0 +1,162 @@
+name: xdgkit
+version: "0.1.0"
+author: Israel Dahl <israeldahl@protonmail.com>
+about: Command line interface for the XDG specifications library written in rust.
+settings:
+    - ArgRequiredElseHelp
+subcommands:
+    - basedir:
+        about: "Get XDG basedir variables, and directories"
+        multiple: true
+        args:
+            - Home:
+                long: home
+                short: h
+                about: "$HOME"
+            - DataHome:
+                long: data
+                short: d
+                about: "$XDG_DATA_HOME defines the base directory relative to which user specific data files should be stored. If $XDG_DATA_HOME is either not set or empty, a default equal to $HOME/.local/share should be used."
+            - CacheHome:
+                long: cache
+                short: c
+                about: "$XDG_CACHE_HOME defines the base directory relative to which user specific non-essential data files should be stored. If $XDG_CACHE_HOME is either not set or empty, a default equal to $HOME/.cache should be used."
+            - ConfigHome:
+                long: config
+                short: f
+                about: "$XDG_CONFIG_HOME defines the base directory relative to which user specific configuration files should be stored. If $XDG_CONFIG_HOME is either not set or empty, a default equal to $HOME/.config should be used."
+            - Data:
+                long: data-dirs
+                short: g
+                about: "$XDG_DATA_DIRS defines the preference-ordered set of base directories to search for data files in addition to the $XDG_DATA_HOME base directory. The directories in $XDG_DATA_DIRS should be seperated with a colon ':'."
+            - Config:
+                long: config-dirs
+                short: b
+                about: "$XDG_CONFIG_DIRS defines the preference-ordered set of base directories to search for configuration files in addition to the $XDG_CONFIG_HOME base directory. The directories in $XDG_CONFIG_DIRS should be seperated with a colon ':'. If $XDG_CONFIG_DIRS is either not set or empty, a value equal to /etc/xdg should be used. The order of base directories denotes their importance; the first directory listed is the most important. When the same information is defined in multiple places the information defined relative to the more important base directory takes precedent. The base directory defined by $XDG_DATA_HOME is considered more important than any of the base directories defined by $XDG_DATA_DIRS. The base directory defined by $XDG_CONFIG_HOME is considered more important than any of the base directories defined by $XDG_CONFIG_DIRS."
+            - Icon:
+                long: icon-dirs
+                short: i
+                about: "Icons and themes are looked for in a set of directories. By default, apps should look in $HOME/.icons (for backwards compatibility), in $XDG_DATA_DIRS/icons and in /usr/share/pixmaps (in that order). Applications may further add their own icon directories to this list, and users may extend or change the list (in application/desktop specific ways).In each of these directories themes are stored as subdirectories. A theme can be spread across several base directories by having subdirectories of the same name. This way users can extend and override system themes"
+            - Trash:
+                long: trash
+                short: t
+                about: "For every user a “home trash” directory MUST be available. Its name and location are $XDG_DATA_HOME/Trash; $XDG_DATA_HOME is the base directory for user-specific data, as defined in the Desktop Base Directory Specification "
+            - Autostart:
+                long: autostart
+                short: a
+                about: "The Autostart Directories are $XDG_CONFIG_DIRS/autostart as defined in accordance with the 'Referencing this specification' section in the 'desktop base directory specification'. If the same filename is located under multiple Autostart Directories only the file under the most important directory should be used. Example: If $XDG_CONFIG_HOME is not set the Autostart Directory in the user's home directory is ~/.config/autostart/ Example: If $XDG_CONFIG_DIRS is not set the system wide Autostart Directory is /etc/xdg/autostart/ Example: If $XDG_CONFIG_HOME and $XDG_CONFIG_DIRS are not set and the two files /etc/xdg/autostart/foo.desktop and ~/.config/autostart/foo.desktop exist then only the file ~/.config/autostart/foo.desktop will be used because ~/.config/autostart/ is more important than /etc/xdg/autostart/"
+            - DesktopDirectories:
+                long: desktopdirectories
+                short: j
+                about: "This directory contains directory entries which may be associated with folders in the menu layout. Each directory in the search path should be used. Only files ending in .directory are used; other files are ignored. The <DefaultDirectoryDirs> element in a menu file indicates that this default list of directory entry locations should be scanned at that point. If a menu file does not contain <DefaultDirectoryDirs>, then these locations are not scanned."
+            - Menus:
+                long: menu
+                short: m
+                about: "$XDG_CONFIG_DIRS/menus/${XDG_MENU_PREFIX}applications.menu This file contains the XML definition of the main application menu layout. The first file found in the search path should be used; other files are ignored. This implies that if the user has their own ${XDG_MENU_PREFIX}applications.menu, it replaces the system wide one. (Though the user's menu may explicitly merge the system wide one.) Systems that offer multiple desktop environments and that want to use distinct menu layouts in the different environments can use differently prefixed .menu files. In this case the $XDG_MENU_PREFIX environment variable must be set by the system to reflect the .menu file that is being used. For example if a system contains both the GNOME and the KDE desktop environments it can decide to use gnome-applications.menu as the menu layout in GNOME sessions and kde-applications.menu as the menu layout in KDE sessions. To correctly reflect this, it should set the $XDG_MENU_PREFIX environment variable to 'gnome-' respectively 'kde-'. Implementations may chose to use .menu files with other names for tasks or menus other than the main application menu. Such usage is not covered by this specification."
+            - Applications:
+                long: application
+                short: p
+                about: "This directory contains a .desktop file for each possible menu item. Each directory in the $XDG_DATA_DIRS search path should be used (i.e. desktop entries are collected from all of them, not just the first one that exists). When two desktop entries have the same name, the one appearing earlier in the path is used. The <DefaultAppDirs> element in a menu file indicates that this default list of desktop entry locations should be scanned at that point. If a menu file does not contain <DefaultAppDirs>, then these locations are not scanned."
+    - desktop-entry:
+        about: "Parse a desktop file for information.  Long arguments are desktop entry fields, lowercase_underscore_spaced.  Short arguments exist, as well."
+        multiple: true
+        args:       
+            - FILE:
+                about: "The file to read"
+                required: true
+            - Type:
+                long: type
+                short: y
+                about: "This specification defines 3 types of desktop entries: Application (type 1), Link (type 2) and Directory (type 3). To allow the addition of new types in the future, implementations should ignore desktop entries with an unknown type."
+            - Version:
+                long: version
+                short: v
+                about: "Version of the Desktop Entry Specification that the desktop entry conforms with. Entries that confirm with this version of the specification should use 1.5. Note that the version field is not required to be present."
+            - Name:
+                long: name
+                short: n
+                about: "Specific name of the application, for example 'Firefox'"
+            - GenericName:
+                long: generic_name
+                short: l
+                about: "Generic name of the application, for example 'Web Browser'"
+            - NoDisplay:
+                long: no_display
+                short: q
+                about: "NoDisplay means: this application exists, but don't display it in the menus. This can be useful to e.g. associate this application with MIME types, so that it gets launched from a file manager (or other apps), without having a menu entry for it (there are tons of good reasons for this, including e.g. the netscape -remote, or kfmclient openURL kind of stuff)"
+            - Comment:
+                long: comment
+                short: o
+                about: "Tooltip for the entry, for example 'View sites on the Internet'. The value should not be redundant with the values of Name and GenericName."
+            - Icon:
+                long: icon
+                short: i
+                about: "Icon to display in file manager, menus, etc. If the name is an absolute path, the given file will be used. If the name is not an absolute path, the algorithm described in the Icon Theme Specification will be used to locate the icon."
+            - Hidden:
+                long: hidden
+                short: h
+                about: "Hidden should have been called Deleted. It means the user deleted (at his level) something that was present (at an upper level, e.g. in the system dirs). It's Stringictly equivalent to the .desktop file not existing at all, as far as that user is concerned. This can also be used to 'uninstall' existing files (e.g. due to a renaming) - by letting make install install a file with Hidden=true in it."
+            - OnlyShowIn:
+                long: only_show_in
+                short: b
+                about: "List of Strings identifying the desktop environments that should display/not display a given desktop entry. By default, a desktop file should be shown, unless an OnlyShowIn key is present, in which case, the default is for the file not to be shown. If $XDG_CURRENT_DESKTOP is set then it contains a colon-separated list of Stringings. In order, each Stringing is considered. If a matching entry is found in OnlyShowIn then the desktop file is shown. If an entry is found in NotShowIn then the desktop file is not shown. If none of the Stringings match then the default action is taken (as above). $XDG_CURRENT_DESKTOP should have been set by the login manager, according to the value of the DesktopNames found in the session file. The entry in the session file has multiple values separated in the usual way: with a semicolon. The same desktop name may not appear in both OnlyShowIn and NotShowIn of a group."
+            - NotShowIn:
+                long: not_show_in
+                short: z
+                about: "List of Strings identifying the desktop environments that should display/not display a given desktop entry. By default, a desktop file should be shown, unless an OnlyShowIn key is present, in which case, the default is for the file not to be shown. If $XDG_CURRENT_DESKTOP is set then it contains a colon-separated list of Stringings. In order, each Stringing is considered. If a matching entry is found in OnlyShowIn then the desktop file is shown. If an entry is found in NotShowIn then the desktop file is not shown. If none of the Stringings match then the default action is taken (as above). $XDG_CURRENT_DESKTOP should have been set by the login manager, according to the value of the DesktopNames found in the session file. The entry in the session file has multiple values separated in the usual way: with a semicolon. The same desktop name may not appear in both OnlyShowIn and NotShowIn of a group."
+            - DBusActivatable:
+                long: dbus_activatable
+                short: d
+                about: "A boolean value specifying if D-Bus activation is supported for this application. If this key is missing, the default value is false. If the value is true then implementations should ignore the Exec key and send a D-Bus message to launch the application. See D-Bus Activation for more information on how this works. Applications should still include Exec= lines in their desktop files for compatibility with implementations that do not understand the DBusActivatable key."
+            - TryExec:
+                long: try_exec
+                short: e
+                about: "Path to an executable file on disk used to determine if the program is actually installed. If the path is not an absolute path, the file is looked up in the $PATH environment variable. If the file is not present or if it is not executable, the entry may be ignored (not be used in menus, for example)"
+            - Exec:
+                long: exec
+                short: x
+                about: "Program to execute, possibly with arguments. See the Exec key for details on how this key works. The Exec key is required if DBusActivatable is not set to true. Even if DBusActivatable is true, Exec should be specified for compatibility with implementations that do not understand DBusActivatable."
+            - Path:
+                long: path
+                short: p
+                about: "If entry is of type Application, the working directory to run the program in."
+            - Terminal:
+                long: terminal
+                short: t
+                about: "Whether the program runs in a terminal window."
+            - Actions:
+                long: actions
+                short: a
+                about: "Identifiers for application actions. This can be used to tell the application to make a specific action, different from the default behavior. The Application actions section describes how actions work."
+            - MimeType:
+                long: mime_type
+                short: m
+                about: "The MIME type(s) supported by this application."
+            - Categories:
+                long: categories
+                short: c
+                about: "Categories in which the entry should be shown in a menu (for possible values see the Desktop Menu Specification)."
+            - Implements:
+                long: implements
+                short: f
+                about: "A list of interfaces that this application implements. By default, a desktop file implements no interfaces. See Interfaces for more information on how this works."
+            - Keywords:
+                long: keywords
+                short: k
+                about: "A list of Strings which may be used in addition to other metadata to describe this entry. This can be useful e.g. to facilitate searching through entries. The values are not meant for display, and should not be redundant with the values of Name or GenericName."
+            - StartupNotify:
+                long: startup_notify
+                short: r
+                about: "If true, it is KNOWN that the application will send a 'remove' message when started with the DESKTOP_STARTUP_ID environment variable set. If false, it is KNOWN that the application does not work with startup notification at all (does not shown any window, breaks even when using StartupWMClass, etc.). If absent, a reasonable handling is up to implementations (assuming false, using StartupWMClass, etc.). (See the Startup Notification Protocol Specification for more details)."
+            - StartupWMClass:
+                long: startup_wm_class
+                short: w
+                about: "If specified, it is known that the application will map at least one window with the given Stringing as its WM class or WM name hint (see the Startup Notification Protocol Specification for more details)."
+            - URL:
+                long: url
+                short: u
+                about: "If entry is Link type, the URL to access."
+            - PrefersNonDefaultGPU:
+                long: prefers_non_default_gpu
+                short: g
+                about: "If true, the application prefers to be run on a more powerful discrete GPU if available, which we describe as “a GPU other than the default one” in this spec to avoid the need to define what a discrete GPU is and in which cases it might be considered more powerful than the default GPU. This key is only a hint and support might not be present depending on the implementation."

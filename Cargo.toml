@@ -1,0 +1,17 @@
+[package]
+name = "xdgkit"
+version = "0.0.1"
+authors = ["Israel Dahl <israeldahl@protonmail.com>"]
+edition = "2018"
+description = "A command line kit for XDG specs.  As well as a Rust library"
+keywords = ["xdg","menu", "icons","desktop file",".desktop"]
+categories = ["command-line-utilities","os::linux-apis","os"]
+readme = "README.md"
+license-file = "LICENSE"
+
+[dependencies]
+# ini file reader
+tini = "1.0"
+# command line parser
+clap = {version = "3.0.0-beta.2", features = ["yaml"]}
+# xml TODO
