@@ -4,10 +4,12 @@ version = "0.0.1"
 authors = ["Israel Dahl <israeldahl@protonmail.com>"]
 edition = "2018"
 description = "A command line kit for XDG specs.  As well as a Rust library"
-keywords = ["xdg","menu", "icons","desktop file",".desktop"]
+keywords = ["xdg","menu","icons","desktop","linux"]
 categories = ["command-line-utilities","os::linux-apis","os"]
 readme = "README.md"
 license-file = "LICENSE"
+repository = "https://github.com/1sra3l/xdgkit"
+homepage = "https://fredesktop.org"
 
 [dependencies]
 # ini file reader
