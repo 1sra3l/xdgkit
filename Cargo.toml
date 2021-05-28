@@ -1,7 +1,7 @@
 # package info
 [package]
 name = "xdgkit"
-version = "0.0.1"
+version = "1.0.0"
 authors = ["Israel Dahl <israeldahl@protonmail.com>"]
 edition = "2018"
 description = "A command line kit for XDG specs.  As well as a Rust library"
@@ -10,7 +10,8 @@ categories = ["command-line-utilities","os::linux-apis","os"]
 readme = "README.md"
 license-file = "LICENSE"
 repository = "https://github.com/1sra3l/xdgkit"
-homepage = "https://fredesktop.org"
+homepage = "https://freedesktop.org"
+documentation = "https://docs.rs/xdgkit/"
 
 # library files
 [lib]
@@ -25,7 +26,8 @@ path = "src/main.rs"
 # dependencies
 [dependencies]
 # ini file reader
-tini = "1.0"
+tini = "1.2" # 1.2.0 fixes `#` comment!  Woot!!
 # command line parser
 clap = {version = "3.0.0-beta.2", features = ["yaml"]}
-# xml TODO
+# xml
+xml-rs = "0.8"

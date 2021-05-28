@@ -1,7 +1,20 @@
-XML
+------XML----
 Menu spec
 File Manager D-Bus interface
+Mime-Type
+recently-used.xbel
+user-places.xbel
 
-INI
-Icon theme spec
-Directory file
+----INFO----
+
+* Mime-Type
+   Need to read the mimetypes and then browse the desktop files and find 'MimeType' keys that match
+
+* Menu
+   program will need a menu file to generate a menu struct.
+   the command line interface will need output to multiple formats, potentially a subcommand, subcommand, AFAIK that is possible
+
+* File Manager D-Bus interface
+  This will be applicable if I want to make an open API for DBus filemanagement
+
+* recently-used/places might be a nice thing to offer an interface to
