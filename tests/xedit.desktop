@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=XEdit
+Name[en_US]=XEdit
+Name[en_GB]=XEdit
+Name[en]=XEdit
+GenericName=Text Editor
+Comment=Light and fast text editor
+Icon=text-editor
+Exec=xedit %f
+Terminal=false
+Type=Application
+Categories=Utility;

@@ -11,6 +11,7 @@ For Example:
  * 0.0.1 was the initial release
  * 0.1.0 saw the addition of `icon-theme` to the CLI subcommands
  * 0.2.0 saw the addition of `desktop-menu` to the CLI subcommands
+ * 1.0.0 saw a breaking change: moving `OnlyShowIn` to `DesktopEnvironment`
 
 I had to make up some enums for things like `Type` in the desktop_entry format.
 
@@ -25,6 +26,13 @@ enums are generally fine as-is, however I added IconContext::Unknown
 
 This uses `std::env` and returns` Result<String, VarError>` as does `std::env`
 This provides all the normal XDG variables, as well as locations for icons, menu/directory files, desktop files, and the autostart directories
+The command line parser will automatically check for existing directories.
+The functions that have `Vec` like properties (applications directory for example) can all be easily expanded
+```rs
+// simple use
+let app_dirs:Vec<String> = convert_to_vec(applications());
+```
+This will return an empty vector with an empty string if nothing exists
 
 ** this implements `autostart-spec`, `basedir-spec`, and `trash-spec`** from the (XDG specifications)[https://specifications.freedesktop.org/]
 
@@ -58,7 +66,7 @@ function myfun {
 }
 ```
 
-The thought is that someeone could use terminal GUI libraries and map out `svg` files perhaps as icons (in the current theme).
+This way any script-based menu can find the correct icons for the theme
 
 # WORKS IN PROGRESS
 

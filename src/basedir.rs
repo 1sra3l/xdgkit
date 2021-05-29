@@ -24,6 +24,7 @@
 //TODO learn how to namespace this!!!
 use std::env;
 use std::env::VarError;
+use std::path::Path;
 
 /// $HOME
 #[allow(dead_code)]
@@ -133,15 +134,30 @@ pub fn trash()->Result<String, VarError> {
 pub fn loop_data_dirs(directory:String)->Result<String, VarError> {
     let mut result = String::from("");
     let result2 = data_dirs();
+    let mut fail = false;
     if result2.is_ok() {
         let res_list = result2.unwrap().to_owned();
         for item in res_list.split(':') {
             let mut tmp_path:String = item.to_owned();
+            //TODO check for directory existence
             tmp_path.push_str(directory.as_str());
-            tmp_path.push_str(":");
-            result.push_str(tmp_path.as_str());
+            if Path::new(tmp_path.as_str()).exists() {
+                tmp_path.push_str(":");
+                result.push_str(tmp_path.as_str());
+            }
         }
     }
+    else { fail = true;}
+    let home_dir = data_home();
+    if home_dir.is_ok() {
+        let mut d = home_dir.unwrap().to_owned();
+        d.push_str(directory.as_str());
+        if Path::new(d.as_str()).exists() {
+            result.push_str(d.as_str());
+        }
+    }
+    else {fail = true;}
+    if fail {return Err(VarError::NotPresent)}
     Ok(result)
 }
 /// MENU DIRECTORIES
@@ -163,22 +179,7 @@ pub fn desktop_directories()->Result<String, VarError> {
 /// AUTOSTART DIRECTORIES
 #[allow(dead_code)]
 pub fn autostart()->Result<String, VarError> {
-    let ch = config_home();
-    let mut result = String::from("");
-    if ch.is_ok() {
-        result = ch.unwrap().to_owned();
-        result.push_str("/autostart");
-    }
-    let cd = config_dirs();
-    if cd.is_ok() {
-        if !result.is_empty() {
-            result.push_str(":");
-        }
-        let res2 = cd.unwrap().to_owned();
-        result.push_str(res2.as_str());
-        result.push_str("/autostart");
-    }
-    Ok(result)
+    loop_data_dirs("/autostart".to_string())
 }
 
 /// ICON DIRECTORIES
@@ -190,14 +191,10 @@ pub fn icon_dirs()->Result<String, VarError> {
         retval = result.unwrap().to_owned();
         retval.push_str("./icons:");
     }
-    let result2 = data_dirs();
+    let result2 = loop_data_dirs("/icons".to_string());
     if result2.is_ok() {
         let res_list = result2.unwrap().to_owned();
-        for item in res_list.split(':') {
-            let mut tmp_path:String = item.to_owned();
-            tmp_path.push_str("/icons:");
-            retval.push_str(tmp_path.as_str());
-        }
+        retval.push_str(&res_list);
     }
     retval.push_str("/usr/share/pixmaps:");
     Ok(retval)

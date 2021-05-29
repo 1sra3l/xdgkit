@@ -446,13 +446,17 @@ impl DesktopEntry {
         }
         //make only show in enums
         let mut onlyshow:Vec<DesktopEnvironment> =vec![];
-        for item in only.unwrap() {
-          onlyshow.push(DesktopEnvironment::from_string(item));
+        if only.is_some() {
+            for item in only.unwrap() {
+                onlyshow.push(DesktopEnvironment::from_string(item));
+            }
         }
          //make not show in enums
         let mut notshow:Vec<DesktopEnvironment> =vec![];
-        for item in not.unwrap() {
-          notshow.push(DesktopEnvironment::from_string(item));
+        if not.is_some() {
+            for item in not.unwrap() {
+                notshow.push(DesktopEnvironment::from_string(item));
+            }
         }
         let mut categories:Option<Vec<Categories>> = None;
         if !cats.is_empty() {
