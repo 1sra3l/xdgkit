@@ -44,6 +44,9 @@ fn main() {
         if matches.is_present("Menus") {
             println!("{}",basedir::menu().unwrap_or("".to_string()));
         }
+        if matches.is_present("MenusMerged") {
+            println!("{}",basedir::menu_merged().unwrap_or("".to_string()));
+        }
         if matches.is_present("Applications") {
             println!("{}",basedir::applications().unwrap_or("".to_string()));
         }
@@ -109,10 +112,20 @@ fn main() {
             println!("{:?}",desktop_file.hidden.unwrap_or_default());
         }
         if matches.is_present("OnlyShowIn") {
-            println!("{:?}",desktop_file.only_show_in.unwrap_or_default());
+            if desktop_file.only_show_in.is_some() {
+                for item in desktop_file.only_show_in.unwrap_or_default() {
+                    print!("{:?};", item.to_string());
+                }
+            }
+            print!("\n");
         }
         if matches.is_present("NotShowIn") {
-            println!("{:?}",desktop_file.not_show_in.unwrap_or_default());
+            if desktop_file.not_show_in.is_some() {
+                for item in desktop_file.not_show_in.unwrap_or_default() {
+                    print!("{:?};", item.to_string());
+                }
+            }
+            print!("\n");
         }
         if matches.is_present("DBusActivatable") {
             println!("{:?}",desktop_file.dbus_activatable.unwrap_or_default());

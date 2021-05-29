@@ -20,9 +20,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+use roxmltree::*;
+use std::fs;
 
-extern crate xml;
-//use std::fmt;
 //Elements
 #[allow(dead_code)]
 #[derive(Debug)]
@@ -30,6 +30,16 @@ pub enum MergeType {
     Menus,
     Files,
     All,    
+}
+impl MergeType {
+    pub fn from_string(item:String) -> MergeType{
+        if item == "menus" {
+            return MergeType::Menus
+        } else if item == "files" {
+            return MergeType::Files
+        }
+        MergeType::All
+    }
 }
 #[allow(dead_code)]
 #[derive(Debug)]
@@ -111,13 +121,13 @@ pub enum DesktopMenu {
     /// The `<Category>` element is another basic matching predicate. It matches a desktop entry if the desktop entry has the given category in its `Categories` field.
     Category(String),
     /// The `<All>` element is a matching rule that matches all desktop entries. 
-    ALL,
+    All,
     /// The `<And>` element contains a list of matching rules. If each of the matching rules inside the `<And>` element match a desktop entry, then the entire `<And>` rule matches the desktop entry.
-    AND(Vec<String>),
+    And(Vec<String>),
     /// The `<Or>` element contains a list of matching rules. If any of the matching rules inside the `<Or>` element match a desktop entry, then the entire `<Or>` rule matches the desktop entry. 
-    OR(Vec<String>),
+    Or(Vec<String>),
     /// The `<Not>` element contains a list of matching rules. If any of the matching rules inside the `<Not>` element matches a desktop entry, then the entire `<Not>` rule does not match the desktop entry. That is, matching rules below `<Not>` have a logical OR relationship. 
-    NOT,
+    Not,
     /// #### Attributes:
     /// `[type="path"|"parent"]`
 /// 
@@ -184,6 +194,25 @@ pub enum DesktopMenu {
     /// 
     /// This element may only appear as a child of a `<Layout>` or `<DefaultLayout>` menu. It indicates the point where desktop entries and sub-menus that are not explicitly mentioned within the `<Layout>` or `<DefaultLayout>` element are to be inserted. It has a type attribute that indicates which elements should be inserted: type="menus" means that all sub-menus that are not explicitly mentioned should be inserted in alphabetical order of their visual caption at this point. `type="files"` means that all desktop entries contained in this menu that are not explicitly mentioned should be inserted in alphabetical order of their visual caption at this point. `type="all"` means that a mix of all sub-menus and all desktop entries that are not explicitly mentioned should be inserted in alphabetical order of their visual caption at this point. Each `<Layout>` or ``<DefaultLayout>`` element shall have exactly one <Merge type="all">` element or it shall have exactly one `<Merge type="files">` and exactly one `<Merge type="menus">` element. An exception is made for a completely empty `<Layout>` element which may be used to indicate that the default-layout should be used instead.
     Merge(MergeType),
+    /// Handle all other random junk
+    Unknown,
+}
+impl DesktopMenu {
+   pub fn component(element:String, node:Node) -> DesktopMenu{
+       if element == "Separator" {
+           return DesktopMenu::Separator
+       } else if element == "Merge" {
+           let merge_type = node.attribute("type").unwrap().to_owned();
+           return DesktopMenu::Merge(MergeType::from_string(merge_type))
+       } else if element == "Menuname" {
+           return DesktopMenu::Menuname
+       } else if element == "Category" {
+           return DesktopMenu::Category(node.text().unwrap().to_owned())
+       } else if element == "Not" {
+           return DesktopMenu::Not
+       }
+       DesktopMenu::Unknown
+   }
 }
 #[allow(dead_code)]
 /// The struct abstracting the xml menu file
@@ -200,8 +229,19 @@ impl Menu {
 
     #[allow(dead_code)]
     /// Make the `enum` component list
-    pub fn make_components(_file_name:String)->Option<Vec<DesktopMenu>> {
-        //TODO read xml file
+    pub fn make_components(file_name:String)->Option<Vec<DesktopMenu>> {
+        let text = std::fs::read_to_string(file_name.as_str()).unwrap();
+        let doc = match roxmltree::Document::parse(&text) {
+          Ok(doc) => doc,
+          Err(e) => {
+              println!("Error:{}",e);
+              return None
+          }
+        };
+        for node in doc.descendants() {
+            let tag = node.tag_name();
+            
+        }
         return None;
     }
 

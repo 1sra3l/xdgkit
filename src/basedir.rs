@@ -32,15 +32,14 @@ pub fn home()->Result<String, VarError> {
     env::var("HOME")
 }
 
-/*
-the main 'getter' function
-This basically checks env::var(whatever) and returns the right results
-*/
+/// the main 'getter' function
+/// This basically checks env::var(whatever) and returns the right results
 fn var_getter(env_var:&str, directory:String)->Result<String, VarError> {
     match env::var(env_var) {
         Ok(val)=> return Ok(val),
         Err(_e)=> {
-            if directory.is_empty() {
+            // make sure the direcory exists!
+            if !Path::new(directory.as_str()).is_dir() {
                 return Err(VarError::NotPresent)
             }
             return Ok(String::from(directory))
@@ -129,6 +128,7 @@ pub fn trash()->Result<String, VarError> {
     }
     Ok(String::from(""))
 }
+
 /// loop xdg data dirs
 #[allow(dead_code)]
 pub fn loop_data_dirs(directory:String)->Result<String, VarError> {
@@ -139,9 +139,8 @@ pub fn loop_data_dirs(directory:String)->Result<String, VarError> {
         let res_list = result2.unwrap().to_owned();
         for item in res_list.split(':') {
             let mut tmp_path:String = item.to_owned();
-            //TODO check for directory existence
             tmp_path.push_str(directory.as_str());
-            if Path::new(tmp_path.as_str()).exists() {
+            if Path::new(tmp_path.as_str()).is_dir() {
                 tmp_path.push_str(":");
                 result.push_str(tmp_path.as_str());
             }
@@ -152,7 +151,7 @@ pub fn loop_data_dirs(directory:String)->Result<String, VarError> {
     if home_dir.is_ok() {
         let mut d = home_dir.unwrap().to_owned();
         d.push_str(directory.as_str());
-        if Path::new(d.as_str()).exists() {
+        if Path::new(d.as_str()).is_dir() {
             result.push_str(d.as_str());
         }
     }
@@ -160,12 +159,38 @@ pub fn loop_data_dirs(directory:String)->Result<String, VarError> {
     if fail {return Err(VarError::NotPresent)}
     Ok(result)
 }
-/// MENU DIRECTORIES
+/// The /menu directory
 #[allow(dead_code)]
 pub fn menu()->Result<String, VarError> {
-    loop_data_dirs("/menu".to_string())
+    let result = config_dirs();
+    let mut retval:String = "".to_string();
+    if result.is_ok() {
+        retval = result.unwrap().to_owned();
+        retval.push_str("/menu");
+    }
+    println!("{:?}",retval);
+    if Path::new(retval.as_str()).is_dir() {
+        println!("OK");
+        return Ok(retval)
+    }
+    return Err(VarError::NotPresent)
 }
-/// APPLICATIONS DIRECTORIES
+/// the /menu/applications-merged directory
+#[allow(dead_code)]
+pub fn menu_merged()->Result<String, VarError> {
+    let result = config_dirs();
+    let mut retval:String = "".to_string();
+    if result.is_ok() {
+        retval = result.unwrap().to_owned();
+        retval.push_str("/menu/applications-merged");
+    }
+    if Path::new(retval.as_str()).is_dir() {
+        return Ok(retval)
+    }
+    return Err(VarError::NotPresent)
+}
+
+/// the /applications directories
 #[allow(dead_code)]
 pub fn applications()->Result<String, VarError> {
     loop_data_dirs("/applications".to_string())
@@ -176,7 +201,7 @@ pub fn desktop_directories()->Result<String, VarError> {
     loop_data_dirs("/desktop-directories".to_string())
 }
 
-/// AUTOSTART DIRECTORIES
+/// 
 #[allow(dead_code)]
 pub fn autostart()->Result<String, VarError> {
     loop_data_dirs("/autostart".to_string())

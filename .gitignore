@@ -1,3 +1,5 @@
 /target
 _*.rs
 /scrape
+*.kate-swp
+*~

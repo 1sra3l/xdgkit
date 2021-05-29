@@ -77,8 +77,8 @@ impl DesktopEnvironment {
         ONLYSHOWIN.iter()
     }
     #[allow(dead_code)]
-    pub fn to_string(item:DesktopEnvironment) ->String {
-      match item {
+    pub fn to_string(&self) ->String {
+      match &self {
           GNOME => "GNOME".to_string(),
           GNOMEClassic => "GNOMEClassic".to_string(),
           GNOMEFlashback => "GNOMEFlashback".to_string(),

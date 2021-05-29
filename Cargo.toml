@@ -30,4 +30,4 @@ tini = "1.2" # 1.2.0 fixes `#` comment!  Woot!!
 # command line parser
 clap = {version = "3.0.0-beta.2", features = ["yaml"]}
 # xml
-xml-rs = "0.8"
+roxmltree = "0.14.1"
