@@ -152,12 +152,39 @@ pub fn loop_data_dirs(directory:String)->Result<String, VarError> {
         let mut d = home_dir.unwrap().to_owned();
         d.push_str(directory.as_str());
         if Path::new(d.as_str()).is_dir() {
+            d.push_str(":");
             result.push_str(d.as_str());
+            fail = false;
         }
     }
     else {fail = true;}
     if fail {return Err(VarError::NotPresent)}
     Ok(result)
+}
+pub fn data_dirs_vec(directory:String)->Vec<String> {
+    let mut result:Vec<String> = vec![];
+    let result2 = data_dirs();
+    if result2.is_ok() {
+        let res_list = result2.unwrap().to_owned();
+        for item in res_list.split(':') {
+            let mut tmp_path:String = item.to_owned();
+            tmp_path.push_str(directory.as_str());
+            if Path::new(tmp_path.as_str()).exists() {
+                result.push(tmp_path.to_owned());
+            }
+        }
+    }
+    let home_dir = data_home();
+    if home_dir.is_ok() {
+        let mut d = home_dir.unwrap().to_owned();
+        d.push_str(directory.as_str());
+        if Path::new(d.as_str()).exists() {
+            result.push(d);
+        }
+    }
+    result.sort();
+    result.dedup();
+    result
 }
 /// The /menu directory
 #[allow(dead_code)]
@@ -168,9 +195,7 @@ pub fn menu()->Result<String, VarError> {
         retval = result.unwrap().to_owned();
         retval.push_str("/menu");
     }
-    println!("{:?}",retval);
     if Path::new(retval.as_str()).is_dir() {
-        println!("OK");
         return Ok(retval)
     }
     return Err(VarError::NotPresent)
@@ -223,4 +248,20 @@ pub fn icon_dirs()->Result<String, VarError> {
     }
     retval.push_str("/usr/share/pixmaps:");
     Ok(retval)
+}
+/// Vector of Icon directories
+pub fn icon_dirs_vector()->Vec<String> {
+    // make our directory of icons
+    let mut directory_vec:Vec<String> = data_dirs_vec("/icons".to_string());
+    let local_icons_dir = home();
+    let mut local_icons:String = "".to_string();
+    if local_icons_dir.is_ok() {
+        local_icons = local_icons_dir.unwrap().to_owned();
+        local_icons.push_str("./icons");
+        directory_vec.push(local_icons.to_owned());
+    }
+    directory_vec.push("/usr/share/pixmaps".to_string());
+    directory_vec.sort();
+    directory_vec.dedup();
+    directory_vec
 }

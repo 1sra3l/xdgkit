@@ -40,7 +40,7 @@ use crate::utils::to_int;
 /// * Threshold
 ///
 /// The type decides what other keys in the section are used. If not specified, the **default is Threshold**.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 #[allow(dead_code)]
 pub enum DirectoryType {
     Fixed,
@@ -57,7 +57,7 @@ pub enum DirectoryType {
 /// * Devices. Icons representing real world devices, such as printers and mice. It's not for file system nodes such as character or block devices.
 /// * FileSystems. Icons for objects which are represented as part of the file system. This is for example, the local network, “Home”, and “Desktop” folders.
 /// * MimeTypes. Icons representing MIME types.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 #[allow(dead_code)]
 pub enum IconContext {
     Actions,
@@ -109,7 +109,7 @@ pub enum IconContext {
 /// 
 /// The `index.theme` file must start with a section called `[Icon Theme]`, with contents according to the items below. All lists in the ini file, are to be comma-separated.
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 #[allow(dead_code)]
 pub struct Directory {
     /// **[REQUIRED BY SPECS]** directory name
@@ -218,7 +218,7 @@ pub fn make_directories(dirs:Option<Vec<String>>, file_string:String)->Option<Ve
         }
         Some(result)
 }
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 #[allow(dead_code)]
 pub struct IconTheme {
     /// **[REQUIRED BY SPECS]** short name of the icon theme, used in e.g. lists when selecting themes.
@@ -259,9 +259,10 @@ impl IconTheme {
 
     #[allow(dead_code)]
     pub fn new(file_name:String)->Self where Self:Sized {
+        if file_name.is_empty() { return Self::empty() }
         let test_ini = Ini::from_file(&file_name);
         if test_ini.is_err() {
-            println!("ERROR: {:?} in file:{}",test_ini,file_name);
+            println!("___________________\nERROR: {:?}\nin file:{}\n___________________",test_ini,file_name);
             return Self::empty()
         }
         let conf = test_ini.unwrap();

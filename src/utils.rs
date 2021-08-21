@@ -58,7 +58,8 @@ pub fn get_language() -> Option<String> {
     match env::var(lang) {
         Ok(value) => {
             let mut lang_var: String = value;
-            let pos = lang_var.chars().position(|c| c == '.');
+            let pos = lang_var.chars()
+                              .position(|c| c == '.');
             if pos.is_some() {
                 let posi = pos.unwrap();
                 if posi < lang_var.len() {

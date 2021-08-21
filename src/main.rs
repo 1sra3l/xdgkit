@@ -27,6 +27,7 @@ mod icon_theme;
 mod desktop_menu;
 mod utils;
 mod categories;
+mod icon_finder;
 
 extern crate clap;
 use clap::{App, load_yaml};
@@ -77,8 +78,18 @@ fn main() {
         if matches.is_present("Config") {
             println!("{}",basedir::config_dirs().unwrap_or("".to_string()));
         }
-}
-
+    }
+    //
+    if let Some(matches) = matches.subcommand_matches("findicon") {
+    // Read the desktop file
+        let icon_name = matches.value_of("ICON_NAME").unwrap();
+        // TODO scale/size
+        let icon = match icon_finder::find_icon(icon_name.to_string(),48,1){
+            Some(icon)=>icon,
+            None=>String::from(""),
+        };
+        println!("{:?}",icon);
+    }
 // desktop-entry ARGS
     if let Some(matches) = matches.subcommand_matches("desktop-entry") {
     // Read the desktop file

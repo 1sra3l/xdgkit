@@ -5,6 +5,13 @@ about: Command line interface for the XDG specifications library written in rust
 settings:
     - ArgRequiredElseHelp
 subcommands:
+    - findicon:
+        about: "Icon lookup code from psuedo-code @ https://specifications.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html#icon_lookup"
+        args:       
+            - ICON_NAME:
+                about: "The icon to look for"
+                required: true
+        
     - basedir:
         about: "Get XDG basedir variables, and directories"
         multiple: true

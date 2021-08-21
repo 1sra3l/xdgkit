@@ -138,9 +138,7 @@ impl DesktopEnvironment {
 }
 impl fmt::Display for DesktopEnvironment {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "{:?}", self)
-    // or, alternatively:
-    // fmt::Debug::fmt(self, f)
+        write!(f, "{:?}", self)
     }
 }
 
@@ -160,9 +158,7 @@ pub enum DesktopType {
 }
 impl fmt::Display for DesktopType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "{:?}", self)
-    // or, alternatively:
-    // fmt::Debug::fmt(self, f)
+        write!(f, "{:?}", self)
     }
 }
 
@@ -285,7 +281,7 @@ pub struct DesktopEntry {
 impl DesktopEntry {
     /// Creates a blank entry with a specified type
     pub fn empty(initial_type:DesktopType)->Self where Self:Sized {
-
+        // nothing to see here
         DesktopEntry {
             xdg_type:initial_type,
             version:1.0,
@@ -458,6 +454,7 @@ impl DesktopEntry {
                 notshow.push(DesktopEnvironment::from_string(item));
             }
         }
+        // check emptiness, before trying anying XD
         let mut categories:Option<Vec<Categories>> = None;
         if !cats.is_empty() {
             categories = Some(cats);
@@ -470,6 +467,7 @@ impl DesktopEntry {
         if !notshow.is_empty() {
             not_show = Some(notshow);
         }
+        // blast off!
         DesktopEntry {
             xdg_type:convert_xdg_type(dt),
             version:ver.unwrap().parse::<f32>().ok().unwrap(),
