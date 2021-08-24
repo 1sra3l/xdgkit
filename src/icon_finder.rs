@@ -1,3 +1,9 @@
+/*!
+# Icon finder
+
+This is the rustification of the example psuedo code for finding icons a.k.a "the algorithm described in the [Icon Theme Specification](https://specifications.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html#icon_lookup)"
+*/
+
 // icon_finder.rs
 // Rusified in 2021 Copyright Israel Dahl. All rights reserved.
 // 
@@ -27,13 +33,14 @@ use std::path::Path;
 extern crate tini;
 use tini::Ini;
 
-/// Our file extentions
+/// Our icon file extentions
 const EXTENTIONS:[&str; 3] = [".png", ".svg", ".xpm"];
 /// the index file for themes
 const INDEX_FILE:&str = "/index.theme";
 
-/// A simple structure to hold directory and theme list
-/// the reason we need this struct is because the theme name is **not** the same as the directory name :-P
+/// A simple structure to hold directory and theme list.
+///
+/// The reason this is needed is because the **theme** name is **not** the same as the **directory name** `:-P`
 #[derive(Debug, Clone)]
 pub struct DirList {
     /// the string of the Path
@@ -77,7 +84,7 @@ pub fn find_by_name(name:String, dir_list_vector:Vec<DirList>) -> Option<DirList
     None
 }
 
-/// Make the list of `DirList` structs by reading the $XDG_DATA_DIRS/icons
+/// Make the list of `DirList` structs by reading the `$XDG_DATA_DIRS/icons`
 pub fn generate_dir_list() -> Vec<DirList>{
     let mut return_value:Vec< DirList> = vec![];
     
@@ -297,7 +304,7 @@ pub fn find_icon_helper(icon:String, size:i32, scale:i32, theme:IconTheme, dir_l
     return None
 }
 
-//With the following helper functions:
+/// One of the "following helper functions"
 pub fn lookup_icon (iconname:String, size:i32, scale:i32, theme:IconTheme, dir_list_vector:Vec<DirList>) -> Option<String> {
     let list = theme.directories.to_owned();
     if list.is_none() { return None}
@@ -364,8 +371,7 @@ pub fn lookup_icon (iconname:String, size:i32, scale:i32, theme:IconTheme, dir_l
     return Some(closest_filename)
 }
 
-/// Look in the basic icon directories (like /us/share/pixmaps, /usr/share/icons) for anything that matches the icon name
-/// this is the last function needing the directory vector so we can throw it away later
+/// Look in the basic icon directories (like /us/share/pixmaps, /usr/share/icons) for anything that matches the icon name!
 pub fn lookup_fallback_icon (iconname:String) ->Option<String> {
     let directory_vec:Vec<String> = icon_dirs_vector();
     for directory in directory_vec {
@@ -381,7 +387,7 @@ pub fn lookup_fallback_icon (iconname:String) ->Option<String> {
     return None
 }
 
-/// Check to see if the subdir size is in range
+/// Check to see if the sub directory size is in range
 pub fn directory_matches_size(subdir:Directory, iconsize:i32, iconscale:i32) -> bool {
     let mut scale = 1;
     if subdir.scale.is_some() {
@@ -427,7 +433,7 @@ pub fn directory_matches_size(subdir:Directory, iconsize:i32, iconscale:i32) -> 
      }
      return false
 }
-
+/// You guessed it more psuedo code that turned into rust
 pub fn directory_size_distance(subdir:Directory, iconsize:i32, iconscale:i32) -> i32{
     // default scale is 1
     let mut scale = 1;
@@ -487,8 +493,7 @@ pub fn directory_size_distance(subdir:Directory, iconsize:i32, iconscale:i32) ->
     }
 }
 
-/// In some cases you don't always want to fall back to an icon in an inherited theme. For instance, sometimes you look for a set of icons, prefering any of them before using an icon from an inherited theme. To support such operations implementations can contain a function that finds the first of a list of icon names in the inheritance hierarchy. I.E. It looks like this:
-
+/// In some cases you don't always want to fall back to an icon in an inherited theme. For instance, sometimes you look for a set of icons, prefering any of them before using an icon from an inherited theme. To support such operations implementations can contain a function that finds the first of a list of icon names in the inheritance hierarchy. This is that function!
 pub fn find_best_icon(icon_list:Vec<String>, size:i32, scale:i32) -> Option<String> {
 
     let dir_list_vector = generate_dir_list();

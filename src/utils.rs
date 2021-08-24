@@ -1,3 +1,9 @@
+/*!
+# Utilities
+
+This just wraps repetative functions with utility value
+*/
+
 // utils.rs
 // Rusified in 2021 Copyright Israel Dahl. All rights reserved.
 // 

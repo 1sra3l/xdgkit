@@ -1,3 +1,8 @@
+/*!
+# WIP
+
+This is not ready for use yet
+*/
 // desktop_menu.rs
 // Rusified in 2021 Copyright Israel Dahl. All rights reserved.
 // 
@@ -23,8 +28,9 @@
 use roxmltree::*;
 
 //Elements
+
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum MergeType {
     Menus,
     Files,
@@ -41,12 +47,12 @@ impl MergeType {
     }
 }
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum MergeFileType {
     Path,
     Parent,
 }
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 /// # Format of menu files
 ///
 /// Menu files must be well-formed XML files and end in the extension ".menu". They should also conform to the menu file DTD which implies that implementation-specific extensions to the file format are not allowed. Implementations may stop processing if they encounter a menu file which does not comply with the associated DTD. Note that the associated DTD may differ in version from the one defined in this document.
@@ -73,7 +79,7 @@ pub enum DesktopMenu {
     Menu,
     /// This element may only appear below `<Menu>`. The content of this element is a directory name. Desktop entries in this directory are scanned and added to the pool of entries which can be included in this `<Menu>` and its submenus. Only files ending in `.desktop` should be used, other files are ignored.
 ///
-    ///Desktop entries in the pool of available entries are identified by their desktop-file id (see Desktop-File Id)[https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-desktop-file-id]. The desktop-file id of a desktop entry is equal to its filename, with any path components removed. So given a `<AppDir>` `/foo/bar` and desktop entry `/foo/bar/Hello.desktop` the desktop entry would get a desktop-file id of `Hello.desktop`
+    ///Desktop entries in the pool of available entries are identified by their desktop-file id [see Desktop-File Id](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-desktop-file-id). The desktop-file id of a desktop entry is equal to its filename, with any path components removed. So given a `<AppDir>` `/foo/bar` and desktop entry `/foo/bar/Hello.desktop` the desktop entry would get a desktop-file id of `Hello.desktop`
 ///
     ///If the directory contains sub-directories then these sub-directories should be (recursively) scanned as well. The name of the subdirectory should be added as prefix to the desktop-file id together with a dash character ("-") So given a `<AppDir>` `/foo/bar` and desktop entry `/foo/bar/booz/Hello.desktop` the desktop entry would get a desktop-file id of `booz-Hello.desktop` A desktop entry `/foo/bar/bo/oz/Hello.desktop` would result in a desktop-file id of `bo-oz-Hello.desktop`
 ///
@@ -81,13 +87,13 @@ pub enum DesktopMenu {
 ///
     ///If the filename given as an `<AppDir>` is not an absolute path, it should be located relative to the location of the menu file being parsed.
 ///
-    ///Duplicate `<AppDir>` elements (that specify the same directory) should be ignored, but the last duplicate in the file should be used when establishing the order in which to scan the directories. This is important when merging (see the section called “Merging”)[https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html]. The order of `<AppDir>` elements with respect to `<Include>` and `<Exclude>` elements is not relevant, also to facilitate merging. 
+    ///Duplicate `<AppDir>` elements (that specify the same directory) should be ignored, but the last duplicate in the file should be used when establishing the order in which to scan the directories. This is important when merging [see the section called “Merging”](https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html). The order of `<AppDir>` elements with respect to `<Include>` and `<Exclude>` elements is not relevant, also to facilitate merging. 
     AppDir(String),
     ///This element may only appear below `<Menu>`. The element has no content. The element should be treated as if it were a list of `<AppDir>` elements containing the default app dir locations (datadir/applications/ etc.). When expanding `<DefaultAppDirs>` to a list of `<AppDir>`, the default locations that are earlier in the search path go later in the `<Menu>` so that they have priority.
     DefaultAppDirs(bool),
     /// This element may only appear below `<Menu>`. The content of this element is a directory name. Each directory listed in a `<DirectoryDir>` element will be searched for directory entries to be used when resolving the `<Directory>` element for this menu and its submenus. If the filename given as a `<DirectoryDir>` is not an absolute path, it should be located relative to the location of the menu file being parsed.
 ///
-///    Directory entries in the pool of available entries are identified by their relative path (see Relative path)[https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-relative-path].
+///    Directory entries in the pool of available entries are identified by their relative path [see Relative path](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-relative-path).
 ///
 ///    If two directory entries have duplicate relative paths, the one from the last (furthest down) element in the menu file must be used. Only files ending in the extension `.directory` should be loaded, other files should be ignored.
 ///
@@ -95,7 +101,7 @@ pub enum DesktopMenu {
     DirectoryDir(Vec<DesktopMenu>),
     /// This element may only appear below `<Menu>`. The element has no content. The element should be treated as if it were a list of `<DirectoryDir>` elements containing the default desktop dir locations (`datadir`/desktop-directories/ etc.). The default locations that are earlier in the search path go later in the `<Menu>` so that they have priority. 
     DefaultDirectoryDirs(bool),
-    /// Each `<Menu>` element must have a single `<Name>` element. The content of the `<Name>` element is a name to be used when referring to the given menu. Each submenu of a given `<Menu>` must have a unique name. `<Menu>` elements can thus be referenced by a menu path, for example `Applications/Graphics`. The `<Name>` field must not contain the slash character ("/"); implementations should discard any name containing a slash. (See also Menu path)[https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-menu-path]. 
+    /// Each `<Menu>` element must have a single `<Name>` element. The content of the `<Name>` element is a name to be used when referring to the given menu. Each submenu of a given `<Menu>` must have a unique name. `<Menu>` elements can thus be referenced by a menu path, for example `Applications/Graphics`. The `<Name>` field must not contain the slash character ("/"); implementations should discard any name containing a slash. [See also Menu path](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-menu-path).
     Name(String),
     /// Each `<Menu>` element has any number of `<Directory>` elements. The content of the `<Directory>` element is the relative path of a directory entry containing meta information about the `<Menu>`, such as its icon and localized name. If no `<Directory>` is specified for a `<Menu>`, its `<Name>` field should be used as the user-visible name of the menu.
 ///
@@ -103,7 +109,7 @@ pub enum DesktopMenu {
     Directory(String),
     ///Each `<Menu>` may contain any number of `<OnlyUnallocated>` and <NotOnlyUnallocated> elements. Only the last such element to appear is relevant, as it determines whether the `<Menu>` can contain any desktop entries, or only those desktop entries that do not match other menus. If neither `<OnlyUnallocated>` nor <NotOnlyUnallocated> elements are present, the default is <NotOnlyUnallocated>.
 ///
-    ///To handle `<OnlyUnallocated>`, the menu file must be analyzed in two conceptual passes. The first pass processes `<Menu>` elements that can match any desktop entry. During this pass, each desktop entry is marked as allocated according to whether it was matched by an `<Include>` rule in some `<Menu>`. The second pass processes only `<Menu>` elements that are restricted to unallocated desktop entries. During the second pass, queries may only match desktop entries that were not marked as allocated during the first pass. (See the section called “Generating the menus”)[https://specifications.freedesktop.org/menu-spec/latest/ar01s06.html]. 
+    ///To handle `<OnlyUnallocated>`, the menu file must be analyzed in two conceptual passes. The first pass processes `<Menu>` elements that can match any desktop entry. During this pass, each desktop entry is marked as allocated according to whether it was matched by an `<Include>` rule in some `<Menu>`. The second pass processes only `<Menu>` elements that are restricted to unallocated desktop entries. During the second pass, queries may only match desktop entries that were not marked as allocated during the first pass. [See the section called “Generating the menus”](https://specifications.freedesktop.org/menu-spec/latest/ar01s06.html).
     OnlyUnallocated(bool),
     NotOnlyUnallocated(bool),
     /// Each `<Menu>` may contain any number of '<Deleted>' and `<NotDeleted>` elements. Only the last such element to appear is relevant, as it determines whether the `<Menu>` has been deleted. If neither '<Deleted>' nor `<NotDeleted>` elements are present, the default is `<NotDeleted>`. The purpose of this element is to support menu editing. If a menu contains a '<Deleted>' element not followed by a `<NotDeleted>` element, that menu should be ignored. 
@@ -111,11 +117,11 @@ pub enum DesktopMenu {
     NotDeleted(String),
     /// An `<Include>` element is a set of rules attempting to match some of the known desktop entries. The `<Include>` element contains a list of any number of matching rules. Matching rules are specified using the elements `<And>`, `<Or>`, `<Not>`, `<All>`, `<Filename>`, and `<Category>`. Each rule in a list of rules has a logical OR relationship, that is, desktop entries which match any rule are included in the menu.
 /// 
-    /// `<Include>` elements must appear immediately under `<Menu>` elements. The desktop entries they match are included in the menu. `<Include>` and `<Exclude>` elements for a given `<Menu>` are processed in order, with queries earlier in the file handled first. This has implications for merging, (see the section called “Merging”)[https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html]. S(ee the section called “Generating the menus” for full details on how to process `<Include>` and `<Exclude>` elements)[https://specifications.freedesktop.org/menu-spec/latest/ar01s06.html]. 
+    /// `<Include>` elements must appear immediately under `<Menu>` elements. The desktop entries they match are included in the menu. `<Include>` and `<Exclude>` elements for a given `<Menu>` are processed in order, with queries earlier in the file handled first. This has implications for merging, [see the section called “Merging”](https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html). [See the section called “Generating the menus” for full details on how to process `<Include>` and `<Exclude>` elements](https://specifications.freedesktop.org/menu-spec/latest/ar01s06.html).
     Include(Vec<DesktopMenu>),
     /// Any number of `<Exclude>` elements may appear below a `<Menu>` element. The content of an `<Exclude>` element is a list of matching rules, just as with an `<Include>`. However, the desktop entries matched are removed from the list of desktop entries included so far. (Thus an `<Exclude>` element that appears before any `<Include>` elements will have no effect, for example, as no desktop entries have been included yet.)
     Exclude(Vec<DesktopMenu>),
-    /// The `<Filename>` element is the most basic matching rule. It matches a desktop entry if the desktop entry has the given desktop-file id. (See Desktop-File Id)[https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-desktop-file-id].
+    /// The `<Filename>` element is the most basic matching rule. It matches a desktop entry if the desktop entry has the given desktop-file id. [See Desktop-File Id](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-desktop-file-id).
     Filename(String),
     /// The `<Category>` element is another basic matching predicate. It matches a desktop entry if the desktop entry has the given category in its `Categories` field.
     Category(String),
@@ -130,7 +136,7 @@ pub enum DesktopMenu {
     /// #### Attributes:
     /// `[type="path"|"parent"]`
 /// 
-    /// Any number of `<MergeFile>` elements may be listed below a `<Menu>` element, giving the name of another menu file to be merged into this one. the section called (“Merging”)[https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html] specifies how merging is done. The root `<Menu>` of the merged file will be merged into the immediate parent of the `<MergeFile>` element. The `<Name>` element of the root `<Menu>` of the merged file are ignored.
+    /// Any number of `<MergeFile>` elements may be listed below a `<Menu>` element, giving the name of another menu file to be merged into this one. The section called [“Merging”](https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html) specifies how merging is done. The root `<Menu>` of the merged file will be merged into the immediate parent of the `<MergeFile>` element. The `<Name>` element of the root `<Menu>` of the merged file are ignored.
 /// 
     /// If the type attribute is missing or set to "path" then the contents of the `<MergeFile>` element indicates the file to be merged. If this is not an absolute path then the file to be merged should be located relative to the location of the menu file that contains this `<MergeFile>` element.
 /// 
@@ -150,7 +156,7 @@ pub enum DesktopMenu {
     MergeDir,
     /// This element may only appear below `<Menu>`. The element has no content. The element should be treated as if it were a list of `<MergeDir>` elements containing the default merge directory locations. When expanding `<DefaultMergeDirs>` to a list of `<MergeDir>`, the default locations that are earlier in the search path go later in the `<Menu>` so that they have priority. 
     DefaultMergeDirs,
-    /// This element may only appear below `<Menu>`. The text content of this element is a directory name. Each directory listed in a `<LegacyDir>` element will be an old-style legacy hierarchy of desktop entries, (see the section called “Legacy Menu Hierarchies”)[https://specifications.freedesktop.org/menu-spec/latest/ar01s07.html] for how to load such a hierarchy. Implementations must not load legacy hierarchies that are not explicitly specified in the menu file (because for example the menu file may not be the main menu). If the filename given as a `<LegacyDir>` is not an absolute path, it should be located relative to the location of the menu file being parsed.
+    /// This element may only appear below `<Menu>`. The text content of this element is a directory name. Each directory listed in a `<LegacyDir>` element will be an old-style legacy hierarchy of desktop entries, [see the section called “Legacy Menu Hierarchies”](https://specifications.freedesktop.org/menu-spec/latest/ar01s07.html) for how to load such a hierarchy. Implementations must not load legacy hierarchies that are not explicitly specified in the menu file (because for example the menu file may not be the main menu). If the filename given as a `<LegacyDir>` is not an absolute path, it should be located relative to the location of the menu file being parsed.
 /// 
     /// Duplicate `<LegacyDir>` elements (that specify the same directory) are handled as with duplicate `<AppDir>` elements (the last duplicate is used).
 /// 
@@ -158,13 +164,13 @@ pub enum DesktopMenu {
     LegacyDir,
     /// This element may only appear below `<Menu>`. The element has no content. The element should be treated as if it were a list of `<LegacyDir>` elements containing the traditional desktop file locations supported by KDE with a hard coded prefix of "kde-". When expanding `<KDELegacyDirs>` to a list of `<LegacyDir>`, the locations that are earlier in the search path go later in the `<Menu>` so that they have priority. The search path can be obtained by running `kde-config --path apps`
     KDELegacyDirs,
-    /// This element may only appear below `<Menu>`. The `<Move>` element contains pairs of `<Old>`/`<New>` elements indicating how to rename a descendant of the current `<Menu>`. If the destination path already exists, the moved menu is merged with the destination menu (see the section called “Merging” for details)[https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html].
+    /// This element may only appear below `<Menu>`. The `<Move>` element contains pairs of `<Old>`/`<New>` elements indicating how to rename a descendant of the current `<Menu>`. If the destination path already exists, the moved menu is merged with the destination menu [see the section called “Merging” for details](https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html).
 /// 
     /// `<Move>` is used primarily to fix up legacy directories. For example, say you are merging a `<LegacyDir>` with folder names that don't match the current hierarchy; the legacy folder names can be moved to the new names, where they will be merged with the new folders.
 /// 
-    /// `<Move>` is also useful for implementing menu editing, (see the section called “Menu editing”)[https://specifications.freedesktop.org/menu-spec/latest/apd.html#menu-editing]. 
+    /// `<Move>` is also useful for implementing menu editing, [see the section called “Menu editing”](https://specifications.freedesktop.org/menu-spec/latest/apd.html#menu-editing).
     Move,
-    /// This element may only appear below `<Move>`, and must be followed by a `<New>` element. The content of both `<Old>` and `<New>` should be a menu path (slash-separated concatenation of `<Name>` fields, see Menu path)[https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-menu-path]. Paths are interpreted relative to the menu containing the `<Move>` element.
+    /// This element may only appear below `<Move>`, and must be followed by a `<New>` element. The content of both `<Old>` and `<New>` should be a menu path, slash-separated concatenation of `<Name>` fields, [see Menu path](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-menu-path). Paths are interpreted relative to the menu containing the `<Move>` element.
     Old,
     /// This element may only appear below `<Move>`, and must be preceded by an `<Old>` element. The `<New>` element specifies the new path for the preceding `<Old>` element. 
     New,
@@ -197,7 +203,8 @@ pub enum DesktopMenu {
     Unknown,
 }
 impl DesktopMenu {
-   pub fn component(element:String, node:Node) -> DesktopMenu{
+   pub fn component(node:Node) -> DesktopMenu{
+       let element:String = node.tag_name().name().to_string();
        if element == "Separator" {
            return DesktopMenu::Separator
        } else if element == "Merge" {
@@ -219,6 +226,7 @@ impl DesktopMenu {
 }
 #[allow(dead_code)]
 /// The struct abstracting the xml menu file
+#[derive(Debug, Clone)]
 pub struct Menu {
     /// The filename, including the full path of the file
     ///
@@ -241,9 +249,9 @@ impl Menu {
               return None
           }
         };
+        let mut return_value:Vec<DesktopMenu> = vec![];
         for node in doc.descendants() {
-            let tag = node.tag_name();
-            // this is where I need to convert the tag to the enum....
+            let item = DesktopMenu::component(node);
         }
         return None;
     }

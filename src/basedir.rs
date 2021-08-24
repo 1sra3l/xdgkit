@@ -1,3 +1,11 @@
+/*!
+# Base Dir
+
+The most basic Basedir spec **Linux Only**
+
+The best part is the wrapper around specifics such as icons, desktop directories, trash, etc..
+*/
+
 // basedir.rs
 // Rusified in 2021 Copyright Israel Dahl. All rights reserved.
 // 

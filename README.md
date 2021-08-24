@@ -1,7 +1,10 @@
 # XDGkit
+[![Documentation](https://docs.rs/xdgkit/badge.svg)](https://docs.rs/xdgkit)
+[![Crates.io](https://img.shields.io/crates/v/xdgkit.svg)](https://crates.io/crates/xdgkit)
+
 
 The **ultimate** XDG library and command line tool!
-Everything is copy-pasted from (freedesktop.org)[http://freedesktop.org] and rustified as enums and structs with implementations in main for a binary tool to use the specs!
+Everything is copy-pasted from [freedesktop.org](http://freedesktop.org) and rustified as enums and structs with implementations in main for a binary tool to use the specs!
 
 This work could technically regenerate the website documentation via doxygen because Rust is like that.  But I didn't actually do anything to make it possible, though the code is adequately simple... really mostly Ctrl+C in firefox and Ctrl+V in Kate.
 
@@ -11,7 +14,7 @@ For Example:
  * 0.0.1 was the initial release
  * 0.1.0 saw the addition of `icon-theme` to the CLI subcommands
  * 0.2.0 saw the addition of `desktop-menu` to the CLI subcommands
- * 1.0.0 saw a breaking change: moving `OnlyShowIn` to `DesktopEnvironment`
+ * 2.0.0 saw a breaking change: renaming libxdgkit to xdgkit
 
 I had to make up some enums for things like `Type` in the desktop_entry format.
 
@@ -34,7 +37,7 @@ let app_dirs:Vec<String> = convert_to_vec(applications());
 ```
 This will return an empty vector with an empty string if nothing exists
 
-** this implements `autostart-spec`, `basedir-spec`, and `trash-spec`** from the (XDG specifications)[https://specifications.freedesktop.org/]
+** this implements `autostart-spec`, `basedir-spec`, and `trash-spec`** from the [XDG specifications](https://specifications.freedesktop.org/)
 
 ## desktop-entry
 
@@ -74,5 +77,6 @@ This way any script-based menu can find the correct icons for the theme
 
 This reads the menu file and generates a struct containing the entire menu which can be fed into another program to output it into a specific format.
 
+# TODO
 
-
+ * Write a bunch of shell scripts to use the command-line tools and put them in an `examples` folder

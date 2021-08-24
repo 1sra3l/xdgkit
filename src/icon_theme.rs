@@ -1,3 +1,9 @@
+/*!
+# Icon Theme
+
+This rustifies the freedesktop specifications for icon themes
+*/
+
 // icon_theme.rs
 // Rusified in 2021 Copyright Israel Dahl. All rights reserved.
 // 
@@ -95,7 +101,7 @@ pub enum IconContext {
 ///
 /// Icons and themes are looked for in a set of directories. By default, apps should look in `$HOME/.icons` (for backwards compatibility), in `$XDG_DATA_DIRS/icons` and in `/usr/share/pixmaps` (in that order). Applications may further add their own icon directories to this list, and users may extend or change the list (in application/desktop specific ways).In each of these directories themes are stored as subdirectories. A theme can be spread across several base directories by having subdirectories of the same name. This way users can extend and override system themes.
 ///
-/// In order to have a place for third party applications to install their icons there should always exist a theme called ("hicolor")[https://specifications.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html#ftn.idm44938525353648]. The data for the hicolor theme is available for download at: http://www.freedesktop.org/software/icon-theme/. Implementations are required to look in the "hicolor" theme if an icon was not found in the current theme.
+/// In order to have a place for third party applications to install their icons there should always exist a theme called ["hicolor"](https://specifications.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html#ftn.idm44938525353648). The data for the hicolor theme is available for download at: <http://www.freedesktop.org/software/icon-theme/>. Implementations are required to look in the "hicolor" theme if an icon was not found in the current theme.
 ///
 /// Each theme is stored as subdirectories of the base directories. The internal name of the theme is the name of the subdirectory, although the user-visible name as specified by the theme may be different. Hence, theme names are case sensitive, and are limited to ASCII characters. Theme names may also not contain comma or space.
 ///
@@ -108,7 +114,6 @@ pub enum IconContext {
 /// Both the icon theme description file and the icon data files are ini-style text files, as described in the desktop file specification. They don't have any encoding field. Instead, they must **always be stored in UTF-8 encoding**.
 /// 
 /// The `index.theme` file must start with a section called `[Icon Theme]`, with contents according to the items below. All lists in the ini file, are to be comma-separated.
-
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
 pub struct Directory {
@@ -118,7 +123,7 @@ pub struct Directory {
     pub size:Option<i32>,
     /// **[REQUIRED BY SPECS]** Target scale of of the icons in this directory. Defaults to the value `1` if not present. Any directory with a scale other than `1` should be listed in the `scaled_directories` list rather than `directories` for backwards compatibility.
     pub scale:Option<i32>,
-    /// The context the icon is normally used in.  See: (https://specifications.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html#context)[https://specifications.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html#context]
+    /// The context the icon is normally used in.  See: [Context](https://specifications.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html#context)
     pub context:Option<IconContext>,
     /// The type of icon sizes for the icons in this directory. Valid types are `Fixed`, `Scalable` and `Threshold`. The type decides what other keys in the section are used. If not specified, the default is `Threshold`.
     pub xdg_type:Option<DirectoryType>,
@@ -258,6 +263,7 @@ impl IconTheme {
     }
 
     #[allow(dead_code)]
+    /// Creates a new struct from a full desktop file path
     pub fn new(file_name:String)->Self where Self:Sized {
         if file_name.is_empty() { return Self::empty() }
         let test_ini = Ini::from_file(&file_name);
