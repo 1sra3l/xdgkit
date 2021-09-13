@@ -148,4 +148,9 @@ mod tests {
             assert_ne!(None, lang);
         }
     }
+//
+    #[test]
+    fn menu_test() {
+        
+    }
 }

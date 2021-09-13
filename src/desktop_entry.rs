@@ -38,7 +38,7 @@ use crate::categories::*;
 use self::DesktopEnvironment::*;
 use std::slice::Iter;
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 /// Registered DesktopEnvironment Environments
 pub enum DesktopEnvironment {
     /// GNOME Desktop
@@ -84,29 +84,6 @@ impl DesktopEnvironment {
         ONLYSHOWIN.iter()
     }
     #[allow(dead_code)]
-    /// Convert the DE to a `String`
-    pub fn to_string(&self) ->String {
-      match &self {
-          GNOME => "GNOME".to_string(),
-          GNOMEClassic => "GNOMEClassic".to_string(),
-          GNOMEFlashback => "GNOMEFlashback".to_string(),
-          KDE => "KDE".to_string(),
-          LXDE => "LXDE".to_string(),
-          LXQt => "LXQt".to_string(),
-          MATE => "MATE".to_string(),
-          Razor => "Razor".to_string(),
-          ROX => "ROX".to_string(),
-          TDE => "TDE".to_string(),
-          Unity => "Unity".to_string(),
-          XFCE => "XFCE".to_string(),
-          EDE => "EDE".to_string(),
-          Cinnamon => "Cinnamon".to_string(),
-          Pantheon => "Pantheon".to_string(),
-          Old => "Old".to_string(),
-          Unknown => "Unknown".to_string(),
-      }
-    }
-    #[allow(dead_code)]
     /// Take a String and return a `DesktopEnvironment`
     pub fn from_string(item:String) -> DesktopEnvironment {
         if item == "GNOME" {
@@ -147,7 +124,26 @@ impl DesktopEnvironment {
 }
 impl fmt::Display for DesktopEnvironment {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
+        let v:String = match *self {
+          DesktopEnvironment::GNOME => "GNOME".to_string(),
+          DesktopEnvironment::GNOMEClassic => "GNOMEClassic".to_string(),
+          DesktopEnvironment::GNOMEFlashback => "GNOMEFlashback".to_string(),
+          DesktopEnvironment::KDE => "KDE".to_string(),
+          DesktopEnvironment::LXDE => "LXDE".to_string(),
+          DesktopEnvironment::LXQt => "LXQt".to_string(),
+          DesktopEnvironment::MATE => "MATE".to_string(),
+          DesktopEnvironment::Razor => "Razor".to_string(),
+          DesktopEnvironment::ROX => "ROX".to_string(),
+          DesktopEnvironment::TDE => "TDE".to_string(),
+          DesktopEnvironment::Unity => "Unity".to_string(),
+          DesktopEnvironment::XFCE => "XFCE".to_string(),
+          DesktopEnvironment::EDE => "EDE".to_string(),
+          DesktopEnvironment::Cinnamon => "Cinnamon".to_string(),
+          DesktopEnvironment::Pantheon => "Pantheon".to_string(),
+          DesktopEnvironment::Old => "Old".to_string(),
+          DesktopEnvironment::Unknown => "Unknown".to_string(),
+        };
+        write!(f, "{:?}", v)
     }
 }
 
@@ -157,7 +153,7 @@ impl fmt::Display for DesktopEnvironment {
 /// * Directory (type 3)
 ///
 /// To allow the addition of new types in the future, implementations should ignore desktop entries with an "unknown" type.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum DesktopType {
     /// A program
     Application,
@@ -254,7 +250,7 @@ pub fn string_xdg_type(dt:DesktopType)->Option<String> {
 /// Some keys only make sense in the context when another particular key is also present and set to a specific value. Those keys should not be used if the particular key is not present or not set to the specific value. For example, the Terminal key can only be used when the value of the Type key is Application.
 /// 
 /// If a REQUIRED key is only valid in the context of another key set to a specific value, then it has to be present only if the other key is set to the specific value. For example, the URL key has to be present when and only when when the value of the Type key is Link.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct DesktopEntry {
 //type is a reserved word in rust and other languages so we will use xdg_type
     /// This specification defines 3 types of desktop entries: Application (type 1), Link (type 2) and Directory (type 3). To allow the addition of new types in the future, implementations should ignore desktop entries with an unknown type.

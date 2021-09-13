@@ -27,6 +27,8 @@ This is not ready for use yet
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 use roxmltree::*;
 
+use crate::desktop_entry::*;
+use crate::basedir::{session_menu_file, search_data_dirs};
 //Elements
 
 #[allow(dead_code)]
@@ -67,7 +69,7 @@ pub enum MergeFileType {
 ///
 /// Here is a sample document type declaration:
 /// ```xml
-///<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"             "http://www.freedesktop.org/standards/menu-spec/menu-1.0.dtd">
+///<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN" "http://www.freedesktop.org/standards/menu-spec/menu-1.0.dtd">
 ///```
 /// All menu files *MUST* include the document type declaration, so that implementations can adapt to different versions of this specification (and so implementations can validate the menu file against the DTD).
 ///
@@ -106,7 +108,7 @@ pub enum DesktopMenu {
     /// Each `<Menu>` element has any number of `<Directory>` elements. The content of the `<Directory>` element is the relative path of a directory entry containing meta information about the `<Menu>`, such as its icon and localized name. If no `<Directory>` is specified for a `<Menu>`, its `<Name>` field should be used as the user-visible name of the menu.
 ///
     /// Duplicate `<Directory>` elements are allowed in order to simplify menu merging, and allow user menus to override system menus. The last `<Directory>` element to appear in the menu file "wins" and other elements are ignored, unless the last element points to a nonexistent directory entry, in which case the previous element should be tried instead, and so on. 
-    Directory(String),
+    Directory(DesktopEntry),
     ///Each `<Menu>` may contain any number of `<OnlyUnallocated>` and <NotOnlyUnallocated> elements. Only the last such element to appear is relevant, as it determines whether the `<Menu>` can contain any desktop entries, or only those desktop entries that do not match other menus. If neither `<OnlyUnallocated>` nor <NotOnlyUnallocated> elements are present, the default is <NotOnlyUnallocated>.
 ///
     ///To handle `<OnlyUnallocated>`, the menu file must be analyzed in two conceptual passes. The first pass processes `<Menu>` elements that can match any desktop entry. During this pass, each desktop entry is marked as allocated according to whether it was matched by an `<Include>` rule in some `<Menu>`. The second pass processes only `<Menu>` elements that are restricted to unallocated desktop entries. During the second pass, queries may only match desktop entries that were not marked as allocated during the first pass. [See the section called “Generating the menus”](https://specifications.freedesktop.org/menu-spec/latest/ar01s06.html).
@@ -203,34 +205,38 @@ pub enum DesktopMenu {
     Unknown,
 }
 impl DesktopMenu {
-   pub fn component(node:Node) -> DesktopMenu{
-       let element:String = node.tag_name().name().to_string();
-       if element == "Separator" {
-           return DesktopMenu::Separator
-       } else if element == "Merge" {
-           let merge_type = node.attribute("type")
+    pub fn component(node:Node) -> DesktopMenu {
+        let element:String = node.tag_name().name().to_string();
+        if element == "Separator" {
+            return DesktopMenu::Separator
+        } else if element == "Merge" {
+            let merge_type = node.attribute("type")
                                 .unwrap()
                                 .to_owned();
-           return DesktopMenu::Merge(MergeType::from_string(merge_type))
-       } else if element == "Menuname" {
-           return DesktopMenu::Menuname
-       } else if element == "Category" {
-           return DesktopMenu::Category(node.text()
+            return DesktopMenu::Merge(MergeType::from_string(merge_type))
+        } else if element == "Menuname" {
+            return DesktopMenu::Menuname
+        } else if element == "Category" {
+            return DesktopMenu::Category(node.text()
                                             .unwrap()
                                             .to_owned())
-       } else if element == "Not" {
-           return DesktopMenu::Not
-       }
-       DesktopMenu::Unknown
-   }
+        } else if element == "Not" {
+            return DesktopMenu::Not
+        } else if element == "Directory" {
+            let mut file:String = match node.text() {
+                Some(file) => search_data_dirs(file.to_string(), "/desktop-directories"),
+                None => return DesktopMenu::Unknown,
+            };
+            return DesktopMenu::Directory(DesktopEntry::new(file))
+        }
+        DesktopMenu::Unknown
+    }
 }
 #[allow(dead_code)]
 /// The struct abstracting the xml menu file
 #[derive(Debug, Clone)]
 pub struct Menu {
-    /// The filename, including the full path of the file
-    ///
-    /// This is used to create the `components`
+    /// The filename of the menu
     pub filename:String,
     /// This is simply an item by item list of components in the menu to be used in any way
     // **WIP**
@@ -256,11 +262,26 @@ impl Menu {
         return None;
     }
 
+    pub fn empty()->Self where Self:Sized {
+        Menu {
+            filename:"".to_string(),
+            components:None,
+        }
+    }
     #[allow(dead_code)]
-    pub fn new(file_name:&String)->Self where Self:Sized {
+    pub fn new(file_name:String)->Self where Self:Sized {
         Menu {
             filename:file_name.to_string(),
             components:Menu::make_components(file_name.to_string()),
         }
+    }
+
+    /// This builds a menu struct from the menu file
+    pub fn session_menu()->Self where Self:Sized {
+        let file:String = match session_menu_file(){
+            Some(file) => file,
+            None => return Self::empty(),
+        };
+        Self::new(file)
     }
 }

@@ -1,0 +1,383 @@
+/*!
+# Categories
+
+The rust enum-ification of the XDG Desktop Entry Categories specifications.
+
+Eventually I aim to implement converting all the "additional" categories to/from `String`
+*/
+
+// categories.rs
+// Rusified in 2021 Copyright Israel Dahl. All rights reserved.
+// 
+//        /VVVV\
+//      /V      V\
+//    /V          V\
+//   /      0 0     \
+//   \|\|\</\/\>/|/|/
+//        \_/\_/
+// 
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License version 2 as
+// published by the Free Software Foundation.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+use std::fmt;
+#[allow(dead_code)]
+#[derive(Debug, Clone, Copy)]
+pub enum Categories {
+    /// Application for presenting, creating, or processing multimedia (audio/video)
+    AudioVideo,
+    /// An audio application **Desktop entry must include AudioVideo as well**
+    Audio,
+    /// A video application **Desktop entry must include AudioVideo as well Development An application for development**
+    Video,
+    /// Educational software
+    Education,
+    /// A game
+    Game,
+    /// Application for viewing, creating, or processing graphics
+    Graphics,
+    /// Network application such as a web browser
+    Network,
+    /// An office type application
+    Office,
+    /// Scientific software
+    Science,
+    /// Settings applications **Entries may appear in a separate menu or as part of a "Control Center"**
+    Settings,
+    /// System application, "System Tools" such as say a log viewer or network monitor
+    System,
+    /// Small utility application, "Accessories"
+    Utility,
+    /// This is a stub to include all the Additional Categories
+    Other(AdditionalCategories),
+}
+impl fmt::Display for Categories {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let v:String = match *self {
+            Categories::AudioVideo => "AudioVideo".to_string(),
+            Categories::Audio => "Audio".to_string(),
+            Categories::Video => "Video".to_string(),
+            Categories::Education => "Education".to_string(),
+            Categories::Game => "Game".to_string(),
+            Categories::Graphics => "Graphics".to_string(),
+            Categories::Network => "Network".to_string(),
+            Categories::Office => "Office".to_string(),
+            Categories::Science => "Science".to_string(),
+            Categories::Settings => "Settings".to_string(),
+            Categories::System => "System".to_string(),
+            Categories::Utility => "Utility".to_string(),
+            Categories::Other(_t) => "Other".to_string(),
+        };
+        write!(f, "{:?}", v)
+    }
+}
+#[allow(dead_code)]
+impl Categories {
+    /// This function returns a `Categories` based on a matching string
+    pub fn from_string(item:String) ->  Categories{
+        if item == "AudioVideo" {
+            return Categories::AudioVideo
+        } else if item == "Audio" {
+            return Categories::Audio
+        } else if item == "Video" {
+            return Categories::Video
+        } else if item == "Education" {
+            return Categories::Education
+        } else if item == "Game" {
+            return Categories::Game
+        } else if item == "Graphics" {
+            return Categories::Graphics
+        } else if item == "Network" {
+            return Categories::Network
+        } else if item == "Office" {
+            return Categories::Office
+        } else if item == "Science" {
+            return Categories::Science
+        } else if item == "Settings" {
+            return Categories::Settings
+        } else if item == "System" {
+            return Categories::System
+        } else if item == "Utility" {
+            return Categories::Utility        
+        }
+        Categories::Other(get_additional(item))
+
+    }
+}
+//TODO
+/// This function is intended to go through the "AdditionalCategories" below and string-ify them
+pub fn get_additional(item:String) -> AdditionalCategories{
+    if item == "Unknown" {
+        return AdditionalCategories::Unknown
+    }
+    AdditionalCategories::Unknown
+}
+
+/// The Additional Categories
+#[allow(dead_code)]
+#[derive(Debug, Clone, Copy)]
+pub enum AdditionalCategories {
+    /// A tool to build applications `Development`
+    Building,
+    /// A tool to debug applications `Development`
+    Debugger,
+    /// IDE application Development
+    IDE,
+    /// A GUI designer application `Development`
+    GUIDesigner,
+    /// A profiling tool `Development`
+    Profiling,
+    /// Applications like cvs or subversion `Development` 
+    RevisionControl,
+    /// A translation tool `Development`
+    Translation,
+    /// Calendar application `Office`
+    Calendar,
+    /// E.g. an address book `Office`
+    ContactManagement,
+    /// Application to manage a database `Office` or `Development` or `AudioVideo`
+    Database,
+    /// A dictionary `Office` or `TextTools`
+    Dictionary,
+    /// Chart application `Office`
+    Chart,
+    /// Email application `Office` or `Network`
+    Email,
+    /// Application to manage your finance `Office`
+    Finance,
+    /// A flowchart application `Office`
+    FlowChart,
+    /// Tool to manage your PDA `Office`
+    PDA,
+    /// Project management application `Office` or `Development`
+    ProjectManagement,
+    /// Presentation software `Office`
+    Presentation,
+    /// A spreadsheet `Office`
+    Spreadsheet,
+    /// A word processor `Office`
+    WordProcessor,
+    /// 2D based graphical application `Graphics`
+    Graphics2D,
+    /// Application for viewing, creating, or processing vector graphics `Graphics;2DGraphics`
+    VectorGraphics,
+    /// Application for viewing, creating, or processing raster (bitmap) graphics `Graphics;2DGraphics`
+    RasterGraphics,
+    /// Application for viewing, creating, or processing 3-D graphics `Graphics`
+    Graphics3D,
+    /// Tool to scan a file/text `Graphics`
+    Scanning,
+    /// Optical character recognition application `Graphics;Scanning`
+    OCR,
+    /// Camera tools, etc. `Graphics` or `Office`
+    Photography,
+    /// Desktop Publishing applications and Color Management tools `Graphics` or `Office`
+    Publishing,
+    /// Tool to view e.g. a graphic or pdf file `Graphics` or `Office`
+    Viewer,
+    /// A text tool utility `Utility`
+    TextTools,
+    /// Configuration tool for the GUI `Settings`
+    DesktopSettings,
+    /// A tool to manage hardware components, like sound cards, video cards or printers `Settings`
+    HardwareSettings,
+    /// A tool to manage printers `HardwareSettings;Settings`
+    Printing,
+    /// A package manager application `Settings`
+    PackageManager,
+    /// A dial-up program `Network`
+    Dialup,
+    /// An instant messaging client `Network`
+    InstantMessaging,
+    /// A chat client `Network`
+    Chat,
+    /// An IRC client `Network`
+    IRCClient,
+    /// RSS, podcast and other subscription based contents `Network`
+    Feed,
+    /// Tools like FTP or P2P programs `Network`
+    FileTransfer,
+    /// HAM radio software `Network` or `Audio`
+    HamRadio,
+    /// A news reader or a news ticker `Network`
+    News,
+    /// A P2P program `Network`
+    P2P,
+    /// A tool to remotely manage your PC `Network`
+    RemoteAccess,
+    /// Telephony via PC `Network`
+    Telephony,
+    /// Telephony tools, to dial a number, manage PBX, ... `Utility`
+    TelephonyTools,
+    /// Video Conference software `Network`
+    VideoConference,
+    /// A web browser `Network`
+    WebBrowser,
+    /// A tool for web developers `Network` or `Development`
+    WebDevelopment,
+    /// An app related to MIDI `AudioVideo;Audio` 
+    Midi,
+    /// Just a mixer `AudioVideo;Audio`
+    Mixer,
+    /// A sequencer `AudioVideo;Audio`
+    Sequencer,
+    /// A tuner `AudioVideo;Audio`
+    Tuner,
+    /// A TV application `AudioVideo;Video`
+    TV,
+    /// Application to edit audio/video files `Audio` or `Video` or`Audio`
+    AudioVideoEditing,
+    /// Application to play audio/video files `Audio` or `Video` or`AudioVideo`
+    VideoPlayer,
+    /// Application to record audio/video files `Audio` or `Video` or `AudioVideo`
+    Recorder,
+    /// Application to burn a disc `AudioVideo`
+    DiscBurning,
+    /// An action game `Game`
+    ActionGame,
+    /// Adventure style game `Game`
+    AdventureGame,
+    /// Arcade style game `Game`
+    ArcadeGame,
+    /// A board game `Game`
+    BoardGame,
+    /// Falling blocks game `Game`
+    BlocksGame,
+    /// A card game `Game`
+    CardGame,
+    /// A game for kids `Game`
+    KidsGame,
+    /// Logic games like puzzles, etc `Game` 
+    LogicGame,
+    /// A role playing game `Game`
+    RolePlaying,
+    /// A shooter game `Game`
+    Shooter,
+    /// A simulation game `Game`
+    Simulation,
+    /// A sports game `Game`
+    SportsGame,
+    /// A strategy game `Game`
+    StrategyGame,
+    /// Software to teach arts `Education` or `Science`` 
+    Art,
+    ///``Education` or `Science``
+    Construction,
+    /// Musical software `AudioVideo` or `Education`
+    Music,
+    /// Software to learn foreign languages `Education` or `Science`
+    Languages,
+    /// Artificial Intelligence software `Education` or `Science`
+    ArtificialIntelligence,
+    /// Astronomy software `Education` or `Science`
+    Astronomy,
+    /// Biology software `Education` or `Science`
+    Biology,
+    /// Chemistry software `Education` or `Science`
+    Chemistry,
+    /// ComputerSience software `Education` or `Science`
+    ComputerScience,
+    /// Data visualization software `Education` or `Science`
+    DataVisualization,
+    /// Economy software `Education` or `Science`
+    Economy,
+    /// Electricity software `Education` or `Science`
+    Electricity,
+    /// Geography software `Education` or `Science`
+    Geography,
+    /// Geology software `Education` or `Science`
+    Geology,
+    /// Geoscience software, GIS `Education` or `Science`
+    Geoscience,
+    /// History software `Education` or `Science`
+    History,
+    /// Software for philosophy, psychology and other humanities `Education` or `Science`
+    Humanities,
+    /// Image Processing software `Education` or `Science`
+    ImageProcessing,
+    /// Literature software `Education` or `Science`
+    Literature,
+    /// Sofware for viewing maps, navigation, mapping, GPS `Education` or `Science` or `Utility` 
+    Maps,
+    /// Math software `Education` or `Science` 
+    Math,
+    /// Numerical analysis software `Education;Math` or `Science;Math` 
+    NumericalAnalysis,
+    /// Medical software `Education` or `Science` 
+    MedicalSoftware,
+    /// Physics software `Education` or `Science`
+    Physics,
+    /// Robotics software `Education` or `Science`
+    Robotics,
+    /// Religious and spiritual software, theology `Education` or `Science` or `Utility`
+    Spirituality,
+    /// Sports software `Education` or `Science`
+    Sports,
+    /// Parallel computing software `Education;ComputerScience` or `Science;ComputerScience`
+    ParallelComputing,
+    /// A simple amusement
+    Amusement,
+    /// A tool to archive/backup data `Utility`
+    Archiving,
+    /// A tool to manage compressed data/archives `Utility;Archiving`
+    Compression,
+    /// Electronics software, e.g. a circuit designer
+    Electronics,
+    /// Emulator of another platform, such as a DOS emulator `System` or `Game`
+    Emulator,
+    /// Engineering software, e.g. CAD programs
+    Engineering,
+    /// A file tool utility `Utility` or `System`
+    FileTools,
+    /// A file manager `System;FileTools`
+    FileManager,
+    /// A terminal emulator application `System`
+    TerminalEmulator,
+    /// A file system tool `System`
+    Filesystem,
+    /// Monitor application/applet that monitors some resource or activity `System` or `Network`
+    Monitor,
+    /// A security tool `Settings` or `System`
+    Security,
+    /// Accessibility `Settings` or `Utility`
+    Accessibility,
+    /// A calculator `Utility`
+    Calculator,
+    /// A clock application/applet `Utility`
+    Clock,
+    /// A text editor `Utility`
+    TextEditor,
+    /// Help or documentation
+    Documentation,
+    /// Application handles adult or explicit material
+    Adult,
+    /// Important application, core to the desktop such as a file manager or a help browser
+    Core,
+    /// Application based on KDE libraries `QT`
+    KDE,
+    /// Application based on GNOME libraries `GTK`
+    GNOME,
+    /// Application based on XFCE libraries `GTK`
+    XFCE,
+    /// Application based on GTK+ libraries
+    GTK,
+    /// Application based on Qt libraries
+    Qt,
+    /// Application based on Motif libraries
+    Motif,
+    /// Application based on Java GUI libraries, such as AWT or Swing
+    Java,
+    /// Application that only works inside a terminal (text-based or command line application)
+    ConsoleOnly,
+    /// This is for random people making whatever they want... `Unknown` is similar to Desktop Entry's `type`
+    Unknown,
+}

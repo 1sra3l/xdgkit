@@ -42,6 +42,9 @@ fn main() {
         if matches.is_present("Home") {
             println!("{}",basedir::home().unwrap_or("".to_string()));
         }
+        if matches.is_present("SessionMenu") {
+            println!("{}",basedir::session_menu_file().unwrap_or("".to_string()));
+        }
         if matches.is_present("Menus") {
             println!("{}",basedir::menu().unwrap_or("".to_string()));
         }
