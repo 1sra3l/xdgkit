@@ -33,7 +33,7 @@ The best part is the wrapper around specifics such as icons, desktop directories
 use std::env;
 use std::env::VarError;
 use std::path::Path;
-
+use std::path::PathBuf;
 /// $HOME
 #[allow(dead_code)]
 pub fn home()->Result<String, VarError> {
@@ -259,11 +259,8 @@ pub fn session_menu_file()->Option<String> {
         Err(_e) => String::from(""),
     };
     let app_menu = "applications.menu";
-    let input = match loop_config_dirs("/menus".to_string()) {
-        Ok(input) => input,
-        Err(e) => return None,
-    };
-    let str_res:Vec<&str> = input.split(':').collect();
+
+    let str_res:Vec<&str> = menu.split(':').collect();
     for item in str_res {
         let mut s_item:String = item.to_owned();
         s_item.push_str("/");
@@ -333,7 +330,7 @@ pub fn icon_dirs_vector()->Vec<String> {
     // make our directory of icons
     let mut directory_vec:Vec<String> = data_dirs_vec("/icons".to_string());
     let local_icons_dir = home();
-    let mut local_icons:String = "".to_string();
+    let mut local_icons:String;
     if local_icons_dir.is_ok() {
         local_icons = local_icons_dir.unwrap().to_owned();
         local_icons.push_str("./icons");
@@ -343,4 +340,12 @@ pub fn icon_dirs_vector()->Vec<String> {
     directory_vec.sort();
     directory_vec.dedup();
     directory_vec
+}
+pub fn to_pathbuff(input:Vec<String>) -> Vec<PathBuf> {
+    let mut return_value:Vec<PathBuf> = vec![];
+    for path in input {
+        let p:PathBuf = PathBuf::from(path.as_str());
+        return_value.push(p);
+    }
+    return_value
 }

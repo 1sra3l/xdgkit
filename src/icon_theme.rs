@@ -30,6 +30,7 @@ This rustifies the freedesktop specifications for icon themes
 
 extern crate tini;
 use tini::Ini;
+use std::path::PathBuf;
 
 use crate::utils::to_bool;
 use crate::utils::to_int;
@@ -260,6 +261,13 @@ impl IconTheme {
             hidden:None,
             example:None,
         }
+    }
+    pub fn from_pathbuff(file_name:PathBuf)->Self where Self:Sized {
+        let filename:String = match file_name.as_path().to_str() {
+            Some(t) => String::from(t),
+            None => String::from(""),
+        };
+        Self::new(filename)
     }
 
     #[allow(dead_code)]

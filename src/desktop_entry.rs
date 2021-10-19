@@ -525,3 +525,8 @@ impl DesktopEntry {
         }
     }
 }
+impl Default for DesktopEntry {
+    fn default() -> Self {
+        Self::empty(DesktopType::Application)
+    }
+}

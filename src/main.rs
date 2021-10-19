@@ -30,6 +30,7 @@ mod categories;
 mod icon_finder;
 
 extern crate clap;
+use std::path::PathBuf;
 use clap::{App, load_yaml};
 
 /// Our main binary function simply uses clap to read the arguments and pull up the right structs/functions
@@ -89,7 +90,7 @@ fn main() {
         // TODO scale/size
         let icon = match icon_finder::find_icon(icon_name.to_string(),48,1){
             Some(icon)=>icon,
-            None=>String::from(""),
+            None=>PathBuf::new(),
         };
         println!("{:?}",icon);
     }
