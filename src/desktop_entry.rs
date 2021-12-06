@@ -76,6 +76,11 @@ pub enum DesktopEnvironment {
     /// This is for random people making whatever they want... `Unknown` is similar to Desktop Entry's `type`
     Unknown,
 }
+impl Default for DesktopEnvironment {
+    fn default() -> Self {
+        Self::Unknown
+    }
+}
 impl DesktopEnvironment {
     #[allow(dead_code)]
     /// This is to allow people to iterate over the `enum` nicely

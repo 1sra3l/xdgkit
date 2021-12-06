@@ -28,11 +28,12 @@ This is not ready for use yet
 use roxmltree::*;
 
 use crate::desktop_entry::*;
-use crate::basedir::{session_menu_file, search_data_dirs};
+use crate::basedir::search_data_dirs;
 //Elements
-
+use serde::{Deserialize, Serialize};
 #[allow(dead_code)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "kebab-case")]
 pub enum MergeType {
     Menus,
     Files,
@@ -73,12 +74,13 @@ pub enum MergeFileType {
 ///```
 /// All menu files *MUST* include the document type declaration, so that implementations can adapt to different versions of this specification (and so implementations can validate the menu file against the DTD).
 ///
+
+/// The root element is `<Menu>`. Each `<Menu>` element may contain any number of nested `<Menu>` elements, indicating submenus.
+///
 /// ## NOTES:
 /// And, Or, All, Not are capitalized since `Not` cannot be used, I opted for another standard convention ALL CAPS for those words in programming
 #[allow(dead_code)]
 pub enum DesktopMenu {
-    /// The root element is `<Menu>`. Each `<Menu>` element may contain any number of nested `<Menu>` elements, indicating submenus.
-    Menu,
     /// This element may only appear below `<Menu>`. The content of this element is a directory name. Desktop entries in this directory are scanned and added to the pool of entries which can be included in this `<Menu>` and its submenus. Only files ending in `.desktop` should be used, other files are ignored.
 ///
     ///Desktop entries in the pool of available entries are identified by their desktop-file id [see Desktop-File Id](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-desktop-file-id). The desktop-file id of a desktop entry is equal to its filename, with any path components removed. So given a `<AppDir>` `/foo/bar` and desktop entry `/foo/bar/Hello.desktop` the desktop entry would get a desktop-file id of `Hello.desktop`
@@ -232,59 +234,26 @@ impl DesktopMenu {
         DesktopMenu::Unknown
     }
 }
+/*
 #[allow(dead_code)]
 /// The struct abstracting the xml menu file
 #[derive(Debug, Clone)]
 pub struct Menu {
-    /// The filename of the menu
-    pub filename:String,
-    /// This is simply an item by item list of components in the menu to be used in any way
-    // **WIP**
-    pub components:Option<Vec<DesktopMenu>>,
+    /// The name of the menu
+    pub name:String,
+    pub directory:DesktopEntry,
+    pub app_dirs:Vec<String>,
+    
+    
 }
 impl Menu {
-    #[allow(dead_code)]
-    /// Make the `enum` component list
-    pub fn make_components(file_name:String)->Option<Vec<DesktopMenu>> {
-        let text = std::fs::read_to_string(file_name.as_str()).unwrap();
-        let doc = match roxmltree::Document::parse(&text) {
-          Ok(doc) => doc,
-          Err(e) => {
-              println!("Error:{}",e);
-              return None
-          }
-        };
-        let mut return_value:Vec<DesktopMenu> = vec![];
-        for node in doc.descendants() {
-            let item = DesktopMenu::component(node);
-            return_value.push(item.clone());
-        }
-        if return_value.is_empty() {
-            return None
-        }
-        Some(return_value)
-    }
-
     pub fn empty()->Self where Self:Sized {
         Menu {
-            filename:"".to_string(),
-            components:None,
-        }
-    }
-    #[allow(dead_code)]
-    pub fn new(file_name:String)->Self where Self:Sized {
-        Menu {
-            filename:file_name.to_string(),
-            components:Menu::make_components(file_name.to_string()),
+            name:String::from("").
+            directory:DesktopEntry::empty(),
+            app_dirs:vec![],
         }
     }
 
-    /// This builds a menu struct from the menu file
-    pub fn session_menu()->Self where Self:Sized {
-        let file:String = match session_menu_file(){
-            Some(file) => file,
-            None => return Self::empty(),
-        };
-        Self::new(file)
-    }
 }
+*/
