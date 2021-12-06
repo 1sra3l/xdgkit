@@ -30,10 +30,7 @@ use std::env;
 /// This function changes an `Option<String>` into an `Option<bool>` via make_ascii_lowercase()
 #[allow(dead_code)]
 pub fn to_bool(value:Option<String>)->Option<bool> {
-    if value.is_none() {
-        return None
-    }
-
+    value.as_ref()?;
     let mut val = value.unwrap();
     val.make_ascii_lowercase();
     if val == "true" {
@@ -44,9 +41,7 @@ pub fn to_bool(value:Option<String>)->Option<bool> {
 #[allow(dead_code)]
 /// This function changes an `Option<String>` into an `Option<i32>`
 pub fn to_int(value:Option<String>)->Option<i32> {
-    if value.is_none() {
-        return None
-    }
+    value.as_ref()?;
 
     let val = value.unwrap();
     let int = val.parse::<i32>();
@@ -66,19 +61,18 @@ pub fn get_language() -> Option<String> {
             let mut lang_var: String = value;
             let pos = lang_var.chars()
                               .position(|c| c == '.');
-            if pos.is_some() {
-                let posi = pos.unwrap();
+            if let Some(posi) = pos {
                 if posi < lang_var.len() {
                     let _junk = lang_var.split_off(posi);
                 }
             }
-            return Some(lang_var)
+            Some(lang_var)
         },
         Err(_error) => {
             let langu = "LANGUAGE";
             match env::var(langu) {
-                Err(_error) => return None,
-                Ok(value) => return Some(value),
+                Err(_error) => None,
+                Ok(value) => Some(value),
             }
                 
         },

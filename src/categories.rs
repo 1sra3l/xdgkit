@@ -116,10 +116,7 @@ impl Categories {
 //TODO
 /// This function is intended to go through the "AdditionalCategories" below and string-ify them
 pub fn get_additional(item:String) -> AdditionalCategories{
-    if item == "Unknown" {
-        return AdditionalCategories::Unknown
-    }
-    AdditionalCategories::Unknown
+    AdditionalCategories::from_string(item)
 }
 
 /// The Additional Categories
@@ -131,9 +128,9 @@ pub enum AdditionalCategories {
     /// A tool to debug applications `Development`
     Debugger,
     /// IDE application Development
-    IDE,
+    Ide,
     /// A GUI designer application `Development`
-    GUIDesigner,
+    GuiDesigner,
     /// A profiling tool `Development`
     Profiling,
     /// Applications like cvs or subversion `Development` 
@@ -157,7 +154,7 @@ pub enum AdditionalCategories {
     /// A flowchart application `Office`
     FlowChart,
     /// Tool to manage your PDA `Office`
-    PDA,
+    Pda,
     /// Project management application `Office` or `Development`
     ProjectManagement,
     /// Presentation software `Office`
@@ -177,7 +174,7 @@ pub enum AdditionalCategories {
     /// Tool to scan a file/text `Graphics`
     Scanning,
     /// Optical character recognition application `Graphics;Scanning`
-    OCR,
+    Ocr,
     /// Camera tools, etc. `Graphics` or `Office`
     Photography,
     /// Desktop Publishing applications and Color Management tools `Graphics` or `Office`
@@ -233,7 +230,7 @@ pub enum AdditionalCategories {
     /// A tuner `AudioVideo;Audio`
     Tuner,
     /// A TV application `AudioVideo;Video`
-    TV,
+    Tv,
     /// Application to edit audio/video files `Audio` or `Video` or`Audio`
     AudioVideoEditing,
     /// Application to play audio/video files `Audio` or `Video` or`AudioVideo`
@@ -363,13 +360,13 @@ pub enum AdditionalCategories {
     /// Important application, core to the desktop such as a file manager or a help browser
     Core,
     /// Application based on KDE libraries `QT`
-    KDE,
+    Kde,
     /// Application based on GNOME libraries `GTK`
-    GNOME,
+    Gnome,
     /// Application based on XFCE libraries `GTK`
-    XFCE,
+    Xfce,
     /// Application based on GTK+ libraries
-    GTK,
+    Gtk,
     /// Application based on Qt libraries
     Qt,
     /// Application based on Motif libraries
@@ -382,267 +379,267 @@ pub enum AdditionalCategories {
     Unknown,
 }
 impl AdditionalCategories {
+    #[allow(clippy::if_same_then_else)]
     pub fn from_string(item:String) ->  AdditionalCategories {
         if item == "Building" {
-            return AdditionalCategories::Building
+            AdditionalCategories::Building
         } else if item == "Debugger" {
-            return AdditionalCategories::Debugger
+            AdditionalCategories::Debugger
         } else if item == "IDE" {
-            return AdditionalCategories::IDE
+            AdditionalCategories::Ide
         } else if item == "GUIDesigner" {
-            return AdditionalCategories::GUIDesigner
+            AdditionalCategories::GuiDesigner
         } else if item == "Profiling" {
-            return AdditionalCategories::Profiling
+            AdditionalCategories::Profiling
         } else if item == "RevisionControl" {
-            return AdditionalCategories::RevisionControl
+            AdditionalCategories::RevisionControl
         } else if item == "Translation" {
-            return AdditionalCategories::Translation
+            AdditionalCategories::Translation
         } else if item == "Calendar" {
-            return AdditionalCategories::Calendar
+            AdditionalCategories::Calendar
         } else if item == "ContactManagement" {
-            return AdditionalCategories::ContactManagement
+            AdditionalCategories::ContactManagement
         } else if item == "Database" {
-            return AdditionalCategories::Database
+            AdditionalCategories::Database
         } else if item == "Dictionary" {
-            return AdditionalCategories::Dictionary
+            AdditionalCategories::Dictionary
         } else if item == "Chart" {
-            return AdditionalCategories::Chart
+            AdditionalCategories::Chart
         } else if item == "Email" {
-            return AdditionalCategories::Email
+            AdditionalCategories::Email
         } else if item == "Finance" {
-            return AdditionalCategories::Finance
+            AdditionalCategories::Finance
         } else if item == "FlowChart" {
-            return AdditionalCategories::FlowChart
+            AdditionalCategories::FlowChart
         } else if item == "PDA" {
-            return AdditionalCategories::PDA
+            AdditionalCategories::Pda
         } else if item == "ProjectManagement" {
-            return AdditionalCategories::ProjectManagement
+            AdditionalCategories::ProjectManagement
         } else if item == "Presentation" {
-            return AdditionalCategories::Presentation
+            AdditionalCategories::Presentation
         } else if item == "Spreadsheet" {
-            return AdditionalCategories::Spreadsheet
+            AdditionalCategories::Spreadsheet
         } else if item == "WordProcessor" {
-            return AdditionalCategories::WordProcessor
+            AdditionalCategories::WordProcessor
         } else if item == "Graphics2D" {
-            return AdditionalCategories::Graphics2D
+            AdditionalCategories::Graphics2D
         } else if item == "2DGraphics" {
-            return AdditionalCategories::Graphics2D
+            AdditionalCategories::Graphics2D
         } else if item == "VectorGraphics" {
-            return AdditionalCategories::VectorGraphics
+            AdditionalCategories::VectorGraphics
         } else if item == "RasterGraphics" {
-            return AdditionalCategories::RasterGraphics
+            AdditionalCategories::RasterGraphics
         } else if item == "Graphics3D" {
-            return AdditionalCategories::Graphics3D
+            AdditionalCategories::Graphics3D
         } else if item == "3DGraphics" {
-            return AdditionalCategories::Graphics3D
+            AdditionalCategories::Graphics3D
         } else if item == "Scanning" {
-            return AdditionalCategories::Scanning
+            AdditionalCategories::Scanning
         } else if item == "OCR" {
-            return AdditionalCategories::OCR
+            AdditionalCategories::Ocr
         } else if item == "Photography" {
-            return AdditionalCategories::Photography
+            AdditionalCategories::Photography
         } else if item == "Publishing" {
-            return AdditionalCategories::Publishing
+            AdditionalCategories::Publishing
         } else if item == "Viewer" {
-            return AdditionalCategories::Viewer
+            AdditionalCategories::Viewer
         } else if item == "TextTools" {
-            return AdditionalCategories::TextTools
+            AdditionalCategories::TextTools
         } else if item == "DesktopSettings" {
-            return AdditionalCategories::DesktopSettings
+            AdditionalCategories::DesktopSettings
         } else if item == "HardwareSettings" {
-            return AdditionalCategories::HardwareSettings
+            AdditionalCategories::HardwareSettings
         } else if item == "Printing" {
-            return AdditionalCategories::Printing
+            AdditionalCategories::Printing
         } else if item == "PackageManager" {
-            return AdditionalCategories::PackageManager
+            AdditionalCategories::PackageManager
         } else if item == "Dialup" {
-            return AdditionalCategories::Dialup
+            AdditionalCategories::Dialup
         } else if item == "InstantMessaging" {
-            return AdditionalCategories::InstantMessaging
+            AdditionalCategories::InstantMessaging
         } else if item == "Chat" {
-            return AdditionalCategories::Chat
+            AdditionalCategories::Chat
         } else if item == "IRCClient" {
-            return AdditionalCategories::IRCClient
+            AdditionalCategories::IRCClient
         } else if item == "Feed" {
-            return AdditionalCategories::Feed
+            AdditionalCategories::Feed
         } else if item == "FileTransfer" {
-            return AdditionalCategories::FileTransfer
+            AdditionalCategories::FileTransfer
         } else if item == "HamRadio" {
-            return AdditionalCategories::HamRadio
+            AdditionalCategories::HamRadio
         } else if item == "News" {
-            return AdditionalCategories::News
+            AdditionalCategories::News
         } else if item == "P2P" {
-            return AdditionalCategories::P2P
+            AdditionalCategories::P2P
         } else if item == "RemoteAccess" {
-            return AdditionalCategories::RemoteAccess
+            AdditionalCategories::RemoteAccess
         } else if item == "Telephony" {
-            return AdditionalCategories::Telephony
+            AdditionalCategories::Telephony
         } else if item == "TelephonyTools" {
-            return AdditionalCategories::TelephonyTools
+            AdditionalCategories::TelephonyTools
         } else if item == "VideoConference" {
-            return AdditionalCategories::VideoConference
+            AdditionalCategories::VideoConference
         } else if item == "WebBrowser" {
-            return AdditionalCategories::WebBrowser
+            AdditionalCategories::WebBrowser
         } else if item == "WebDevelopment" {
-            return AdditionalCategories::WebDevelopment
+            AdditionalCategories::WebDevelopment
         } else if item == "Midi" {
-            return AdditionalCategories::Midi
+            AdditionalCategories::Midi
         } else if item == "Mixer" {
-            return AdditionalCategories::Mixer
+            AdditionalCategories::Mixer
         } else if item == "Sequencer" {
-            return AdditionalCategories::Sequencer
+            AdditionalCategories::Sequencer
         } else if item == "Tuner" {
-            return AdditionalCategories::Tuner
+            AdditionalCategories::Tuner
         } else if item == "TV" {
-            return AdditionalCategories::TV
+            AdditionalCategories::Tv
         } else if item == "AudioVideoEditing" {
-            return AdditionalCategories::AudioVideoEditing
+            AdditionalCategories::AudioVideoEditing
         } else if item == "VideoPlayer" {
-            return AdditionalCategories::VideoPlayer
+            AdditionalCategories::VideoPlayer
         } else if item == "Recorder" {
-            return AdditionalCategories::Recorder
+            AdditionalCategories::Recorder
         } else if item == "DiscBurning" {
-            return AdditionalCategories::DiscBurning
+            AdditionalCategories::DiscBurning
         } else if item == "ActionGame" {
-            return AdditionalCategories::ActionGame
+            AdditionalCategories::ActionGame
         } else if item == "AdventureGame" {
-            return AdditionalCategories::AdventureGame
+            AdditionalCategories::AdventureGame
         } else if item == "ArcadeGame" {
-            return AdditionalCategories::ArcadeGame
+            AdditionalCategories::ArcadeGame
         } else if item == "BoardGame" {
-            return AdditionalCategories::BoardGame
+            AdditionalCategories::BoardGame
         } else if item == "BlocksGame" {
-            return AdditionalCategories::BlocksGame
+            AdditionalCategories::BlocksGame
         } else if item == "CardGame" {
-            return AdditionalCategories::CardGame
+            AdditionalCategories::CardGame
         } else if item == "KidsGame" {
-            return AdditionalCategories::KidsGame
+            AdditionalCategories::KidsGame
         } else if item == "LogicGame" {
-            return AdditionalCategories::LogicGame
+            AdditionalCategories::LogicGame
         } else if item == "RolePlaying" {
-            return AdditionalCategories::RolePlaying
+            AdditionalCategories::RolePlaying
         } else if item == "Shooter" {
-            return AdditionalCategories::Shooter
+            AdditionalCategories::Shooter
         } else if item == "Simulation" {
-            return AdditionalCategories::Simulation
+            AdditionalCategories::Simulation
         } else if item == "SportsGame" {
-            return AdditionalCategories::SportsGame
+            AdditionalCategories::SportsGame
         } else if item == "StrategyGame" {
-            return AdditionalCategories::StrategyGame
+            AdditionalCategories::StrategyGame
         } else if item == "Art" {
-            return AdditionalCategories::Art
+            AdditionalCategories::Art
         } else if item == "Construction" {
-            return AdditionalCategories::Construction
+            AdditionalCategories::Construction
         } else if item == "Music" {
-            return AdditionalCategories::Music
+            AdditionalCategories::Music
         } else if item == "Languages" {
-            return AdditionalCategories::Languages
+            AdditionalCategories::Languages
         } else if item == "ArtificialIntelligence" {
-            return AdditionalCategories::ArtificialIntelligence
+            AdditionalCategories::ArtificialIntelligence
         } else if item == "Astronomy" {
-            return AdditionalCategories::Astronomy
+            AdditionalCategories::Astronomy
         } else if item == "Biology" {
-            return AdditionalCategories::Biology
+            AdditionalCategories::Biology
         } else if item == "Chemistry" {
-            return AdditionalCategories::Chemistry
+            AdditionalCategories::Chemistry
         } else if item == "ComputerScience" {
-            return AdditionalCategories::ComputerScience
+            AdditionalCategories::ComputerScience
         } else if item == "DataVisualization" {
-            return AdditionalCategories::DataVisualization
+            AdditionalCategories::DataVisualization
         } else if item == "Economy" {
-            return AdditionalCategories::Economy
+            AdditionalCategories::Economy
         } else if item == "Electricity" {
-            return AdditionalCategories::Electricity
+            AdditionalCategories::Electricity
         } else if item == "Geography" {
-            return AdditionalCategories::Geography
+            AdditionalCategories::Geography
         } else if item == "Geology" {
-            return AdditionalCategories::Geology
+            AdditionalCategories::Geology
         } else if item == "Geoscience" {
-            return AdditionalCategories::Geoscience
+            AdditionalCategories::Geoscience
         } else if item == "History" {
-            return AdditionalCategories::History
+            AdditionalCategories::History
         } else if item == "Humanities" {
-            return AdditionalCategories::Humanities
+            AdditionalCategories::Humanities
         } else if item == "ImageProcessing" {
-            return AdditionalCategories::ImageProcessing
+            AdditionalCategories::ImageProcessing
         } else if item == "Literature" {
-            return AdditionalCategories::Literature
+            AdditionalCategories::Literature
         } else if item == "Maps" {
-            return AdditionalCategories::Maps
+            AdditionalCategories::Maps
         } else if item == "Math" {
-            return AdditionalCategories::Math
+            AdditionalCategories::Math
         } else if item == "NumericalAnalysis" {
-            return AdditionalCategories::NumericalAnalysis
+            AdditionalCategories::NumericalAnalysis
         } else if item == "MedicalSoftware" {
-            return AdditionalCategories::MedicalSoftware
+            AdditionalCategories::MedicalSoftware
         } else if item == "Physics" {
-            return AdditionalCategories::Physics
+            AdditionalCategories::Physics
         } else if item == "Robotics" {
-            return AdditionalCategories::Robotics
+            AdditionalCategories::Robotics
         } else if item == "Spirituality" {
-            return AdditionalCategories::Spirituality
+            AdditionalCategories::Spirituality
         } else if item == "Sports" {
-            return AdditionalCategories::Sports
+            AdditionalCategories::Sports
         } else if item == "ParallelComputing" {
-            return AdditionalCategories::ParallelComputing
+            AdditionalCategories::ParallelComputing
         } else if item == "Amusement" {
-            return AdditionalCategories::Amusement
+            AdditionalCategories::Amusement
         } else if item == "Archiving" {
-            return AdditionalCategories::Archiving
+            AdditionalCategories::Archiving
         } else if item == "Compression" {
-            return AdditionalCategories::Compression
+            AdditionalCategories::Compression
         } else if item == "Electronics" {
-            return AdditionalCategories::Electronics
+            AdditionalCategories::Electronics
         } else if item == "Emulator" {
-            return AdditionalCategories::Emulator
+            AdditionalCategories::Emulator
         } else if item == "Engineering" {
-            return AdditionalCategories::Engineering
+            AdditionalCategories::Engineering
         } else if item == "FileTools" {
-            return AdditionalCategories::FileTools
+            AdditionalCategories::FileTools
         } else if item == "FileManager" {
-            return AdditionalCategories::FileManager
+            AdditionalCategories::FileManager
         } else if item == "TerminalEmulator" {
-            return AdditionalCategories::TerminalEmulator
+            AdditionalCategories::TerminalEmulator
         } else if item == "Filesystem" {
-            return AdditionalCategories::Filesystem
+            AdditionalCategories::Filesystem
         } else if item == "Monitor" {
-            return AdditionalCategories::Monitor
+            AdditionalCategories::Monitor
         } else if item == "Security" {
-            return AdditionalCategories::Security
+            AdditionalCategories::Security
         } else if item == "Accessibility" {
-            return AdditionalCategories::Accessibility
+            AdditionalCategories::Accessibility
         } else if item == "Calculator" {
-            return AdditionalCategories::Calculator
+            AdditionalCategories::Calculator
         } else if item == "Clock" {
-            return AdditionalCategories::Clock
+            AdditionalCategories::Clock
         } else if item == "TextEditor" {
-            return AdditionalCategories::TextEditor
+            AdditionalCategories::TextEditor
         } else if item == "Documentation" {
-            return AdditionalCategories::Documentation
+            AdditionalCategories::Documentation
         } else if item == "Adult" {
-            return AdditionalCategories::Adult
+            AdditionalCategories::Adult
         } else if item == "Core" {
-            return AdditionalCategories::Core
+            AdditionalCategories::Core
         } else if item == "KDE" {
-            return AdditionalCategories::KDE
+            AdditionalCategories::Kde
         } else if item == "GNOME" {
-            return AdditionalCategories::GNOME
+            AdditionalCategories::Gnome
         } else if item == "XFCE" {
-            return AdditionalCategories::XFCE
+            AdditionalCategories::Xfce
         } else if item == "GTK" {
-            return AdditionalCategories::GTK
+            AdditionalCategories::Gtk
         } else if item == "Qt" {
-            return AdditionalCategories::Qt
+            AdditionalCategories::Qt
         } else if item == "Motif" {
-            return AdditionalCategories::Motif
+            AdditionalCategories::Motif
         } else if item == "Java" {
-            return AdditionalCategories::Java
+            AdditionalCategories::Java
         } else if item == "ConsoleOnly" {
-            return AdditionalCategories::ConsoleOnly
+            AdditionalCategories::ConsoleOnly
         } else  {
-            return AdditionalCategories::Unknown
+            AdditionalCategories::Unknown
         }
-        AdditionalCategories::Unknown
     }
 }
 impl fmt::Display for AdditionalCategories {
@@ -650,8 +647,8 @@ impl fmt::Display for AdditionalCategories {
         let v:String = match *self {
             AdditionalCategories::Building => "Building".to_string(),
             AdditionalCategories::Debugger => "Debugger".to_string(),
-            AdditionalCategories::IDE => "IDE".to_string(),
-            AdditionalCategories::GUIDesigner => "GUIDesigner".to_string(),
+            AdditionalCategories::Ide => "IDE".to_string(),
+            AdditionalCategories::GuiDesigner => "GUIDesigner".to_string(),
             AdditionalCategories::Profiling => "Profiling".to_string(),
             AdditionalCategories::RevisionControl => "RevisionControl".to_string(),
             AdditionalCategories::Translation => "Translation".to_string(),
@@ -663,7 +660,7 @@ impl fmt::Display for AdditionalCategories {
             AdditionalCategories::Email => "Email".to_string(),
             AdditionalCategories::Finance => "Finance".to_string(),
             AdditionalCategories::FlowChart => "FlowChart".to_string(),
-            AdditionalCategories::PDA => "PDA".to_string(),
+            AdditionalCategories::Pda => "PDA".to_string(),
             AdditionalCategories::ProjectManagement => "ProjectManagement".to_string(),
             AdditionalCategories::Presentation => "Presentation".to_string(),
             AdditionalCategories::Spreadsheet => "Spreadsheet".to_string(),
@@ -673,7 +670,7 @@ impl fmt::Display for AdditionalCategories {
             AdditionalCategories::RasterGraphics => "RasterGraphics".to_string(),
             AdditionalCategories::Graphics3D => "3DGraphics".to_string(),
             AdditionalCategories::Scanning => "Scanning".to_string(),
-            AdditionalCategories::OCR => "OCR".to_string(),
+            AdditionalCategories::Ocr => "OCR".to_string(),
             AdditionalCategories::Photography => "Photography".to_string(),
             AdditionalCategories::Publishing => "Publishing".to_string(),
             AdditionalCategories::Viewer => "Viewer".to_string(),
@@ -701,7 +698,7 @@ impl fmt::Display for AdditionalCategories {
             AdditionalCategories::Mixer => "Mixer".to_string(),
             AdditionalCategories::Sequencer => "Sequencer".to_string(),
             AdditionalCategories::Tuner => "Tuner".to_string(),
-            AdditionalCategories::TV => "TV".to_string(),
+            AdditionalCategories::Tv => "TV".to_string(),
             AdditionalCategories::AudioVideoEditing => "AudioVideoEditing".to_string(),
             AdditionalCategories::VideoPlayer => "VideoPlayer".to_string(),
             AdditionalCategories::Recorder => "Recorder".to_string(),
@@ -766,10 +763,10 @@ impl fmt::Display for AdditionalCategories {
             AdditionalCategories::Documentation => "Documentation".to_string(),
             AdditionalCategories::Adult => "Adult".to_string(),
             AdditionalCategories::Core => "Core".to_string(),
-            AdditionalCategories::KDE => "KDE".to_string(),
-            AdditionalCategories::GNOME => "GNOME".to_string(),
-            AdditionalCategories::XFCE => "XFCE".to_string(),
-            AdditionalCategories::GTK => "GTK".to_string(),
+            AdditionalCategories::Kde => "KDE".to_string(),
+            AdditionalCategories::Gnome => "GNOME".to_string(),
+            AdditionalCategories::Xfce => "XFCE".to_string(),
+            AdditionalCategories::Gtk => "GTK".to_string(),
             AdditionalCategories::Qt => "Qt".to_string(),
             AdditionalCategories::Motif => "Motif".to_string(),
             AdditionalCategories::Java => "Java".to_string(),

@@ -41,32 +41,32 @@ use std::slice::Iter;
 #[derive(Debug, Clone, Copy)]
 /// Registered DesktopEnvironment Environments
 pub enum DesktopEnvironment {
-    /// GNOME Desktop
-    GNOME,
-    /// GNOME Classic Desktop
-    GNOMEClassic,
-    /// GNOME Flashback Desktop
-    GNOMEFlashback,
-    /// KDE Desktop
-    KDE,
-    /// LXDE Desktop
-    LXDE,
-    /// LXQt Desktop
-    LXQt,
+    /// Gnome Desktop
+    Gnome,
+    /// Gnome Classic Desktop
+    GnomeClassic,
+    /// Gnome Flashback Desktop
+    GnomeFlashback,
+    /// Kde Desktop
+    Kde,
+    /// Lxde Desktop
+    Lxde,
+    /// Lxqt Desktop
+    Lxqt,
     /// MATÉ Desktop
-    MATE,
+    Mate,
     /// Razor-qt Desktop
     Razor,
-    /// ROX Desktop
-    ROX,
+    /// Rox Desktop
+    Rox,
     /// Trinity Desktop
-    TDE,
+    Tde,
     /// Unity Shell
     Unity,
-    /// XFCE Desktop
-    XFCE,
-    /// EDE Desktop
-    EDE,
+    /// Xfce Desktop
+    Xfce,
+    /// Ede Desktop
+    Ede,
     /// Cinnamon Desktop
     Cinnamon,
     /// Pantheon Desktop
@@ -80,38 +80,38 @@ impl DesktopEnvironment {
     #[allow(dead_code)]
     /// This is to allow people to iterate over the `enum` nicely
     pub fn iter() -> Iter<'static, DesktopEnvironment> {
-        static ONLYSHOWIN:[DesktopEnvironment; 17] = [GNOME, GNOMEClassic, GNOMEFlashback, KDE, LXDE, LXQt, MATE, Razor, ROX, TDE, Unity, XFCE, EDE, Cinnamon, Pantheon, Old,  Unknown];
+        static ONLYSHOWIN:[DesktopEnvironment; 17] = [Gnome, GnomeClassic, GnomeFlashback, Kde, Lxde, Lxqt, Mate, Razor, Rox, Tde, Unity, Xfce, Ede, Cinnamon, Pantheon, Old,  Unknown];
         ONLYSHOWIN.iter()
     }
     #[allow(dead_code)]
     /// Take a String and return a `DesktopEnvironment`
     pub fn from_string(item:String) -> DesktopEnvironment {
         if item == "GNOME" {
-            return DesktopEnvironment::GNOME
+            return DesktopEnvironment::Gnome
         } else if item == "GNOMEClassic" {
-            return DesktopEnvironment::GNOMEClassic
+            return DesktopEnvironment::GnomeClassic
         } else if item == "GNOMEFlashback" {
-            return DesktopEnvironment::GNOMEFlashback
+            return DesktopEnvironment::GnomeFlashback
         } else if item == "KDE" {
-            return DesktopEnvironment::KDE
+            return DesktopEnvironment::Kde
         } else if item == "LXDE" {
-            return DesktopEnvironment::LXDE
-        } else if item == "LXQt" {
-            return DesktopEnvironment::LXQt
+            return DesktopEnvironment::Lxde
+        } else if item == "LXQT" {
+            return DesktopEnvironment::Lxqt
         } else if item == "MATE" {
-            return DesktopEnvironment::MATE
+            return DesktopEnvironment::Mate
         } else if item == "Razor" {
             return DesktopEnvironment::Razor
         } else if item == "ROX" {
-            return DesktopEnvironment::ROX
+            return DesktopEnvironment::Rox
         } else if item == "TDE" {
-            return DesktopEnvironment::TDE
+            return DesktopEnvironment::Tde
         } else if item == "Unity" {
             return DesktopEnvironment::Unity
         } else if item == "XFCE" {
-            return DesktopEnvironment::XFCE
+            return DesktopEnvironment::Xfce
         } else if item == "EDE" {
-            return DesktopEnvironment::EDE
+            return DesktopEnvironment::Ede
         } else if item == "Cinnamon" {
             return DesktopEnvironment::Cinnamon
         } else if item == "Pantheon" {
@@ -125,19 +125,19 @@ impl DesktopEnvironment {
 impl fmt::Display for DesktopEnvironment {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let v:String = match *self {
-          DesktopEnvironment::GNOME => "GNOME".to_string(),
-          DesktopEnvironment::GNOMEClassic => "GNOMEClassic".to_string(),
-          DesktopEnvironment::GNOMEFlashback => "GNOMEFlashback".to_string(),
-          DesktopEnvironment::KDE => "KDE".to_string(),
-          DesktopEnvironment::LXDE => "LXDE".to_string(),
-          DesktopEnvironment::LXQt => "LXQt".to_string(),
-          DesktopEnvironment::MATE => "MATE".to_string(),
+          DesktopEnvironment::Gnome => "GNOME".to_string(),
+          DesktopEnvironment::GnomeClassic => "GNOMEClassic".to_string(),
+          DesktopEnvironment::GnomeFlashback => "GNOMEFlashback".to_string(),
+          DesktopEnvironment::Kde => "KDE".to_string(),
+          DesktopEnvironment::Lxde => "LXDE".to_string(),
+          DesktopEnvironment::Lxqt => "LXQT".to_string(),
+          DesktopEnvironment::Mate => "MATE".to_string(),
           DesktopEnvironment::Razor => "Razor".to_string(),
-          DesktopEnvironment::ROX => "ROX".to_string(),
-          DesktopEnvironment::TDE => "TDE".to_string(),
+          DesktopEnvironment::Rox => "ROX".to_string(),
+          DesktopEnvironment::Tde => "TDE".to_string(),
           DesktopEnvironment::Unity => "Unity".to_string(),
-          DesktopEnvironment::XFCE => "XFCE".to_string(),
-          DesktopEnvironment::EDE => "EDE".to_string(),
+          DesktopEnvironment::Xfce => "XFCE".to_string(),
+          DesktopEnvironment::Ede => "EDE".to_string(),
           DesktopEnvironment::Cinnamon => "Cinnamon".to_string(),
           DesktopEnvironment::Pantheon => "Pantheon".to_string(),
           DesktopEnvironment::Old => "Old".to_string(),
@@ -179,10 +179,10 @@ impl DesktopType {
     /// Convert a `DesktopType` into a `String`
     pub fn to_string(dt:DesktopType)->String {
     match dt {
-        DesktopType::Application => return String::from("Application"),
-        DesktopType::Link => return String::from("Link"),
-        DesktopType::Directory => return String::from("Directory"),
-        _=> return String::from(""),
+        DesktopType::Application => String::from("Application"),
+        DesktopType::Link => String::from("Link"),
+        DesktopType::Directory => String::from("Directory"),
+        _=> String::from(""),
     }
 }
 }
@@ -195,8 +195,7 @@ impl fmt::Display for DesktopType {
 /// This function converts a Option<String> to a DesktopType
 #[allow(dead_code)]
 pub fn convert_xdg_type(xdg_type_option:Option<String>)->DesktopType {
-    if xdg_type_option.is_some() {
-        let dt = xdg_type_option.unwrap();
+    if let Some(dt) = xdg_type_option {
         if dt == "Application" {
             return DesktopType::Application
         }
@@ -207,17 +206,17 @@ pub fn convert_xdg_type(xdg_type_option:Option<String>)->DesktopType {
             return DesktopType::Directory
         }
     }
-    return DesktopType::Unknown
+    DesktopType::Unknown
 }
 
 /// This function will return a Option<String> from a DesktopType
 #[allow(dead_code)]
 pub fn string_xdg_type(dt:DesktopType)->Option<String> {
     match dt {
-        DesktopType::Application => return Some(String::from("Application")),
-        DesktopType::Link => return Some(String::from("Link")),
-        DesktopType::Directory => return Some(String::from("Directory")),
-        _=> return None,
+        DesktopType::Application => Some(String::from("Application")),
+        DesktopType::Link => Some(String::from("Link")),
+        DesktopType::Directory => Some(String::from("Directory")),
+        _=>  None,
     }
 }
 
@@ -355,14 +354,13 @@ impl DesktopEntry {
         if lang_var.is_some() {
             locale = true;
         }
-        let lang:String = lang_var.unwrap_or(String::from(""));
+        let lang:String = lang_var.unwrap_or_else(||String::from(""));
         //TODO
         let mut lang_two:String = lang.to_owned();
         let mut use_two_lang:bool = false;
         let pos = lang_two.chars().position(|c| c == '_');
-        if pos.is_some() {
+        if let Some(posi) = pos {
             use_two_lang = true;
-            let posi = pos.unwrap();
             if posi < lang_two.len() {
                 // throw away variable for excess of trim
                 let _junk = lang_two.split_off(posi);
@@ -412,7 +410,7 @@ impl DesktopEntry {
                     let itm2:String = format!("{}{}{}{}","Name","[",lang_two,"]");
                     let attmpt2: Option<String> = conf.get(section, itm2.as_str());
                     if attmpt2.is_some() {
-                        local_name = attmpt2.to_owned();
+                        local_name = attmpt2;
                     }
                 }
             }
@@ -471,15 +469,15 @@ impl DesktopEntry {
         }
         //make only show in enums
         let mut onlyshow:Vec<DesktopEnvironment> =vec![];
-        if only.is_some() {
-            for item in only.unwrap() {
+        if let Some(onlys) = only {
+            for item in onlys {
                 onlyshow.push(DesktopEnvironment::from_string(item));
             }
         }
          //make not show in enums
         let mut notshow:Vec<DesktopEnvironment> =vec![];
-        if not.is_some() {
-            for item in not.unwrap() {
+        if let Some(nots) = not {
+            for item in nots {
                 notshow.push(DesktopEnvironment::from_string(item));
             }
         }

@@ -44,13 +44,13 @@ pub fn home()->Result<String, VarError> {
 /// This basically checks env::var(whatever) and returns the right results
 fn var_getter(env_var:&str, directory:String)->Result<String, VarError> {
     match env::var(env_var) {
-        Ok(val)=> return Ok(val),
+        Ok(val)=> Ok(val),
         Err(_e)=> {
             // make sure the direcory exists!
             if !Path::new(directory.as_str()).is_dir() {
                 return Err(VarError::NotPresent)
             }
-            return Ok(String::from(directory))
+            Ok(directory)
         },
     }
 }
@@ -71,7 +71,7 @@ pub fn prepare_home(directory:&str)->String {
 #[allow(dead_code)]
 pub fn convert_to_vec(list:Result<String, VarError>)-> Vec<String> {
     let mut result:Vec<String> = vec![];
-    let input:String = list.unwrap_or("".to_string());
+    let input:String = list.unwrap_or_else(|_|"".to_string());
     if input.is_empty() {
         return result
     }
@@ -80,7 +80,7 @@ pub fn convert_to_vec(list:Result<String, VarError>)-> Vec<String> {
       let s_item:String = item.to_owned();
       result.push(s_item);
     }
-    return result
+    result
 }
 
 /// $XDG_DATA_HOME
@@ -128,9 +128,7 @@ pub fn config_dirs()->Result<String, VarError> {
 /// user TRASH DIRECTORY
 #[allow(dead_code)]
 pub fn trash()->Result<String, VarError> {
-    let dh = data_home();
-    if dh.is_ok() {
-        let mut result = dh.unwrap().to_owned();
+    if let Ok(mut result) = data_home() {
         result.push_str("/Trash");
         return Ok(result)
     }
@@ -141,7 +139,7 @@ pub fn trash()->Result<String, VarError> {
 pub fn search_data_dirs(filename:String, directory:&str) -> String {
     for dir in data_dirs_vec(directory.to_string()) {
         let mut tester = dir.to_owned();
-        tester.push_str("/");
+        tester.push('/');
         tester.push_str(filename.as_str());
         if Path::new(tester.as_str()).is_file(){
             return tester.to_owned()
@@ -154,39 +152,37 @@ pub fn search_data_dirs(filename:String, directory:&str) -> String {
 #[allow(dead_code)]
 pub fn loop_data_dirs(directory:String)->Result<String, VarError> {
     let mut result = String::from("");
-    let result2 = data_dirs();
     let mut fail = false;
-    if result2.is_ok() {
-        let res_list = result2.unwrap().to_owned();
+    if let Ok(res_list) = data_dirs() {
         for item in res_list.split(':') {
             let mut tmp_path:String = item.to_owned();
             tmp_path.push_str(directory.as_str());
             if Path::new(tmp_path.as_str()).is_dir() {
-                tmp_path.push_str(":");
+                tmp_path.push(':');
                 result.push_str(tmp_path.as_str());
             }
         }
+    } else {
+        fail = true;
     }
-    else { fail = true;}
-    let home_dir = data_home();
-    if home_dir.is_ok() {
-        let mut d = home_dir.unwrap().to_owned();
+    if let Ok(mut d) = data_home() {
         d.push_str(directory.as_str());
         if Path::new(d.as_str()).is_dir() {
-            d.push_str(":");
+            d.push(':');
             result.push_str(d.as_str());
             fail = false;
         }
+    } else {
+        fail = true;
     }
-    else {fail = true;}
-    if fail {return Err(VarError::NotPresent)}
+    if fail {
+        return Err(VarError::NotPresent)
+    }
     Ok(result)
 }
 pub fn data_dirs_vec(directory:String)->Vec<String> {
     let mut result:Vec<String> = vec![];
-    let result2 = data_dirs();
-    if result2.is_ok() {
-        let res_list = result2.unwrap().to_owned();
+    if let Ok(res_list) = data_dirs() {
         for item in res_list.split(':') {
             let mut tmp_path:String = item.to_owned();
             tmp_path.push_str(directory.as_str());
@@ -195,9 +191,7 @@ pub fn data_dirs_vec(directory:String)->Vec<String> {
             }
         }
     }
-    let home_dir = data_home();
-    if home_dir.is_ok() {
-        let mut d = home_dir.unwrap().to_owned();
+    if let Ok(mut d) = data_home() {
         d.push_str(directory.as_str());
         if Path::new(d.as_str()).exists() {
             result.push(d);
@@ -211,32 +205,32 @@ pub fn data_dirs_vec(directory:String)->Vec<String> {
 #[allow(dead_code)]
 pub fn loop_config_dirs(directory:String)->Result<String, VarError> {
     let mut result = String::from("");
-    let result2 = config_dirs();
     let mut fail = false;
-    if result2.is_ok() {
-        let res_list = result2.unwrap().to_owned();
+    if let Ok(res_list) = config_dirs() {
         for item in res_list.split(':') {
             let mut tmp_path:String = item.to_owned();
             tmp_path.push_str(directory.as_str());
             if Path::new(tmp_path.as_str()).is_dir() {
-                tmp_path.push_str(":");
+                tmp_path.push(':');
                 result.push_str(tmp_path.as_str());
             }
         }
+    } else {
+        fail = true;
     }
-    else { fail = true;}
-    let home_dir = config_home();
-    if home_dir.is_ok() {
-        let mut d = home_dir.unwrap().to_owned();
+    if let Ok(mut d) = config_home() {
         d.push_str(directory.as_str());
         if Path::new(d.as_str()).is_dir() {
-            d.push_str(":");
+            d.push(':');
             result.push_str(d.as_str());
             fail = false;
         }
+    } else {
+        fail = true;
     }
-    else {fail = true;}
-    if fail {return Err(VarError::NotPresent)}
+    if fail {
+        return Err(VarError::NotPresent)
+    }
     Ok(result)
 }
 /// The /menu directory
@@ -263,7 +257,7 @@ pub fn session_menu_file()->Option<String> {
     let str_res:Vec<&str> = menu.split(':').collect();
     for item in str_res {
         let mut s_item:String = item.to_owned();
-        s_item.push_str("/");
+        s_item.push('/');
         s_item.push_str(xdg_menu_prefix.as_str());
         s_item.push_str(app_menu);
         if Path::new(s_item.as_str()).is_file(){
@@ -277,14 +271,14 @@ pub fn session_menu_file()->Option<String> {
 pub fn menu_merged()->Result<String, VarError> {
     let result = config_dirs();
     let mut retval:String = "".to_string();
-    if result.is_ok() {
-        retval = result.unwrap().to_owned();
+    if let Ok(res) = result {
+        retval = res;
         retval.push_str("/menu/applications-merged");
     }
     if Path::new(retval.as_str()).is_dir() {
         return Ok(retval)
     }
-    return Err(VarError::NotPresent)
+    Err(VarError::NotPresent)
 }
 
 /// the /applications directories
@@ -313,14 +307,13 @@ pub fn autostart()->Result<String, VarError> {
 pub fn icon_dirs()->Result<String, VarError> {
     let result = home();
     let mut retval:String = "".to_string();
-    if result.is_ok() {
-        retval = result.unwrap().to_owned();
+    if let Ok(res) = result {
+        retval = res;
         retval.push_str("./icons:");
     }
-    let result2 = loop_data_dirs("/icons".to_string());
-    if result2.is_ok() {
-        let res_list = result2.unwrap().to_owned();
-        retval.push_str(&res_list);
+    let result = loop_data_dirs("/icons".to_string());
+    if let Ok(res) = result {
+        retval.push_str(&res);
     }
     retval.push_str("/usr/share/pixmaps:");
     Ok(retval)
@@ -329,10 +322,8 @@ pub fn icon_dirs()->Result<String, VarError> {
 pub fn icon_dirs_vector()->Vec<String> {
     // make our directory of icons
     let mut directory_vec:Vec<String> = data_dirs_vec("/icons".to_string());
-    let local_icons_dir = home();
-    let mut local_icons:String;
-    if local_icons_dir.is_ok() {
-        local_icons = local_icons_dir.unwrap().to_owned();
+
+    if let Ok(mut local_icons) = home() {
         local_icons.push_str("./icons");
         directory_vec.push(local_icons.to_owned());
     }

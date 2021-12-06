@@ -100,7 +100,7 @@ pub enum DesktopMenu {
 ///    If two directory entries have duplicate relative paths, the one from the last (furthest down) element in the menu file must be used. Only files ending in the extension `.directory` should be loaded, other files should be ignored.
 ///
 ///    Duplicate `<DirectoryDir>` elements (that specify the same directory) are handled as with duplicate `<AppDir>` elements (the last duplicate is used). 
-    DirectoryDir(Vec<DesktopMenu>),
+    DirectoryDir(Vec<DesktopEntry>),
     /// This element may only appear below `<Menu>`. The element has no content. The element should be treated as if it were a list of `<DirectoryDir>` elements containing the default desktop dir locations (`datadir`/desktop-directories/ etc.). The default locations that are earlier in the search path go later in the `<Menu>` so that they have priority. 
     DefaultDirectoryDirs(bool),
     /// Each `<Menu>` element must have a single `<Name>` element. The content of the `<Name>` element is a name to be used when referring to the given menu. Each submenu of a given `<Menu>` must have a unique name. `<Menu>` elements can thus be referenced by a menu path, for example `Applications/Graphics`. The `<Name>` field must not contain the slash character ("/"); implementations should discard any name containing a slash. [See also Menu path](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-menu-path).
@@ -120,9 +120,9 @@ pub enum DesktopMenu {
     /// An `<Include>` element is a set of rules attempting to match some of the known desktop entries. The `<Include>` element contains a list of any number of matching rules. Matching rules are specified using the elements `<And>`, `<Or>`, `<Not>`, `<All>`, `<Filename>`, and `<Category>`. Each rule in a list of rules has a logical OR relationship, that is, desktop entries which match any rule are included in the menu.
 /// 
     /// `<Include>` elements must appear immediately under `<Menu>` elements. The desktop entries they match are included in the menu. `<Include>` and `<Exclude>` elements for a given `<Menu>` are processed in order, with queries earlier in the file handled first. This has implications for merging, [see the section called “Merging”](https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html). [See the section called “Generating the menus” for full details on how to process `<Include>` and `<Exclude>` elements](https://specifications.freedesktop.org/menu-spec/latest/ar01s06.html).
-    Include(Vec<DesktopMenu>),
+    Include(Vec<DesktopEntry>),
     /// Any number of `<Exclude>` elements may appear below a `<Menu>` element. The content of an `<Exclude>` element is a list of matching rules, just as with an `<Include>`. However, the desktop entries matched are removed from the list of desktop entries included so far. (Thus an `<Exclude>` element that appears before any `<Include>` elements will have no effect, for example, as no desktop entries have been included yet.)
-    Exclude(Vec<DesktopMenu>),
+    Exclude(Vec<DesktopEntry>),
     /// The `<Filename>` element is the most basic matching rule. It matches a desktop entry if the desktop entry has the given desktop-file id. [See Desktop-File Id](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-desktop-file-id).
     Filename(String),
     /// The `<Category>` element is another basic matching predicate. It matches a desktop entry if the desktop entry has the given category in its `Categories` field.
@@ -130,9 +130,9 @@ pub enum DesktopMenu {
     /// The `<All>` element is a matching rule that matches all desktop entries. 
     All,
     /// The `<And>` element contains a list of matching rules. If each of the matching rules inside the `<And>` element match a desktop entry, then the entire `<And>` rule matches the desktop entry.
-    And(Vec<DesktopMenu>),
+    And(Vec<DesktopEntry>),
     /// The `<Or>` element contains a list of matching rules. If any of the matching rules inside the `<Or>` element match a desktop entry, then the entire `<Or>` rule matches the desktop entry. 
-    Or(Vec<DesktopMenu>),
+    Or(Vec<DesktopEntry>),
     /// The `<Not>` element contains a list of matching rules. If any of the matching rules inside the `<Not>` element matches a desktop entry, then the entire `<Not>` rule does not match the desktop entry. That is, matching rules below `<Not>` have a logical OR relationship. 
     Not,
     /// #### Attributes:
@@ -177,7 +177,7 @@ pub enum DesktopMenu {
     /// This element may only appear below `<Move>`, and must be preceded by an `<Old>` element. The `<New>` element specifies the new path for the preceding `<Old>` element. 
     New,
     /// The `<Layout>` element is an optional part of this specification. Implementations that do not support the `<Layout>` element should preserve any `<Layout>` elements and their contents as far as possible. Each `<Menu>` may optionally contain a `<Layout>` element. If multiple elements appear then only the last such element is relevant. The purpose of this element is to offer suggestions for the presentation of the menu. If a menu does not contain a `<Layout>` element or if it contains an empty `<Layout>` element then the default layout should be used. The `<Layout>` element may contain `<Filename>`, <Menuname>, <Separator> and <Merge> elements. The `<Layout>` element defines a suggested layout for the menu starting from top to bottom. References to desktop entries that are not contained in this menu as defined by the `<Include>` and `<Exclude>` elements should be ignored. References to sub-menus that are not directly contained in this menu as defined by the `<Menu>` elements should be ignored.
-    Layout(Vec<DesktopMenu>),
+    Layout(Vec<DesktopEntry>),
     /// #### Attributes
     /// `[show_empty="false"] [inline="false"] [inline_limit="4"] [inline_header="true"] [inline_alias="false"]`
 /// 
@@ -223,7 +223,7 @@ impl DesktopMenu {
         } else if element == "Not" {
             return DesktopMenu::Not
         } else if element == "Directory" {
-            let mut file:String = match node.text() {
+            let file:String = match node.text() {
                 Some(file) => search_data_dirs(file.to_string(), "/desktop-directories"),
                 None => return DesktopMenu::Unknown,
             };
@@ -243,7 +243,6 @@ pub struct Menu {
     pub components:Option<Vec<DesktopMenu>>,
 }
 impl Menu {
-
     #[allow(dead_code)]
     /// Make the `enum` component list
     pub fn make_components(file_name:String)->Option<Vec<DesktopMenu>> {
@@ -258,8 +257,12 @@ impl Menu {
         let mut return_value:Vec<DesktopMenu> = vec![];
         for node in doc.descendants() {
             let item = DesktopMenu::component(node);
+            return_value.push(item.clone());
         }
-        return None;
+        if return_value.is_empty() {
+            return None
+        }
+        Some(return_value)
     }
 
     pub fn empty()->Self where Self:Sized {

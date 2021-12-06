@@ -66,11 +66,11 @@ impl DirList {
 }
 /// Get a `DirList` struct when we look for a theme name in the `Vec<DirList>` we send in, and return our Vector when we are done looking in it.
 pub fn find_by_name(name:String, dir_list_vector:Vec<DirList>) -> Option<DirList> {
-    if dir_list_vector.clone().is_empty() {
+    if dir_list_vector.is_empty() {
         println!("Empty `DirList` vector sent into `find_by_name()`");
         return None
     }
-    for dir in dir_list_vector.clone() {
+    for dir in dir_list_vector {
         let theme_name = dir.dir.to_owned();
         for part in theme_name.iter() {
             let check:String = match part.to_str() {
@@ -96,32 +96,26 @@ pub fn generate_dir_list() -> Vec<DirList>{
         let path = Path::new(directory.as_str());
         if path.is_dir() {
             let dir_path = std::fs::read_dir(path);
-            if dir_path.is_ok() {
-                let dp = dir_path.ok()
-                                 .unwrap();
-                for entity in dp {
-                    if entity.is_ok() {
-                        let ent = entity.ok()
-                                        .unwrap();
-                        let return_path = ent.path();
-                        let value = return_path.to_str()
+            if let Ok(dp) = dir_path {
+                for entity in dp.flatten() {
+                    let return_path = entity.path();
+                    let value = return_path.to_str()
                                                .unwrap();
-                        let mut index = value.to_owned();
-                        index.push_str(INDEX_FILE);
+                    let mut index = value.to_owned();
+                    index.push_str(INDEX_FILE);
                         if Path::new(index.as_str()).is_file() {
-                            let theme = IconTheme::new(index.to_owned());
-                            let theme_name = match theme.name {
-                                Some(name) => name.to_owned(),
-                                None => continue,
-                            };
+                        let theme = IconTheme::new(index.to_owned());
+                        let theme_name = match theme.name {
+                            Some(name) => name.to_owned(),
+                            None => continue,
+                        };
                             //println!("{:?}",index.to_owned());
-                            return_value.push(
-                                DirList{
-                                    dir:PathBuf::from(value),
-                                    theme:theme_name.to_owned(),
-                                }
-                            );
-                        }
+                        return_value.push(
+                            DirList{
+                                dir:PathBuf::from(value),
+                                theme:theme_name.to_owned(),
+                            }
+                        );
                     }
                 }
             }
@@ -132,11 +126,11 @@ pub fn generate_dir_list() -> Vec<DirList>{
 
 
 fn look_for_theme_directory(name:String, dir_list_vector:Vec<DirList> )->Option<PathBuf> {
-    for dir_list in dir_list_vector.clone() {
+    for dir_list in dir_list_vector {
         let nm = dir_list.theme.to_owned();
         let dir = dir_list.dir.to_owned();
         if nm == name {
-            return Some(dir.to_owned())
+            return Some(dir)
         }
     }
     None
@@ -144,14 +138,11 @@ fn look_for_theme_directory(name:String, dir_list_vector:Vec<DirList> )->Option<
 
 // should this be doc'd?
 fn get_first_index_theme(place:String, dir_list_vector:Vec<DirList>) ->Option<PathBuf> {
-    let mut index = None;
-    let dirlist = find_by_name(place, dir_list_vector.clone());
-    if dirlist.is_some() {
-        index = Some(dirlist.unwrap()
-                            .index());
+    let dirlist = find_by_name(place, dir_list_vector);
+    if let Some(d) = dirlist {
+        return Some(d.index())
     }
-    //println!("index={:?}",index.clone());
-    index
+    None
 }
 
 /// This function looks in the ini files of KDE and GTK to find the icon theme!
@@ -164,18 +155,13 @@ pub fn user_theme(dir_list_vector:Vec<DirList>) -> Option<IconTheme> {
         kdeconf.push_str("/kdeglobals");
         if Path::new(kdeconf.as_str()).is_file() {
             let test_ini = Ini::from_file(&kdeconf);
-            if test_ini.is_ok() {
-                let conf = test_ini.unwrap();
+            if let Ok(conf) = test_ini {
                 let theme:Option<String> = conf.get("Icons","Theme");
-                if theme.is_some() {
-                    //println!("KDE: User theme: {:?}", theme.clone().unwrap().to_owned());
+                if let Some(themed) = theme {
                     let theme_file:PathBuf = match get_first_index_theme(
-                                                      theme.clone()
-                                                           .unwrap()
-                                                           .to_string(),
+                                                      themed,
                                                       dir_list_vector
-                                                           .clone()
-                                                  ){
+                                                           .clone()) {
                         Some(theme_file) =>theme_file,
                         None =>PathBuf::new(),
                      };
@@ -190,14 +176,11 @@ pub fn user_theme(dir_list_vector:Vec<DirList>) -> Option<IconTheme> {
         gtkconf.push_str("gtk-3.0");
         if Path::new(gtkconf.as_str()).is_file() {
             let test_ini = Ini::from_file(&kdeconf);
-            if test_ini.is_ok() {
-                let conf = test_ini.unwrap();
+            if let Ok(conf) = test_ini {
                 let theme:Option<String> = conf.get("Settings","gtk-icon-theme-name");
-                if theme.is_some() {
-                    //println!("GTK3: User theme: {:?}", theme.clone().unwrap().to_owned());
+                if let Some(themed) = theme {
                     let theme_file:PathBuf = match get_first_index_theme(
-                                                    theme.unwrap()
-                                                    .to_string(),
+                                                    themed,
                                                     dir_list_vector.clone()
                                                   ) {
                         Some(theme_file) =>theme_file,
@@ -213,14 +196,11 @@ pub fn user_theme(dir_list_vector:Vec<DirList>) -> Option<IconTheme> {
         gtkconf.push_str("gtk-4.0");
         if Path::new(gtkconf.as_str()).is_file() {
             let test_ini = Ini::from_file(&kdeconf);
-            if test_ini.is_ok() {
-                let conf = test_ini.unwrap();
+            if let Ok(conf) = test_ini {
                 let theme:Option<String> = conf.get("Settings","gtk-icon-theme-name");
-                if theme.is_some() {
-                    //println!("GTK4: User theme: {:?}", theme.clone().unwrap().to_owned());
+                if let Some(themed) = theme {
                     let theme_file:PathBuf = match get_first_index_theme(
-                                                        theme.unwrap()
-                                                        .to_string(),
+                                                        themed,
                                                         dir_list_vector.clone()
                                                   ) {
                         Some(theme_file) =>theme_file,
@@ -234,7 +214,7 @@ pub fn user_theme(dir_list_vector:Vec<DirList>) -> Option<IconTheme> {
         }
     }
     // Default to `hicolor` theme if we can't figure it out
-    let theme_file:PathBuf = match get_first_index_theme("hicolor".to_string(), dir_list_vector.clone()) {
+    let theme_file:PathBuf = match get_first_index_theme("hicolor".to_string(), dir_list_vector) {
         Some(theme_file) =>theme_file,
         None =>PathBuf::new(),
     };
@@ -264,7 +244,7 @@ pub fn find_icon(icon:String, size:i32, scale:i32) -> Option<PathBuf> {
     }
     let theme:IconTheme = theme.unwrap();
     // try with the default theme
-    let mut filename:Option<PathBuf> = find_icon_helper(icon.to_owned(), size, scale, theme.clone(), dir_list_vector.clone());
+    let mut filename:Option<PathBuf> = find_icon_helper(icon.to_owned(), size, scale, theme, dir_list_vector.clone());
     if filename.is_some(){ return filename }
 
     // check hicolor a.k.a the "default" theme
@@ -277,11 +257,11 @@ pub fn find_icon(icon:String, size:i32, scale:i32) -> Option<PathBuf> {
         None => String::from(""),
     };
     let hicolor = IconTheme::new(i_theme_file);
-    filename = find_icon_helper(icon.to_owned(), size, scale, hicolor.clone(), dir_list_vector.clone());
+    filename = find_icon_helper(icon.to_owned(), size, scale, hicolor, dir_list_vector);
     if filename.is_some(){ return filename }
 
     // just find something already....
-    return lookup_fallback_icon(icon.to_owned())
+    lookup_fallback_icon(icon)
 }
 
 /// the "helper" function from the freedesktop example psuedo code
@@ -289,10 +269,7 @@ pub fn find_icon_helper(icon:String, size:i32, scale:i32, theme:IconTheme, dir_l
     let mut filename:Option<PathBuf> = lookup_icon (icon.to_owned(), size, scale, theme.clone(), dir_list_vector.clone());
     if filename.is_some(){ return filename }
 
-    let inherits = theme.inherits.clone();
-    if  inherits.is_some() {
-        let parents = inherits.unwrap()
-                              .to_owned();
+    if let Some(parents) = theme.inherits {
         for parent in parents {
         // make a theme from the 'parent'
             let theme_file:PathBuf = match get_first_index_theme(parent, dir_list_vector.clone()){
@@ -309,20 +286,18 @@ pub fn find_icon_helper(icon:String, size:i32, scale:i32, theme:IconTheme, dir_l
             if filename.is_some(){ return filename }
         }
     }
-    return None
+    None
 }
 
 /// One of the "following helper functions"
 pub fn lookup_icon (iconname:String, size:i32, scale:i32, theme:IconTheme, dir_list_vector:Vec<DirList>) -> Option<PathBuf> {
     let list = theme.directories.to_owned();
-    if list.is_none() { return None}
+    list.as_ref()?;
 
     let theme_name = theme.name
-                          .to_owned()
                           .unwrap();
     let mut closest_filename:PathBuf = PathBuf::new();
-    let theme_subdir_list:Vec<Directory> = list.unwrap()
-                                               .to_owned();
+    let theme_subdir_list:Vec<Directory> = list.unwrap();
 
     // first look check for size matching directories
     for subdir in theme_subdir_list.clone() {
@@ -335,24 +310,25 @@ pub fn lookup_icon (iconname:String, size:i32, scale:i32, theme:IconTheme, dir_l
             None => PathBuf::new(),
         };
         // empty string from above?
-        if !directory.exists() { continue }
+        if !directory.exists() {
+            continue 
+        }
         for extension in EXTENTIONS.iter() {
             let mut path = directory.to_owned();
             path.push(subdir_name.as_str());
             let mut file_name:String = iconname.to_owned();
             file_name.push_str(extension);
             path.push(file_name.as_str());
-            if directory_matches_size(subdir.to_owned(), size, scale) {
-                if path.as_path().is_file() {
+            if directory_matches_size(subdir.to_owned(), size, scale)
+               && path.as_path().is_file() {
                     return Some(path)
-                }
             }
         }
     }
     // ok second try lets look through all of them
     let mut minimal_size:i32 = std::i32::MAX;
     //TODO
-    for subdir in theme_subdir_list.clone() {
+    for subdir in theme_subdir_list {
         let subdir_name = subdir.name
                                 .to_owned()
                                 .unwrap();
@@ -372,7 +348,7 @@ pub fn lookup_icon (iconname:String, size:i32, scale:i32, theme:IconTheme, dir_l
             }
         }
     }
-    return Some(closest_filename)
+    Some(closest_filename)
 }
 
 /// Look in the basic icon directories (like /us/share/pixmaps, /usr/share/icons) for anything that matches the icon name!
@@ -389,7 +365,7 @@ pub fn lookup_fallback_icon (iconname:String) ->Option<PathBuf> {
             }
         }
     }
-    return None
+    None
 }
 
 /// Check to see if the sub directory size is in range
@@ -426,17 +402,19 @@ pub fn directory_matches_size(subdir:Directory, iconsize:i32, iconscale:i32) -> 
             return size == iconsize
         },
         DirectoryType::Scalable => {
-            if min_size <= iconsize {
-               if iconsize <= max_size {return true}
+            if min_size <= iconsize &&
+               iconsize <= max_size {
+                return true
             }
         },
         DirectoryType::Threshold => {
-            if (size - threshold) <= iconsize {
-                if iconsize <= (size + threshold) {return true}
+            if (size - threshold) <= iconsize &&
+                iconsize <= (size + threshold) {
+                return true
             }
         }
      }
-     return false
+     false
 }
 /// You guessed it more psuedo code that turned into rust
 pub fn directory_size_distance(subdir:Directory, iconsize:i32, iconscale:i32) -> i32{
@@ -475,7 +453,7 @@ pub fn directory_size_distance(subdir:Directory, iconsize:i32, iconscale:i32) ->
     match d_type {
         DirectoryType::Fixed => {
             let num:i32 = size * scale - iconsize * iconscale;
-            return num.abs()
+            num.abs()
         },
         DirectoryType::Scalable => {
             if iconsize * iconscale < min_size * scale {
@@ -484,7 +462,7 @@ pub fn directory_size_distance(subdir:Directory, iconsize:i32, iconscale:i32) ->
             if iconsize * iconscale > max_size * scale {
                 return iconsize * iconscale - max_size * scale
             }
-            return 0
+            0
         },
         DirectoryType::Threshold => {
             if iconsize * iconscale < (size - threshold) * scale {
@@ -493,7 +471,7 @@ pub fn directory_size_distance(subdir:Directory, iconsize:i32, iconscale:i32) ->
             if iconsize*iconsize > (size + threshold) * scale {
                 return iconsize * iconsize - max_size * scale
             }
-            return 0
+            0
         },
     }
 }
@@ -515,7 +493,7 @@ pub fn find_best_icon(icon_list:Vec<String>, size:i32, scale:i32) -> Option<Path
                                           icon_list.clone(),
                                           size,
                                           scale,
-                                          theme.clone(),
+                                          theme,
                                           dir_list_vector.clone()
                                       );
     if filename.is_some(){ return filename }
@@ -531,7 +509,7 @@ pub fn find_best_icon(icon_list:Vec<String>, size:i32, scale:i32) -> Option<Path
         None => String::from(""),
     };
     let hicolor = IconTheme::new(i_theme_file);
-    filename = find_best_icon_helper(icon_list.clone(), size, scale, hicolor.clone(), dir_list_vector.clone());
+    filename = find_best_icon_helper(icon_list.clone(), size, scale, hicolor, dir_list_vector);
 
     if filename.is_some(){ return filename }
 
@@ -539,14 +517,14 @@ pub fn find_best_icon(icon_list:Vec<String>, size:i32, scale:i32) -> Option<Path
         filename = lookup_fallback_icon(icon);
         if filename.is_some(){ return filename }
     }
-    return None
+    None
 }
 
 /// This can be very useful, for example, when handling mimetype icons, where there are more and less "specific" versions of icons.
 pub fn find_best_icon_helper(icon_list:Vec<String>, size:i32, scale:i32, theme:IconTheme, dir_list_vector:Vec<DirList>) -> Option<PathBuf> {
     let mut filename = None;
-    let list = icon_list.clone().to_owned();
-    let other = list.clone().to_owned();
+    let list = icon_list;
+    let other = list.clone();
     // look through a list of names to find any icon that is similar
     for icon in list {
         filename = lookup_icon(icon, size, scale, theme.clone(), dir_list_vector.clone());
@@ -555,9 +533,8 @@ pub fn find_best_icon_helper(icon_list:Vec<String>, size:i32, scale:i32, theme:I
     }
 
     // check the inherits
-    let inherits = theme.inherits.clone();
-    if  inherits.is_some() {
-        let parents = inherits.unwrap().clone();
+    let inherits = theme.inherits;
+    if  let Some(parents) = inherits {
         for parent in parents {
             // make a theme from the 'parent'
             let theme_file:PathBuf = match get_first_index_theme(parent, dir_list_vector.clone()) {

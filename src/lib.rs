@@ -108,7 +108,7 @@ pub mod categories;
 pub mod desktop_entry;
 pub mod basedir;
 pub mod icon_theme;
-pub mod desktop_menu;
+//pub mod desktop_menu;
 pub mod icon_finder;
 
 #[cfg(test)]

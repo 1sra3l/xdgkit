@@ -41,46 +41,46 @@ fn main() {
     // basedir ARGS
     if let Some(matches) = matches.subcommand_matches("basedir") {
         if matches.is_present("Home") {
-            println!("{}",basedir::home().unwrap_or("".to_string()));
+            println!("{}",basedir::home().unwrap_or_else(|_| "".to_string()));
         }
         if matches.is_present("SessionMenu") {
-            println!("{}",basedir::session_menu_file().unwrap_or("".to_string()));
+            println!("{}",basedir::session_menu_file().unwrap_or_else(|| "".to_string()));
         }
         if matches.is_present("Menus") {
-            println!("{}",basedir::menu().unwrap_or("".to_string()));
+            println!("{}",basedir::menu().unwrap_or_else(|_| "".to_string()));
         }
         if matches.is_present("MenusMerged") {
-            println!("{}",basedir::menu_merged().unwrap_or("".to_string()));
+            println!("{}",basedir::menu_merged().unwrap_or_else(|_| "".to_string()));
         }
         if matches.is_present("Applications") {
-            println!("{}",basedir::applications().unwrap_or("".to_string()));
+            println!("{}",basedir::applications().unwrap_or_else(|_| "".to_string()));
         }
         if matches.is_present("DesktopDirectories") {
-            println!("{}",basedir::desktop_directories().unwrap_or("".to_string()));
+            println!("{}",basedir::desktop_directories().unwrap_or_else(|_| "".to_string()));
         }
         if matches.is_present("Autostart") {
-            println!("{}",basedir::autostart().unwrap_or("".to_string()));
+            println!("{}",basedir::autostart().unwrap_or_else(|_| "".to_string()));
         }
         if matches.is_present("Icon") {
-            println!("{}",basedir::icon_dirs().unwrap_or("".to_string()));
+            println!("{}",basedir::icon_dirs().unwrap_or_else(|_| "".to_string()));
         }
         if matches.is_present("Trash") {
-            println!("{}",basedir::trash().unwrap_or("".to_string()));
+            println!("{}",basedir::trash().unwrap_or_else(|_| "".to_string()));
         }
         if matches.is_present("DataHome") {
-            println!("{}",basedir::data_home().unwrap_or("".to_string()));
+            println!("{}",basedir::data_home().unwrap_or_else(|_| "".to_string()));
         }
         if matches.is_present("CacheHome") {
-            println!("{}",basedir::cache_home().unwrap_or("".to_string()));
+            println!("{}",basedir::cache_home().unwrap_or_else(|_| "".to_string()));
         }
         if matches.is_present("ConfigHome") {
-            println!("{}",basedir::config_home().unwrap_or("".to_string()));
+            println!("{}",basedir::config_home().unwrap_or_else(|_| "".to_string()));
         }
         if matches.is_present("Data") {
-            println!("{}",basedir::data_dirs().unwrap_or("".to_string()));
+            println!("{}",basedir::data_dirs().unwrap_or_else(|_| "".to_string()));
         }
         if matches.is_present("Config") {
-            println!("{}",basedir::config_dirs().unwrap_or("".to_string()));
+            println!("{}",basedir::config_dirs().unwrap_or_else(|_| "".to_string()));
         }
     }
     //
@@ -109,19 +109,19 @@ fn main() {
         }
         //TODO make error messages for each struct that has 'required' things
         if matches.is_present("Name") {
-            println!("{:?}",desktop_file.name.unwrap_or("".to_string()));
+            println!("{:?}",desktop_file.name.unwrap_or_else(|| "".to_string()));
         }
         if matches.is_present("GenericName") {
-            println!("{:?}",desktop_file.generic_name.unwrap_or("".to_string()));
+            println!("{:?}",desktop_file.generic_name.unwrap_or_else(|| "".to_string()));
         }
         if matches.is_present("NoDisplay") {
             println!("{:?}",desktop_file.no_display.unwrap_or_default());
         }
         if matches.is_present("Comment") {
-            println!("{:?}",desktop_file.comment.unwrap_or("".to_string()));
+            println!("{:?}",desktop_file.comment.unwrap_or_else(|| "".to_string()));
         }
         if matches.is_present("Icon") {
-            println!("{:?}",desktop_file.icon.unwrap_or("".to_string()));
+            println!("{:?}",desktop_file.icon.unwrap_or_else(|| "".to_string()));
         }
         if matches.is_present("Hidden") {
             println!("{:?}",desktop_file.hidden.unwrap_or_default());
@@ -132,7 +132,7 @@ fn main() {
                     print!("{:?};", item.to_string());
                 }
             }
-            print!("\n");
+            println!();
         }
         if matches.is_present("NotShowIn") {
             if desktop_file.not_show_in.is_some() {
@@ -140,19 +140,19 @@ fn main() {
                     print!("{:?};", item.to_string());
                 }
             }
-            print!("\n");
+            println!();
         }
         if matches.is_present("DBusActivatable") {
             println!("{:?}",desktop_file.dbus_activatable.unwrap_or_default());
         }
         if matches.is_present("TryExec") {
-            println!("{:?}",desktop_file.try_exec.unwrap_or("".to_string()));
+            println!("{:?}",desktop_file.try_exec.unwrap_or_else(|| "".to_string()));
         }
         if matches.is_present("Exec") {
-            println!("{:?}",desktop_file.exec.unwrap_or("".to_string()));
+            println!("{:?}",desktop_file.exec.unwrap_or_else(|| "".to_string()));
         }
         if matches.is_present("Path") {
-            println!("{:?}",desktop_file.path.unwrap_or("".to_string()));
+            println!("{:?}",desktop_file.path.unwrap_or_else(|| "".to_string()));
         }
         if matches.is_present("Terminal") {
             println!("{:?}",desktop_file.terminal.unwrap_or_default());
@@ -176,10 +176,10 @@ fn main() {
             println!("{:?}",desktop_file.startup_notify.unwrap_or_default());
         }
         if matches.is_present("StartupWMClass") {
-            println!("{:?}",desktop_file.startup_wm_class.unwrap_or("".to_string()));
+            println!("{:?}",desktop_file.startup_wm_class.unwrap_or_else(|| "".to_string()));
         }
         if matches.is_present("URL") {
-            println!("{:?}",desktop_file.url.unwrap_or("".to_string()));
+            println!("{:?}",desktop_file.url.unwrap_or_else(|| "".to_string()));
         }
         if matches.is_present("PrefersNonDefaultGPU") {
             println!("{:?}",desktop_file.prefers_non_default_gpu.unwrap_or_default());

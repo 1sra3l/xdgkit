@@ -139,8 +139,7 @@ impl Directory{
     /// Convert an `Option<String>` to a `DirectoryType`
     #[allow(dead_code)]
     pub fn convert_xdg_type(directory_type:Option<String>)->Option<DirectoryType> {
-        if directory_type.is_some() {
-            let dt = directory_type.unwrap();
+        if let Some(dt) = directory_type {
             if dt == "Fixed" {
                 return Some(DirectoryType::Fixed)
             }
@@ -148,23 +147,22 @@ impl Directory{
                 return Some(DirectoryType::Scalable)
             }
         }
-        return Some(DirectoryType::Threshold)
+        Some(DirectoryType::Threshold)
     }
 
     /// This function will return a Some(String) from a DirectoryType **Threshold is returned by default**
     #[allow(dead_code)]
     pub fn string_xdg_type(dt:DirectoryType)->Option<String> {
         match dt {
-            DirectoryType::Fixed => return Some(String::from("Fixed")),
-            DirectoryType::Scalable => return Some(String::from("Scalable")),
-            _ => return Some(String::from("Threshold")),
+            DirectoryType::Fixed => Some(String::from("Fixed")),
+            DirectoryType::Scalable => Some(String::from("Scalable")),
+            _ => Some(String::from("Threshold")),
         }
     }
     /// Convert an `Option<String>` to an `Option<IconContext>`
     #[allow(dead_code)]
     pub fn context(icon_context:Option<String>)->Option<IconContext> {
-        if icon_context.is_some() {
-            let ic = icon_context.unwrap();
+        if let Some(ic) = icon_context {
             if ic == "Actions" {
                 return Some(IconContext::Actions)
             }
@@ -179,50 +177,50 @@ impl Directory{
             }
         }
         // This was added to mimic Desktop Entry behavior
-        return Some(IconContext::Unknown)
+        Some(IconContext::Unknown)
     }
 }
 /// Makes an `Option<Vec<Directory>>` from an `Option<Vec<String>>` of directories in the `Directories=` field
 #[allow(dead_code)]
 pub fn make_directories(dirs:Option<Vec<String>>, file_string:String)->Option<Vec<Directory>> {
     let mut result:Vec<Directory> = Vec::new();
-    if dirs.is_none() { return None }
-        let test_ini = Ini::from_string(file_string);
-        if test_ini.is_err() {
-            return None
-        }
-        let conf = test_ini.unwrap();
-        let directories = dirs.unwrap();
+    dirs.as_ref()?;
+    let test_ini = Ini::from_string(file_string);
+    if test_ini.is_err() {
+        return None
+    }
+    let conf = test_ini.unwrap();
+    let directories = dirs.unwrap();
 
-        for dir in directories{
-            if !dir.is_empty() {
-                let section = dir.as_str();
-                let mut nom:Option<String> = conf.get(section, "Name");
-                if nom.is_none() {
-                    nom = Some(String::from(section));
-                }
-                let sz:Option<String> = conf.get(section, "Size");
-                let scl:Option<String> = conf.get(section, "Scale");
-                let cntxt:Option<String> = conf.get(section, "Context");
-                let x_type:Option<String> = conf.get(section, "Type");
-                let max_sz:Option<String> = conf.get(section, "MaxSize");
-                let min_sz:Option<String> = conf.get(section, "MinSize");
-                let thresh:Option<String> = conf.get(section, "Threshold");
-                result.push(
-                    Directory {
-                        name:nom,
-                        size:to_int(sz),
-                        scale:to_int(scl),
-                        context:Directory::context(cntxt),
-                        xdg_type:Directory::convert_xdg_type(x_type),
-                        max_size:to_int(max_sz),
-                        min_size:to_int(min_sz),
-                        threshold:to_int(thresh),
-                    }
-                );
+    for dir in directories{
+        if !dir.is_empty() {
+            let section = dir.as_str();
+            let mut nom:Option<String> = conf.get(section, "Name");
+            if nom.is_none() {
+                nom = Some(String::from(section));
             }
+            let sz:Option<String> = conf.get(section, "Size");
+            let scl:Option<String> = conf.get(section, "Scale");
+            let cntxt:Option<String> = conf.get(section, "Context");
+            let x_type:Option<String> = conf.get(section, "Type");
+            let max_sz:Option<String> = conf.get(section, "MaxSize");
+            let min_sz:Option<String> = conf.get(section, "MinSize");
+            let thresh:Option<String> = conf.get(section, "Threshold");
+            result.push(
+                Directory {
+                    name:nom,
+                    size:to_int(sz),
+                    scale:to_int(scl),
+                    context:Directory::context(cntxt),
+                    xdg_type:Directory::convert_xdg_type(x_type),
+                    max_size:to_int(max_sz),
+                    min_size:to_int(min_sz),
+                    threshold:to_int(thresh),
+                }
+            );
         }
-        Some(result)
+    }
+    Some(result)
 }
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
@@ -295,7 +293,7 @@ impl IconTheme {
             name:nom,
             comment:comm,
             inherits:inh,
-            directories:make_directories(dirs, conf.to_string().to_owned()),
+            directories:make_directories(dirs, conf.to_string()),
             scaled_directories:scaled,
             hidden:to_bool(hid),
             example:ex,
