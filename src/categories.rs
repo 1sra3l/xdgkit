@@ -468,7 +468,7 @@ impl fmt::Display for Categories {
 
 impl Categories {
     /// This function returns a `Categories` based on a matching string
-    pub fn from_string(item:String) ->  Categories{
+    pub fn from_string(item:String) ->  Categories {
         if item == "AudioVideo" {
             Categories::AudioVideo
         } else if item == "Audio" {

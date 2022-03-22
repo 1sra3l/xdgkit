@@ -1,9 +1,10 @@
 ------XML----
-Menu spec
+Menu spec how to get out of order stuff...
 File Manager D-Bus interface
 Mime-Type
 recently-used.xbel
 user-places.xbel
+gtk/qt theme reading?
 
 ----INFO----
 
@@ -15,6 +16,7 @@ user-places.xbel
    the command line interface will need output to multiple formats, potentially a subcommand, subcommand, AFAIK that is possible
 
 * File Manager D-Bus interface
-  This will be applicable if I want to make an open API for DBus filemanagement
+  This will be applicable if I want to make an open API for DBus file management handling
 
-* recently-used/places might be a nice thing to offer an interface to
+* recently-used/places might be a nice thing to offer an interface teasily access
+

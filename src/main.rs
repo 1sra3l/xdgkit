@@ -28,16 +28,28 @@ mod desktop_menu;
 mod utils;
 mod categories;
 mod icon_finder;
+mod menu;
+//mod recently_used;
 
 extern crate clap;
 use std::path::PathBuf;
 use clap::{App, load_yaml};
+use crate::desktop_menu::DesktopMenu;
+use crate::menu::Menu;
+//use crate::recently_used::Xbel;
 
 /// Our main binary function simply uses clap to read the arguments and pull up the right structs/functions
 fn main() {
+    /*let file = "/etc/xdg/menus/applications.menu";
+    let menu = DesktopMenu::read(file);
+    println!("{:?}", menu);
+    let file = "tests/recently-used.xbel";
+    //let recent = Xbel::read(file);
+    //println!("{:?}", recent);*/
+    
+    //return;
     let yaml = load_yaml!("cli.yaml");
     let matches = App::from(yaml).get_matches();
-
     // basedir ARGS
     if let Some(matches) = matches.subcommand_matches("basedir") {
         if matches.is_present("Home") {

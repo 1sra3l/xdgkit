@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xbel version="1.0"
+      xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks"
+      xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info"
+>
+  <bookmark href="file:///home/israel/programming/rs/vectorview/assets/blank.svg" added="2021-12-17T22:22:46.176743Z" modified="2021-12-30T13:21:38.266413Z" visited="2021-12-17T22:22:46.176746Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2021-12-30T13:21:38.266410Z" count="3"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/Documents/omicron_feels" added="2021-12-28T12:21:26.100071Z" modified="2021-12-28T12:21:26.100079Z" visited="2021-12-28T12:21:26.100072Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/octet-stream"/>
+        <bookmark:applications>
+          <bookmark:application name="mypaint" exec="&apos;mypaint %u&apos;" modified="2021-12-28T12:21:26.100075Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/Documents/omicron_feels.ora" added="2021-12-28T12:21:26.437164Z" modified="2021-12-29T00:20:56.873489Z" visited="2021-12-28T12:21:26.437165Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/openraster"/>
+        <bookmark:applications>
+          <bookmark:application name="mypaint" exec="&apos;/usr/bin/mypaint&apos;" modified="2021-12-29T00:20:56.873484Z" count="4"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/upgrades/tp.svg" added="2021-12-30T13:20:47.545388Z" modified="2021-12-30T13:21:52.468078Z" visited="2021-12-30T13:20:47.545391Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2021-12-30T13:21:52.468077Z" count="3"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/upgrades/t_def.svg" added="2021-12-30T13:21:26.340282Z" modified="2021-12-30T13:21:26.738600Z" visited="2021-12-30T13:21:26.340284Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2021-12-30T13:21:26.738594Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/upgrades/t_atk.svg" added="2021-12-30T13:23:42.241999Z" modified="2021-12-30T13:23:42.702179Z" visited="2021-12-30T13:23:42.242001Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2021-12-30T13:23:42.702174Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/icons/tech.png" added="2021-12-30T13:35:02.666355Z" modified="2021-12-30T13:35:02.666422Z" visited="2021-12-30T13:35:02.666412Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/png"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2021-12-30T13:35:02.666416Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/DurandalSword.svg" added="2022-01-07T20:20:37.332447Z" modified="2022-01-07T20:20:37.332489Z" visited="2022-01-07T20:20:37.332448Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:20:37.332488Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/FlyssaSword.svg" added="2022-01-07T20:21:36.085780Z" modified="2022-01-07T20:21:36.085902Z" visited="2022-01-07T20:21:36.085781Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:21:36.085901Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/GoujianSword.svg" added="2022-01-07T20:21:36.085826Z" modified="2022-01-07T20:21:36.085912Z" visited="2022-01-07T20:21:36.085826Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:21:36.085911Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/JoyeuseSword.svg" added="2022-01-07T20:21:36.085834Z" modified="2022-01-07T20:21:36.085919Z" visited="2022-01-07T20:21:36.085835Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:21:36.085918Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/WallaceSword.svg" added="2022-01-07T20:21:36.085842Z" modified="2022-01-07T20:32:39.918023Z" visited="2022-01-07T20:21:36.085843Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:32:39.918022Z" count="4"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/SevenBranchSword.svg" added="2022-01-07T20:21:36.085851Z" modified="2022-01-07T20:21:36.085933Z" visited="2022-01-07T20:21:36.085852Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:21:36.085932Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/WoodenSword.svg" added="2022-01-07T20:21:36.085860Z" modified="2022-01-07T20:21:36.085947Z" visited="2022-01-07T20:21:36.085860Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:21:36.085946Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/SaberSword.svg" added="2022-01-07T20:21:36.085867Z" modified="2022-01-07T20:21:36.085926Z" visited="2022-01-07T20:21:36.085867Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:21:36.085925Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/ScimitarSword.svg" added="2022-01-07T20:27:44.928754Z" modified="2022-01-07T20:27:44.928806Z" visited="2022-01-07T20:27:44.928756Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:27:44.928805Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/CaliburnSword.svg" added="2022-01-07T20:32:59.487759Z" modified="2022-01-07T20:32:59.989447Z" visited="2022-01-07T20:32:59.487762Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:32:59.989437Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/CaliburnSword_icon.svg" added="2022-01-07T20:37:02.108072Z" modified="2022-01-07T20:37:02.659336Z" visited="2022-01-07T20:37:02.108076Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:37:02.659329Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/AkrafenaSword_icon.svg" added="2022-01-07T20:37:15.256875Z" modified="2022-01-07T20:37:15.256927Z" visited="2022-01-07T20:37:15.256876Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:37:15.256926Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/MasamuneSword.svg" added="2022-01-07T20:39:11.843124Z" modified="2022-01-07T20:44:04.364836Z" visited="2022-01-07T20:39:11.843125Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:44:04.364834Z" count="3"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/weapons/MasamuneSword_icon.svg" added="2022-01-07T20:43:56.546277Z" modified="2022-01-07T20:43:58.275663Z" visited="2022-01-07T20:43:56.546278Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T20:43:58.275660Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/armor/GolemRockShield.svg" added="2022-01-07T21:03:33.401617Z" modified="2022-01-07T21:03:33.401658Z" visited="2022-01-07T21:03:33.401618Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T21:03:33.401657Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/armor/LeatherShield.svg" added="2022-01-07T21:04:16.263443Z" modified="2022-01-07T21:04:16.865509Z" visited="2022-01-07T21:04:16.263446Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T21:04:16.865503Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/armor/AncientYellowShield.svg" added="2022-01-07T21:07:01.598064Z" modified="2022-01-07T21:07:01.598108Z" visited="2022-01-07T21:07:01.598065Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T21:07:01.598107Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/armor/SpikeShield.svg" added="2022-01-07T21:57:43.470360Z" modified="2022-01-07T21:57:43.936457Z" visited="2022-01-07T21:57:43.470362Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T21:57:43.936452Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/clicker/assets/armor/SpikeShield_icon.svg" added="2022-01-07T21:59:08.843573Z" modified="2022-01-07T21:59:09.329957Z" visited="2022-01-07T21:59:08.843574Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-07T21:59:09.329951Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/ToriOS-ideas/phone_rotation.png" added="2022-01-12T21:08:37.830859Z" modified="2022-01-12T21:08:37.830864Z" visited="2022-01-12T21:08:37.830860Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/png"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-12T21:08:37.830861Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/soroban.svg" added="2022-01-13T17:09:26.282043Z" modified="2022-01-20T00:22:41.124368Z" visited="2022-01-13T17:09:26.282045Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-13T17:09:26.616963Z" count="2"/>
+          <bookmark:application name="Firefox" exec="&apos;firefox %u&apos;" modified="2022-01-13T17:12:50.919282Z" count="1"/>
+          <bookmark:application name="Thunderbird" exec="&apos;thunderbird %u&apos;" modified="2022-01-13T18:36:38.838411Z" count="3"/>
+          <bookmark:application name="tori" exec="&apos;tori %u&apos;" modified="2022-01-20T00:22:41.124360Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/synth.svg" added="2022-01-13T18:39:51.141470Z" modified="2022-01-21T00:35:57.326292Z" visited="2022-01-13T18:39:51.141473Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/svg+xml"/>
+        <bookmark:applications>
+          <bookmark:application name="Firefox" exec="&apos;firefox %u&apos;" modified="2022-01-13T21:10:52.429230Z" count="5"/>
+          <bookmark:application name="org.inkscape.Inkscape" exec="&apos;org.inkscape.Inkscape %u&apos;" modified="2022-01-13T18:46:43.018985Z" count="2"/>
+          <bookmark:application name="Thunderbird" exec="&apos;thunderbird %u&apos;" modified="2022-01-13T19:34:23.542921Z" count="1"/>
+          <bookmark:application name="flimage" exec="&apos;flimage %u&apos;" modified="2022-01-21T00:35:57.326287Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/Downloads/tiny_bridge.png" added="2022-01-15T00:07:26.746046Z" modified="2022-01-21T00:35:52.850542Z" visited="2022-01-15T00:07:26.746049Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/png"/>
+        <bookmark:applications>
+          <bookmark:application name="Firefox" exec="&apos;firefox %u&apos;" modified="2022-01-15T00:07:27.180457Z" count="2"/>
+          <bookmark:application name="flimage" exec="&apos;flimage %u&apos;" modified="2022-01-21T00:35:52.850538Z" count="4"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/Music/israel/mixtape/13-israel-slowjammies.ogg" added="2022-01-15T22:26:34.850369Z" modified="2022-01-15T22:26:34.850374Z" visited="2022-01-15T22:26:34.850369Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="audio/ogg"/>
+        <bookmark:applications>
+          <bookmark:application name="audacity" exec="&apos;audacity %u&apos;" modified="2022-01-15T22:26:34.850372Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/jwm-settings-manager/src/test.fl" added="2022-01-18T13:45:16.683365Z" modified="2022-01-22T23:31:39.437694Z" visited="2022-01-18T13:45:16.683366Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/x-fluid"/>
+        <bookmark:applications>
+          <bookmark:application name="Thunderbird" exec="&apos;thunderbird %u&apos;" modified="2022-01-18T13:45:16.683368Z" count="1"/>
+          <bookmark:application name="tori" exec="&apos;tori %u&apos;" modified="2022-01-20T00:09:48.317874Z" count="1"/>
+          <bookmark:application name="flpad" exec="&apos;flpad %u&apos;" modified="2022-01-22T23:31:39.437688Z" count="4"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/jwm-settings-manager/src/test_2class.fl" added="2022-01-18T14:10:36.215226Z" modified="2022-01-22T19:49:32.444338Z" visited="2022-01-18T14:10:36.215227Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/x-fluid"/>
+        <bookmark:applications>
+          <bookmark:application name="Thunderbird" exec="&apos;thunderbird %u&apos;" modified="2022-01-18T14:10:36.215232Z" count="1"/>
+          <bookmark:application name="flpad" exec="&apos;flpad %u&apos;" modified="2022-01-22T19:49:32.444334Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/Downloads/fltk-colormap.png" added="2022-01-19T14:25:39.126202Z" modified="2022-01-20T22:07:54.078010Z" visited="2022-01-19T14:25:39.126204Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/png"/>
+        <bookmark:applications>
+          <bookmark:application name="Firefox" exec="&apos;firefox %u&apos;" modified="2022-01-19T14:25:39.626314Z" count="2"/>
+          <bookmark:application name="flimage" exec="&apos;flimage %u&apos;" modified="2022-01-20T22:07:54.078004Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/xdgkit/target/doc/settings.html" added="2022-01-20T13:53:01.481835Z" modified="2022-01-20T13:53:01.481849Z" visited="2022-01-20T13:53:01.481837Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/html"/>
+        <bookmark:applications>
+          <bookmark:application name="Firefox" exec="&apos;firefox %u&apos;" modified="2022-01-20T13:53:01.481842Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/xdgkit/src/basedir.rs" added="2022-01-20T13:53:24.958306Z" modified="2022-01-20T13:53:24.958319Z" visited="2022-01-20T13:53:24.958307Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/rust"/>
+        <bookmark:applications>
+          <bookmark:application name="Firefox" exec="&apos;firefox %u&apos;" modified="2022-01-20T13:53:24.958313Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///tmp/mozilla_israel0/basedir.rs" added="2022-01-20T13:53:31.452033Z" modified="2022-01-20T13:53:31.452057Z" visited="2022-01-20T13:53:31.452038Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/rust"/>
+        <bookmark:applications>
+          <bookmark:application name="Firefox" exec="&apos;firefox %u&apos;" modified="2022-01-20T13:53:31.452047Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/jwm-settings-manager/src/menu.cpp" added="2022-01-22T12:42:15.138520Z" modified="2022-01-22T15:28:54.233977Z" visited="2022-01-22T12:42:15.138522Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/x-c++src"/>
+        <bookmark:applications>
+          <bookmark:application name="flpad" exec="&apos;flpad %u&apos;" modified="2022-01-22T15:28:54.233973Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/jwm-settings-manager/src/jwm.rs" added="2022-01-22T15:28:51.348752Z" modified="2022-01-22T15:28:51.348764Z" visited="2022-01-22T15:28:51.348754Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/rust"/>
+        <bookmark:applications>
+          <bookmark:application name="flpad" exec="&apos;flpad %u&apos;" modified="2022-01-22T15:28:51.348758Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/torios-binary/temp" added="2022-01-22T15:29:12.252519Z" modified="2022-01-23T13:27:43.153887Z" visited="2022-01-22T15:29:12.252520Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/octet-stream"/>
+        <bookmark:applications>
+          <bookmark:application name="flpad" exec="&apos;flpad %u&apos;" modified="2022-01-23T13:27:43.153882Z" count="6"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/programming/rs/torios-binary/pad/TODO" added="2022-01-22T16:14:41.237106Z" modified="2022-01-23T17:58:38.062756Z" visited="2022-01-22T16:14:41.237108Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:applications>
+          <bookmark:application name="flpad" exec="&apos;flpad %u&apos;" modified="2022-01-23T17:58:38.062746Z" count="5"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/Documents/poetry/freebrittaney" added="2022-01-24T11:17:56.807209Z" modified="2022-01-24T11:17:56.807228Z" visited="2022-01-24T11:17:56.807212Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/octet-stream"/>
+        <bookmark:applications>
+          <bookmark:application name="flpad" exec="&apos;flpad %u&apos;" modified="2022-01-24T11:17:56.807219Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/Documents/poetry/rhyme%20for%20the%20time" added="2022-01-24T11:25:41.469770Z" modified="2022-01-24T11:25:41.469783Z" visited="2022-01-24T11:25:41.469772Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/octet-stream"/>
+        <bookmark:applications>
+          <bookmark:application name="flpad" exec="&apos;flpad %u&apos;" modified="2022-01-24T11:25:41.469777Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/israel/Downloads/zbus-pixels.gif" added="2022-01-25T11:51:05.852582Z" modified="2022-01-25T11:51:06.391998Z" visited="2022-01-25T11:51:05.852586Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/gif"/>
+        <bookmark:applications>
+          <bookmark:application name="Firefox" exec="&apos;firefox %u&apos;" modified="2022-01-25T11:51:06.391993Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+</xbel>

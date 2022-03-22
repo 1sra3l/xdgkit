@@ -24,30 +24,33 @@ This is not ready for use yet
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+extern crate serde_xml_rs;
+extern crate serde;
+use serde_xml_rs::de::from_str;//, DeError};
+use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
 
 use crate::desktop_entry::*;
 use crate::basedir::*;
 
-use std::path::PathBuf;
-extern crate serde;
-//use quick_xml::de::{from_str, DeError};
-use serde_xml_rs::from_str;//, to_string};
-use serde::{Deserialize, Deserializer, Serialize};
 
-fn deserialize_ignore_any<'de, D: Deserializer<'de>>(deserializer: D) -> Result<(), D::Error> {
-    serde::de::IgnoredAny::deserialize(deserializer)?;
-    Ok(())
+#[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]
+pub enum MenuEnum{
+    DefaultAppDirs,
+    DefaultDirectoryDirs,
+    OnlyUnallocated,
+    NotOnlyUnallocated,
+    Deleted,
+    NotDeleted,
+    DefaultMergeDirs,
+    Separator,
 }
-
-#[allow(dead_code)]
 #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum MergeType {
     Menus,
     Files,
-    All,
-    #[serde(other, deserialize_with = "deserialize_ignore_any")]
-    Other,   
+    All,    
 }
 impl MergeType {
     pub fn from_string(item:String) -> MergeType{
@@ -59,12 +62,8 @@ impl MergeType {
         MergeType::All
     }
 }
-impl Default for MergeType {
-    fn default() -> Self {
-        Self::All
-    }
-}
-#[derive(Debug, Default, Clone, Deserialize, Serialize, PartialEq)]
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "PascalCase")]
 /*
 The `<Layout>` element is an optional part of this specification. Implementations that do not support the `<Layout>` element should preserve any `<Layout>` elements and their contents as far as possible. Each `<Menu>` may optionally contain a `<Layout>` element. If multiple elements appear then only the last such element is relevant. The purpose of this element is to offer suggestions for the presentation of the menu. If a menu does not contain a `<Layout>` element or if it contains an empty `<Layout>` element then the default layout should be used. The `<Layout>` element may contain `<Filename>`, <Menuname>, <Separator> and <Merge> elements. The `<Layout>` element defines a suggested layout for the menu starting from top to bottom. References to desktop entries that are not contained in this menu as defined by the `<Include>` and `<Exclude>` elements should be ignored. References to sub-menus that are not directly contained in this menu as defined by the `<Menu>` elements should be ignored.
@@ -80,7 +79,7 @@ pub struct Layout {
 
 This element may only appear as a child of a `<Layout>` or `<DefaultLayout>` menu. It indicates the point where desktop entries and sub-menus that are not explicitly mentioned within the `<Layout>` or `<DefaultLayout>` element are to be inserted. It has a type attribute that indicates which elements should be inserted: type="menus" means that all sub-menus that are not explicitly mentioned should be inserted in alphabetical order of their visual caption at this point. `type="files"` means that all desktop entries contained in this menu that are not explicitly mentioned should be inserted in alphabetical order of their visual caption at this point. `type="all"` means that a mix of all sub-menus and all desktop entries that are not explicitly mentioned should be inserted in alphabetical order of their visual caption at this point. Each `<Layout>` or ``<DefaultLayout>`` element shall have exactly one <Merge type="all">` element or it shall have exactly one `<Merge type="files">` and exactly one `<Merge type="menus">` element. An exception is made for a completely empty `<Layout>` element which may be used to indicate that the default-layout should be used instead.
 */
-#[derive(Debug, Default, Clone, Copy, Deserialize, Serialize, PartialEq)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Merge {
     pub r#type:MergeType,
 }
@@ -99,7 +98,7 @@ pub struct Merge {
     
     Example 2: If `$XDG_CONFIG_HOME` is `~/.config/` and `$XDG_CONFIG_DIRS` is `/opt/gnome/:/etc/xdg/` and the file `/opt/gnome/menus/applications.menu` contains `<MergeFile type="parent">/opt/kde3/etc/xdg/menus/applications.menu</MergeFile>` then the file `/etc/xdg/menus/applications.menu` should be merged if it exists. 
 */
-#[derive(Debug, Default, Clone, Deserialize, Serialize, PartialEq)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct MergeFile {
     pub r#type:Option<MergeFileType>,
     //TODO
@@ -107,15 +106,25 @@ pub struct MergeFile {
     pub text:String,
 }
 
-#[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize,)]
 pub enum MergeFileType {
     Path,
     Parent,
 }
-impl Default for MergeFileType {
-    fn default() -> Self {
-        Self::Path
-    }
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct LegacyDir {
+    pub prefix:Option<String>,
+    //TODO
+    #[serde(rename = "$value")]
+    pub text:String,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct KDELegacyDirs {
+    //TODO
+    #[serde(rename = "$value")]
+    pub text:String,
 }
 /// #### Attributes
 /// `[show_empty="false"] [inline="false"] [inline_limit="4"] [inline_header="true"] [inline_alias="false"]`
@@ -126,7 +135,7 @@ impl Default for MergeFileType {
 ///   <Merge type="menus"/><Merge type="files"/>
 /// </DefaultLayout>
 ///```
- #[derive(Debug, Default, Clone, Copy, Deserialize, Serialize, PartialEq)]
+ #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 pub struct DefaultLayout {
     pub show_empty:Option<bool>,
     pub inline:Option<bool>,
@@ -141,7 +150,7 @@ pub struct DefaultLayout {
 /// This element may only appear as a child of a `<Layout>` or `<DefaultLayout>` menu. Its contents references an immediate sub-menu of the current menu as defined with the `<Menu>` element, as such it should never contain a slash. If no such sub-menu exists the element should be ignored. This element may have various attributes, the default values are taken from the DefaultLayout key. The show_empty attribute defines whether a menu that contains no desktop entries and no sub-menus should be shown at all. The show_empty attribute can be "true" or "false". It may have an inline attribute that can be either "true" or "false". If the inline attribute is "true" the menu that is referenced may be copied into the current menu at the current point instead of being inserted as sub-menu of the current menu. The optional inline_limit attribute defines the maximum number of entries that can be inlined. If the sub-menu has more entries than inline_limit, the sub-menu will not be inlined. If the inline_limit is 0 (zero) there is no limit. The optional inline_header attribute defines whether an inlined menu should be preceded with a header entry listing the caption of the sub-menu. The inline_header attribute can be either "true" or "false". The optional inline_alias attribute defines whether a single inlined entry should adopt the caption of the inlined menu. In such case no additional header entry will be added regardless of the value of the inline_header attribute. The inline_alias attribute can be either "true" or "false".
 /// 
 ///  Example: if a menu has a sub-menu titled "WordProcessor" with a single entry "OpenOffice 4.2", and both inline="true" and inline_alias="true" are specified then this would result in the "OpenOffice 4.2" entry being inlined in the current menu but the "OpenOffice 4.2" caption of the entry would be replaced with "WordProcessor".
-#[derive(Debug, Clone, Default, Deserialize, Serialize, PartialEq)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Menuname {
     pub show_empty:Option<bool>,
     pub inline:Option<bool>,
@@ -152,47 +161,37 @@ pub struct Menuname {
     pub text:Option<String>, //TODO
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
-pub enum Rules {
-    /// The `<Filename>` element is the most basic matching rule. It matches a desktop entry if the desktop entry has the given desktop-file id. [See Desktop-File Id](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-desktop-file-id).
-    #[serde(rename = "$value")]
-    Filename(String),
-    /// The `<Category>` element is another basic matching predicate. It matches a desktop entry if the desktop entry has the given category in its `Menu` field.
-    #[serde(rename = "$value")]
-    Category(String),
-    /// The `<All>` element is a matching rule that matches all desktop entries.
-    #[serde(rename = "$value")]
-    All(Vec<Rules>),
-    /// The `<And>` element contains a list of matching rules. If each of the matching rules inside the `<And>` element match a desktop entry, then the entire `<And>` rule matches the desktop entry.
-    #[serde(rename = "$value")]
-    And(Vec<Rules>),
-    /// The `<Or>` element contains a list of matching rules. If any of the matching rules inside the `<Or>` element match a desktop entry, then the entire `<Or>` rule matches the desktop entry. 
-    #[serde(rename = "$value")]
-    Or(Vec<Rules>),
-    /// The `<Not>` element contains a list of matching rules. If any of the matching rules inside the `<Not>` element matches a desktop entry, then the entire `<Not>` rule does not match the desktop entry. That is, matching rules below `<Not>` have a logical OR relationship. 
-    #[serde(rename = "$value")]
-    Not(Vec<Rules>),
-    #[serde(other, deserialize_with = "deserialize_ignore_any")]
-    Other,
-}
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "PascalCase")]
 /// This element may only appear below `<Menu>`. The `<Move>` element contains pairs of `<Old>`/`<New>` elements indicating how to rename a descendant of the current `<Menu>`. If the destination path already exists, the moved menu is merged with the destination menu [see the section called “Merging” for details](https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html).
 /// 
 /// `<Move>` is used primarily to fix up legacy directories. For example, say you are merging a `<LegacyDir>` with folder names that don't match the current hierarchy; the legacy folder names can be moved to the new names, where they will be merged with the new folders.
 /// 
 /// `<Move>` is also useful for implementing menu editing, [see the section called “Menu editing”](https://specifications.freedesktop.org/menu-spec/latest/apd.html#menu-editing).
-pub enum Move {
+pub struct Move {
     /// This element may only appear below `<Move>`, and must be followed by a `<New>` element. The content of both `<Old>` and `<New>` should be a menu path, slash-separated concatenation of `<Name>` fields, [see Menu path](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-menu-path). Paths are interpreted relative to the menu containing the `<Move>` element.
-    Old(String),
+    pub old:Vec<String>,
     /// This element may only appear below `<Move>`, and must be preceded by an `<Old>` element. The `<New>` element specifies the new path for the preceding `<Old>` element. 
-    New(String),
-    #[serde(other, deserialize_with = "deserialize_ignore_any")]
-    Other,
+    pub new:Vec<String>,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct Rules {
+    /// The `<Filename>` element is the most basic matching rule. It matches a desktop entry if the desktop entry has the given desktop-file id. [See Desktop-File Id](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-desktop-file-id).
+    pub filename:Option<String>,
+    /// The `<Category>` element is another basic matching predicate. It matches a desktop entry if the desktop entry has the given category in its `DesktopMenu` field.
+    pub category:Option<String>,
+    /// The `<All>` element is a matching rule that matches all desktop entries. 
+    pub all:Vec<Rules>,
+    /// The `<And>` element contains a list of matching rules. If each of the matching rules inside the `<And>` element match a desktop entry, then the entire `<And>` rule matches the desktop entry.
+    pub and:Vec<Rules>,
+    /// The `<Or>` element contains a list of matching rules. If any of the matching rules inside the `<Or>` element match a desktop entry, then the entire `<Or>` rule matches the desktop entry. 
+    pub or:Vec<Rules>,
+    /// The `<Not>` element contains a list of matching rules. If any of the matching rules inside the `<Not>` element matches a desktop entry, then the entire `<Not>` rule does not match the desktop entry. That is, matching rules below `<Not>` have a logical OR relationship. 
+    pub not:Vec<Rules>,
 }
 
-
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 /// # Format of menu files
 ///
 /// Menu files must be well-formed XML files and end in the extension ".menu". They should also conform to the menu file DTD which implies that implementation-specific extensions to the file format are not allowed. Implementations may stop processing if they encounter a menu file which does not comply with the associated DTD. Note that the associated DTD may differ in version from the one defined in this document.
@@ -213,9 +212,11 @@ pub enum Move {
 ///
 /// ## NOTES:
 /// And, Or, All, Not are capitalized since `Not` cannot be used, I opted for another standard convention ALL CAPS for those words in programming
-pub enum Menu {
+#[allow(dead_code)]
+#[serde(rename_all = "PascalCase")]
+pub struct Menu {
     /// The root element is `<Menu>`. Each `<Menu>` element may contain any number of nested `<Menu>` elements, indicating submenus.
-    Menu(Vec<Menu>),
+    pub menu:Option<Vec<Menu>>,
     /// This element may only appear below `<Menu>`. The content of this element is a directory name. Desktop entries in this directory are scanned and added to the pool of entries which can be included in this `<Menu>` and its submenus. Only files ending in `.desktop` should be used, other files are ignored.
 ///
     ///Desktop entries in the pool of available entries are identified by their desktop-file id [see Desktop-File Id](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-desktop-file-id). The desktop-file id of a desktop entry is equal to its filename, with any path components removed. So given a `<AppDir>` `/foo/bar` and desktop entry `/foo/bar/Hello.desktop` the desktop entry would get a desktop-file id of `Hello.desktop`
@@ -227,9 +228,10 @@ pub enum Menu {
     ///If the filename given as an `<AppDir>` is not an absolute path, it should be located relative to the location of the menu file being parsed.
 ///
     ///Duplicate `<AppDir>` elements (that specify the same directory) should be ignored, but the last duplicate in the file should be used when establishing the order in which to scan the directories. This is important when merging [see the section called “Merging”](https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html). The order of `<AppDir>` elements with respect to `<Include>` and `<Exclude>` elements is not relevant, also to facilitate merging. 
-    AppDir(String),
+    pub add_dir:Option<String>,
     ///This element may only appear below `<Menu>`. The element has no content. The element should be treated as if it were a list of `<AppDir>` elements containing the default app dir locations (datadir/applications/ etc.). When expanding `<DefaultAppDirs>` to a list of `<AppDir>`, the default locations that are earlier in the search path go later in the `<Menu>` so that they have priority.
-    DefaultAppDirs,
+    #[serde(rename = "DefaultAppDirs")]
+    pub default_app_dirs:Option<MenuEnum>,
     /// This element may only appear below `<Menu>`. The content of this element is a directory name. Each directory listed in a `<DirectoryDir>` element will be searched for directory entries to be used when resolving the `<Directory>` element for this menu and its submenus. If the filename given as a `<DirectoryDir>` is not an absolute path, it should be located relative to the location of the menu file being parsed.
 ///
 ///    Directory entries in the pool of available entries are identified by their relative path [see Relative path](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-relative-path).
@@ -237,35 +239,34 @@ pub enum Menu {
 ///    If two directory entries have duplicate relative paths, the one from the last (furthest down) element in the menu file must be used. Only files ending in the extension `.directory` should be loaded, other files should be ignored.
 ///
 ///    Duplicate `<DirectoryDir>` elements (that specify the same directory) are handled as with duplicate `<AppDir>` elements (the last duplicate is used). 
-    DirectoryDir(String),
+    pub directory_dir:Option<Vec<String>>,
     /// This element may only appear below `<Menu>`. The element has no content. The element should be treated as if it were a list of `<DirectoryDir>` elements containing the default desktop dir locations (`datadir`/desktop-directories/ etc.). The default locations that are earlier in the search path go later in the `<Menu>` so that they have priority. 
-    DefaultDirectoryDirs,
+    #[serde(rename = "DefaultDirectoryDirs")]
+    pub default_directory_dirs:Option<MenuEnum>,
     /// Each `<Menu>` element must have a single `<Name>` element. The content of the `<Name>` element is a name to be used when referring to the given menu. Each submenu of a given `<Menu>` must have a unique name. `<Menu>` elements can thus be referenced by a menu path, for example `Applications/Graphics`. The `<Name>` field must not contain the slash character ("/"); implementations should discard any name containing a slash. [See also Menu path](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-menu-path).
-    Name(String),
+    pub name:Option<String>,
     /// Each `<Menu>` element has any number of `<Directory>` elements. The content of the `<Directory>` element is the relative path of a directory entry containing meta information about the `<Menu>`, such as its icon and localized name. If no `<Directory>` is specified for a `<Menu>`, its `<Name>` field should be used as the user-visible name of the menu.
 ///
     /// Duplicate `<Directory>` elements are allowed in order to simplify menu merging, and allow user menus to override system menus. The last `<Directory>` element to appear in the menu file "wins" and other elements are ignored, unless the last element points to a nonexistent directory entry, in which case the previous element should be tried instead, and so on. 
-    Directory(String),
+    pub directory:Option<String>,
     ///Each `<Menu>` may contain any number of `<OnlyUnallocated>` and <NotOnlyUnallocated> elements. Only the last such element to appear is relevant, as it determines whether the `<Menu>` can contain any desktop entries, or only those desktop entries that do not match other menus. If neither `<OnlyUnallocated>` nor <NotOnlyUnallocated> elements are present, the default is <NotOnlyUnallocated>.
 ///
     ///To handle `<OnlyUnallocated>`, the menu file must be analyzed in two conceptual passes. The first pass processes `<Menu>` elements that can match any desktop entry. During this pass, each desktop entry is marked as allocated according to whether it was matched by an `<Include>` rule in some `<Menu>`. The second pass processes only `<Menu>` elements that are restricted to unallocated desktop entries. During the second pass, queries may only match desktop entries that were not marked as allocated during the first pass. [See the section called “Generating the menus”](https://specifications.freedesktop.org/menu-spec/latest/ar01s06.html).
-    OnlyUnallocated,
-    NotOnlyUnallocated,
+    #[serde(rename = "OnlyUnallocated")]
+    pub only_unallocated:Option<MenuEnum>,
+    #[serde(rename = "NotOnlyUnallocated")]
+    pub not_only_unallocated:Option<MenuEnum>,
     /// Each `<Menu>` may contain any number of '<Deleted>' and `<NotDeleted>` elements. Only the last such element to appear is relevant, as it determines whether the `<Menu>` has been deleted. If neither '<Deleted>' nor `<NotDeleted>` elements are present, the default is `<NotDeleted>`. The purpose of this element is to support menu editing. If a menu contains a '<Deleted>' element not followed by a `<NotDeleted>` element, that menu should be ignored. 
-    Deleted(Vec<Menu>),
-    NotDeleted(Vec<Menu>),
+    #[serde(rename = "Deleted")]
+    pub deleted:Option<Vec<MenuEnum>>,
+    #[serde(rename = "NotDeleted")]
+    pub not_deleted:Option<Vec<MenuEnum>>,
     /// An `<Include>` element is a set of rules attempting to match some of the known desktop entries. The `<Include>` element contains a list of any number of matching rules. Matching rules are specified using the elements `<And>`, `<Or>`, `<Not>`, `<All>`, `<Filename>`, and `<Category>`. Each rule in a list of rules has a logical OR relationship, that is, desktop entries which match any rule are included in the menu.
 /// 
     /// `<Include>` elements must appear immediately under `<Menu>` elements. The desktop entries they match are included in the menu. `<Include>` and `<Exclude>` elements for a given `<Menu>` are processed in order, with queries earlier in the file handled first. This has implications for merging, [see the section called “Merging”](https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html). [See the section called “Generating the menus” for full details on how to process `<Include>` and `<Exclude>` elements](https://specifications.freedesktop.org/menu-spec/latest/ar01s06.html).
-    #[serde(rename = "$value")]
-    Include(Vec<Rules>),
+    pub include:Option<Vec<Rules>>, //TODO
     /// Any number of `<Exclude>` elements may appear below a `<Menu>` element. The content of an `<Exclude>` element is a list of matching rules, just as with an `<Include>`. However, the desktop entries matched are removed from the list of desktop entries included so far. (Thus an `<Exclude>` element that appears before any `<Include>` elements will have no effect, for example, as no desktop entries have been included yet.)
-    #[serde(rename = "$value")]
-    Exclude(Vec<Rules>),
-
-    /// #### Attributes:
-    /// `[type="path"|"parent"]`
-/// 
+    pub exclude:Option<Vec<Rules>>,
     /// Any number of `<MergeFile>` elements may be listed below a `<Menu>` element, giving the name of another menu file to be merged into this one. The section called [“Merging”](https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html) specifies how merging is done. The root `<Menu>` of the merged file will be merged into the immediate parent of the `<MergeFile>` element. The `<Name>` element of the root `<Menu>` of the merged file are ignored.
 /// 
     /// If the type attribute is missing or set to "path" then the contents of the `<MergeFile>` element indicates the file to be merged. If this is not an absolute path then the file to be merged should be located relative to the location of the menu file that contains this `<MergeFile>` element.
@@ -279,29 +280,31 @@ pub enum Menu {
     /// Example 1: If `$XDG_CONFIG_HOME` is `~/.config/` and `$XDG_CONFIG_DIRS` is `/opt/gnome/:/etc/xdg/` and the file `~/.config/menus/applications.menu` contains `<MergeFile type="parent">/opt/kde3/etc/xdg/menus/applications.menu</MergeFile>` then the file `/opt/gnome/menus/applications.menu` should be merged if it exists. If that file does not exists then the file `/etc/xdg/menus/applications.menu` should be merged instead.
 /// 
     /// Example 2: If `$XDG_CONFIG_HOME` is `~/.config/` and `$XDG_CONFIG_DIRS` is `/opt/gnome/:/etc/xdg/` and the file `/opt/gnome/menus/applications.menu` contains `<MergeFile type="parent">/opt/kde3/etc/xdg/menus/applications.menu</MergeFile>` then the file `/etc/xdg/menus/applications.menu` should be merged if it exists. 
-    MergeFile(Vec<MergeFile>),
+    pub merge_file:Option<Vec<MergeFile>>,
     /// Any number of `<MergeDir>` elements may be listed below a `<Menu>` element. A `<MergeDir>` contains the name of a directory. Each file in the given directory which ends in the ".menu" extension should be merged in the same way that a `<MergeFile>` would be. If the filename given as a `<MergeDir>` is not an absolute path, it should be located relative to the location of the menu file being parsed. The files inside the merged directory are not merged in any specified order.
 /// 
     /// Duplicate `<MergeDir>` elements (that specify the same directory) are handled as with duplicate `<AppDir>` elements (the last duplicate is used). 
-    MergeDir(Vec<String>),
+    pub merge_dir:Option<Vec<String>>,
     /// This element may only appear below `<Menu>`. The element has no content. The element should be treated as if it were a list of `<MergeDir>` elements containing the default merge directory locations. When expanding `<DefaultMergeDirs>` to a list of `<MergeDir>`, the default locations that are earlier in the search path go later in the `<Menu>` so that they have priority. 
-    DefaultMergeDirs,
+    #[serde(rename = "DefaultMergeDirs")]
+    pub default_merge_dirs:Option<MenuEnum>,
     /// This element may only appear below `<Menu>`. The text content of this element is a directory name. Each directory listed in a `<LegacyDir>` element will be an old-style legacy hierarchy of desktop entries, [see the section called “Legacy Menu Hierarchies”](https://specifications.freedesktop.org/menu-spec/latest/ar01s07.html) for how to load such a hierarchy. Implementations must not load legacy hierarchies that are not explicitly specified in the menu file (because for example the menu file may not be the main menu). If the filename given as a `<LegacyDir>` is not an absolute path, it should be located relative to the location of the menu file being parsed.
 /// 
     /// Duplicate `<LegacyDir>` elements (that specify the same directory) are handled as with duplicate `<AppDir>` elements (the last duplicate is used).
 /// 
     /// The `<LegacyDir>` element may have one attribute, `prefix`. Normally, given a `<LegacyDir>` `/foo/bar` and desktop entry `/foo/bar/baz/Hello.desktop` the desktop entry would get a desktop-file id of `Hello.desktop`. Given a prefix of `boo-`, it would instead be assigned the desktop-file id `boo-Hello.desktop`. The prefix should not contain path separator ('/') characters. 
-    LegacyDir(Option<String>, String),
+    pub legacy_dir:Option<LegacyDir>,
     /// This element may only appear below `<Menu>`. The element has no content. The element should be treated as if it were a list of `<LegacyDir>` elements containing the traditional desktop file locations supported by KDE with a hard coded prefix of "kde-". When expanding `<KDELegacyDirs>` to a list of `<LegacyDir>`, the locations that are earlier in the search path go later in the `<Menu>` so that they have priority. The search path can be obtained by running `kde-config --path apps`
-    KDELegacyDirs(String),
+    #[serde(rename = "KDELegacyDirs", default)]
+    pub kde_legacy_dirs:Option<KDELegacyDirs>,
     /// This element may only appear below `<Menu>`. The `<Move>` element contains pairs of `<Old>`/`<New>` elements indicating how to rename a descendant of the current `<Menu>`. If the destination path already exists, the moved menu is merged with the destination menu [see the section called “Merging” for details](https://specifications.freedesktop.org/menu-spec/latest/ar01s05.html).
 /// 
     /// `<Move>` is used primarily to fix up legacy directories. For example, say you are merging a `<LegacyDir>` with folder names that don't match the current hierarchy; the legacy folder names can be moved to the new names, where they will be merged with the new folders.
 /// 
     /// `<Move>` is also useful for implementing menu editing, [see the section called “Menu editing”](https://specifications.freedesktop.org/menu-spec/latest/apd.html#menu-editing).
-    Move(Move),
+    pub r#move:Option<Vec<Move>>,
     /// The `<Layout>` element is an optional part of this specification. Implementations that do not support the `<Layout>` element should preserve any `<Layout>` elements and their contents as far as possible. Each `<Menu>` may optionally contain a `<Layout>` element. If multiple elements appear then only the last such element is relevant. The purpose of this element is to offer suggestions for the presentation of the menu. If a menu does not contain a `<Layout>` element or if it contains an empty `<Layout>` element then the default layout should be used. The `<Layout>` element may contain `<Filename>`, <Menuname>, <Separator> and <Merge> elements. The `<Layout>` element defines a suggested layout for the menu starting from top to bottom. References to desktop entries that are not contained in this menu as defined by the `<Include>` and `<Exclude>` elements should be ignored. References to sub-menus that are not directly contained in this menu as defined by the `<Menu>` elements should be ignored.
-    Layout(Layout),
+    pub layout:Option<Layout>,
     /// #### Attributes
     /// `[show_empty="false"] [inline="false"] [inline_limit="4"] [inline_header="true"] [inline_alias="false"]`
 /// 
@@ -311,49 +314,40 @@ pub enum Menu {
     ///   <Merge type="menus"/><Merge type="files"/>
     /// </DefaultLayout>
     ///```
-    DefaultLayout(DefaultLayout),
+    pub default_layout:Option<DefaultLayout>,
     /// #### Attributes
     /// `[show_empty="..."] [inline="..."] [inline_limit="..."] [inline_header="..."] [inline_alias="..."]`
 /// 
     /// This element may only appear as a child of a `<Layout>` or `<DefaultLayout>` menu. Its contents references an immediate sub-menu of the current menu as defined with the `<Menu>` element, as such it should never contain a slash. If no such sub-menu exists the element should be ignored. This element may have various attributes, the default values are taken from the DefaultLayout key. The show_empty attribute defines whether a menu that contains no desktop entries and no sub-menus should be shown at all. The show_empty attribute can be "true" or "false". It may have an inline attribute that can be either "true" or "false". If the inline attribute is "true" the menu that is referenced may be copied into the current menu at the current point instead of being inserted as sub-menu of the current menu. The optional inline_limit attribute defines the maximum number of entries that can be inlined. If the sub-menu has more entries than inline_limit, the sub-menu will not be inlined. If the inline_limit is 0 (zero) there is no limit. The optional inline_header attribute defines whether an inlined menu should be preceded with a header entry listing the caption of the sub-menu. The inline_header attribute can be either "true" or "false". The optional inline_alias attribute defines whether a single inlined entry should adopt the caption of the inlined menu. In such case no additional header entry will be added regardless of the value of the inline_header attribute. The inline_alias attribute can be either "true" or "false".
 /// 
     ///  Example: if a menu has a sub-menu titled "WordProcessor" with a single entry "OpenOffice 4.2", and both inline="true" and inline_alias="true" are specified then this would result in the "OpenOffice 4.2" entry being inlined in the current menu but the "OpenOffice 4.2" caption of the entry would be replaced with "WordProcessor".
-    Menuname(Menuname),
+    pub menuname:Option<Vec<Menuname>>,
     /// This element may only appear as a child of a `<Layout>` or `<DefaultLayout>` menu. It indicates a suggestion to draw a visual separator at this point in the menu. `<Separator>` elements at the start of a menu, at the end of a menu or that directly follow other `<Separator>` elements may be ignored. 
-    Separator,
+    #[serde(rename = "Separator")]
+    pub separator:Vec<MenuEnum>, //TODO
     /// `type="menus"|"files"|"all"`
     /// 
     /// This element may only appear as a child of a `<Layout>` or `<DefaultLayout>` menu. It indicates the point where desktop entries and sub-menus that are not explicitly mentioned within the `<Layout>` or `<DefaultLayout>` element are to be inserted. It has a type attribute that indicates which elements should be inserted: type="menus" means that all sub-menus that are not explicitly mentioned should be inserted in alphabetical order of their visual caption at this point. `type="files"` means that all desktop entries contained in this menu that are not explicitly mentioned should be inserted in alphabetical order of their visual caption at this point. `type="all"` means that a mix of all sub-menus and all desktop entries that are not explicitly mentioned should be inserted in alphabetical order of their visual caption at this point. Each `<Layout>` or ``<DefaultLayout>`` element shall have exactly one <Merge type="all">` element or it shall have exactly one `<Merge type="files">` and exactly one `<Merge type="menus">` element. An exception is made for a completely empty `<Layout>` element which may be used to indicate that the default-layout should be used instead.
-    Merge(Merge),
-     #[serde(other, deserialize_with = "deserialize_ignore_any")]
-    Other,
+    pub merge:Option<Vec<Merge>>,
 }
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct DesktopMenu {
-    #[serde(rename = "$value")]
-    pub items:Vec<Menu>,
-}
-impl DesktopMenu {
-        pub fn read<P: Clone + AsRef<std::path::Path> + std::fmt::Debug>(filename:P) -> Option<Self> {
+impl Menu {
+    /// Read in a menu file
+    pub fn read<P: Clone + AsRef<std::path::Path> + std::fmt::Debug>(filename:P) -> Option<Menu> {
         if let Ok(file_string) = std::fs::read_to_string(filename.clone()) {
-            let mut de = serde_xml_rs::Deserializer::new_from_reader(
-                                  file_string.as_bytes()
-                                ).non_contiguous_seq_elements(true);
-            let decoded:Self = match DesktopMenu::deserialize(&mut de) {
+            let decoded:Menu = match serde_xml_rs::de::from_str(file_string.as_str()) {
                 Ok(decoded) => decoded,
                 Err(e) => {
-                    println!("DesktopMenu::read()->from_str()Error:\n*{}*\nFilename:{:?}", e, filename);
+                    println!("menu::Menu::read()->serde_xml_rs::de::from_str()\nError:{}\nFilename:{:?}", e, filename);
                     return None
                 },
             };
             return Some(decoded);
         }
         // I do not think this is possible to get to
-        println!("DesktopMenu::read() *FAILED* Filename:{:?}", filename);
+        println!("menu::Menu::read() *FAILED* Filename:{:?}", filename);
         None
     }
 }
-
 #[derive(Debug, Clone)]
 pub struct MenuItem {
     /// Name
@@ -392,5 +386,24 @@ impl MenuItem {
         m.icon = String::from("application-default-icon");
         m
     }
+}
+
+#[derive(Debug, Clone)]
+/*
+# App menu
+
+```
+use xdgkit::desktop_menu::AppMenu;
+
+```
+*/
+pub struct AppMenu {
+    /// The name of the menu
+    pub name:String,
+    // Icon
+    pub icon:String,
+    pub items:Vec<MenuItem>,
+    pub submenus:Vec<AppMenu>,
+    
 }
 

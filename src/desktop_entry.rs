@@ -346,9 +346,18 @@ impl DesktopEntry {
     /// note: xdgkit does not check the file extention, you *may* want to
     /// This reads not only `.desktop` files but also `.directory`
     pub fn new(file_name:String)->Self where Self:Sized {
-        let test_ini = Ini::from_file(&file_name);
+        if let Ok(file_string) = std::fs::read_to_string(file_name.as_str()) {
+            return Self::read(file_string)
+        }
+        Self::default()
+    }
+    /// Creates a 'new' DesktopEntry from reading a file
+    /// note: xdgkit does not check the file extention, you *may* want to
+    /// This reads not only `.desktop` files but also `.directory`
+    pub fn read(file_string:String)->Self where Self:Sized {
+        let test_ini = Ini::from_string(file_string.as_str());
         if test_ini.is_err() {
-            println!("ERROR!!! {:?} in {}",test_ini,file_name);
+            println!("ERROR!!! {:?} in {}",test_ini,file_string);
             return Self::empty(DesktopType::Application)
         }
         let conf = test_ini.unwrap();

@@ -47,8 +47,10 @@ fn var_getter(env_var:&str, directory:String)->Result<String, VarError> {
         Ok(val)=> Ok(val),
         Err(_e)=> {
             // make sure the direcory exists!
-            if !Path::new(directory.as_str()).is_dir() {
-                return Err(VarError::NotPresent)
+            for path in convert_to_vec(Ok(directory.clone())) {
+                if !Path::new(path.as_str()).is_dir() {
+                    return Err(VarError::NotPresent)
+                }
             }
             Ok(directory)
         },
@@ -113,7 +115,7 @@ pub fn config_home()->Result<String, VarError> {
 #[allow(dead_code)]
 pub fn data_dirs()->Result<String, VarError> {
     let env_var = "XDG_DATA_DIRS";
-    let dir = String::from("/usr/local/share/:/usr/share/");
+    let dir = String::from("/usr/local/share:/usr/share");
     var_getter(env_var, dir)
 }
 
@@ -157,7 +159,9 @@ pub fn loop_data_dirs(directory:String)->Result<String, VarError> {
         for item in res_list.split(':') {
             let mut tmp_path:String = item.to_owned();
             tmp_path.push_str(directory.as_str());
+            //println!("dir:{}",tmp_path.as_str());
             if Path::new(tmp_path.as_str()).is_dir() {
+                
                 tmp_path.push(':');
                 result.push_str(tmp_path.as_str());
             }
@@ -172,8 +176,6 @@ pub fn loop_data_dirs(directory:String)->Result<String, VarError> {
             result.push_str(d.as_str());
             fail = false;
         }
-    } else {
-        fail = true;
     }
     if fail {
         return Err(VarError::NotPresent)
@@ -299,24 +301,24 @@ pub fn desktop_directories_vec()->Vec<String> {
 /// 
 #[allow(dead_code)]
 pub fn autostart()->Result<String, VarError> {
-    loop_data_dirs("/autostart".to_string())
+    loop_config_dirs("/autostart".to_string())
 }
 
 /// Icon directories
 #[allow(dead_code)]
 pub fn icon_dirs()->Result<String, VarError> {
     let result = home();
-    let mut retval:String = "".to_string();
+    let mut directories:String = "".to_string();
     if let Ok(res) = result {
-        retval = res;
-        retval.push_str("./icons:");
+        directories = res;
+        directories.push_str("/.icons:");
     }
     let result = loop_data_dirs("/icons".to_string());
     if let Ok(res) = result {
-        retval.push_str(&res);
+        directories.push_str(&res);
     }
-    retval.push_str("/usr/share/pixmaps:");
-    Ok(retval)
+    directories.push_str("/usr/share/pixmaps:");
+    Ok(directories)
 }
 /// Vector of Icon directories
 pub fn icon_dirs_vector()->Vec<String> {
@@ -324,7 +326,7 @@ pub fn icon_dirs_vector()->Vec<String> {
     let mut directory_vec:Vec<String> = data_dirs_vec("/icons".to_string());
 
     if let Ok(mut local_icons) = home() {
-        local_icons.push_str("./icons");
+        local_icons.push_str("/.icons");
         directory_vec.push(local_icons.to_owned());
     }
     directory_vec.push("/usr/share/pixmaps".to_string());

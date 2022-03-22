@@ -32,7 +32,7 @@ This uses `std::env` and returns` Result<String, VarError>` as does `std::env`
 This provides all the normal XDG variables, as well as locations for icons, menu/directory files, desktop files, and the autostart directories
 The command line parser will automatically check for existing directories.
 The functions that have `Vec` like properties (applications directory for example) can all be easily expanded
-```rs
+```
 // simple use
 let app_dirs:Vec<String> = convert_to_vec(applications());
 ```
@@ -48,27 +48,11 @@ As a library this returns a struct of mostly `Option<whatever>`
 
 As a CLI utility it returns a String printed on a new line (or a blank line if the field is empty that you are looking for. In other words, you will need something like:
 
-```sh
-function myfun {
- local IFS="
-"
- # awesome codes here
-}
-```
-
 ## icon_theme/icon-theme
 
 Reads an `index.theme` ini-style file and turns it into a struct of `Option<whatever>` which can be accessed for any of the icon theme spec features you will find in the freedesktop spec, or the documentation of this library/program.
 
 As a CLI utility it returns a String printed on a new line (or a blank line if the field is empty that you are looking for. In other words, you will need something like:
-
-```sh
-function myfun {
- local IFS="
-"
- # awesome codes here
-}
-```
 
 This way any script-based menu can find the correct icons for the theme
 
@@ -108,8 +92,9 @@ pub mod categories;
 pub mod desktop_entry;
 pub mod basedir;
 pub mod icon_theme;
-//pub mod desktop_menu;
+pub mod desktop_menu;
 pub mod icon_finder;
+//pub mod recently_used;
 
 #[cfg(test)]
 mod tests {
@@ -148,9 +133,37 @@ mod tests {
             assert_ne!(None, lang);
         }
     }
+    #[test]
+    fn recent_test() {
+        /*use crate::recently_used::Xbel;
+        let file = "tests/recently-used.xbel";
+        let recent = match Xbel::read(file) {
+            Some(recent) => {
+                let bookmark = recent.items[0].clone();
+                let href = bookmark.href;
+                assert_eq!(href.as_str(), "file:///home/israel/programming/rs/vectorview/assets/blank.svg");
+                recent
+            },
+            None => {
+                assert_eq!(0,1);
+                return
+            },
+        };*/
+        
+    }
+const TEST_MENU_XML:&str = "<!DOCTYPE Menu PUBLIC \"-//freedesktop//DTD Menu 1.0//EN\"           \"http://www.freedesktop.org/standards/menu-spec/menu-1.0.dtd\">
+<Menu>
+    <Name>Test</Name>
+    <Menu>
+        <Name>Testing</Name>
+    </Menu>
+</Menu>";
 //
     #[test]
     fn menu_test() {
-        
+        use crate::desktop_menu::DesktopMenu;
+        let menu = DesktopMenu::read("/etc/xdg/menus/applications.menu");
+        // Sub menu
+        //assert_eq!(menu.submenus[0].name, String::from("Testing"));
     }
 }
