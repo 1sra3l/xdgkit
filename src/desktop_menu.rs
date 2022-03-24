@@ -29,9 +29,10 @@ use crate::desktop_entry::*;
 use crate::basedir::*;
 
 use std::path::PathBuf;
+extern crate quick_xml;
 extern crate serde;
-//use quick_xml::de::{from_str, DeError};
-use serde_xml_rs::from_str;//, to_string};
+use quick_xml::de::{from_str, DeError};
+//use serde_xml_rs::from_str;//, to_string};
 use serde::{Deserialize, Deserializer, Serialize};
 
 fn deserialize_ignore_any<'de, D: Deserializer<'de>>(deserializer: D) -> Result<(), D::Error> {
@@ -336,18 +337,15 @@ pub struct DesktopMenu {
 impl DesktopMenu {
         pub fn read<P: Clone + AsRef<std::path::Path> + std::fmt::Debug>(filename:P) -> Option<Self> {
         if let Ok(file_string) = std::fs::read_to_string(filename.clone()) {
-            let mut de = serde_xml_rs::Deserializer::new_from_reader(
-                                  file_string.as_bytes()
-                                ).non_contiguous_seq_elements(true);
-            let decoded:Self = match DesktopMenu::deserialize(&mut de) {
+            let decoded:Self = match quick_xml::de::from_str(file_string.as_str()) {
                 Ok(decoded) => decoded,
                 Err(e) => {
                     println!("DesktopMenu::read()->from_str()Error:\n*{}*\nFilename:{:?}", e, filename);
-                    return None
+                    return None;
                 },
             };
             return Some(decoded);
-        }
+        };
         // I do not think this is possible to get to
         println!("DesktopMenu::read() *FAILED* Filename:{:?}", filename);
         None

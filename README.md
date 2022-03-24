@@ -5,10 +5,9 @@
 [![Crates.io](https://img.shields.io/crates/v/xdgkit.svg)](https://crates.io/crates/xdgkit)
 
 
-The **ultimate** XDG library and command line tool!
-Everything is copy-pasted from [freedesktop.org](http://freedesktop.org) and rustified as enums and structs with implementations in main for a binary tool to use the specs!
+The XDG library and command line tool kit!
 
-This work could technically regenerate the website documentation via doxygen because Rust is like that.  But I didn't actually do anything to make it possible, though the code is adequately simple... really mostly Ctrl+C in firefox and Ctrl+V in Kate.
+Much has been copy-pasted from [freedesktop.org](http://freedesktop.org) and rustified as enums and structs with implementations in main for a binary tool to use the specs.
 
 xdgkit follows SemVer
 
@@ -18,16 +17,8 @@ For Example:
  * 0.2.0 saw the addition of `desktop-menu` to the CLI subcommands
  * 2.0.0 saw a breaking change: renaming libxdgkit to xdgkit
 
-I had to make up some enums for things like `Type` in the desktop_entry format.
 
-### NOTICE FOR ALL FIELDS IN STRUCTS
-
-`CamelCase` is converted consistently as `camel_case`, as you would expect knowing rust's compiler from compiling once differently.
-
-`Type` is `xdg_type`  which is quickly intuitive WHY, since `type` is a reserved word.  `Type` occurs in all of the ini-style configuration files in the XDG standards.
-
-enums are generally fine as-is, however I added IconContext::Unknown
-### basedir
+ ## basedir
 
 This uses `std::env` and returns` Result<String, VarError>` as does `std::env`
 This provides all the normal XDG variables, as well as locations for icons, menu/directory files, desktop files, and the autostart directories
@@ -49,25 +40,38 @@ As a library this returns a struct of mostly `Option<whatever>`
 
 As a CLI utility it returns a String printed on a new line (or a blank line if the field is empty that you are looking for. In other words, you will need something like:
 
-```c
-function myfun {
- local IFS="
-"
- # awesome codes here
-}
+### icon_finder
+
+Based off of the psuedo code on freedesktop.org
+```rust
+use xdgkit::icon_finder;
+
+let icon_name = "firefox";
+// look for the 48px icon
+let icon = match icon_finder::find_icon(icon_name.to_string(),48,1){
+    Some(icon)=>icon,
+    None=>PathBuf::new(),
+};
+// this will show the path to the icon in the current theme
+println!("Firefox icon:{:?}", icon);
 ```
+
 
 ### icon_theme/icon-theme
 
 Reads an `index.theme` ini-style file and turns it into a struct of `Option<whatever>` which can be accessed for any of the icon theme spec features you will find in the freedesktop spec, or the documentation of this library/program.
 
-As a CLI utility it returns a String printed on a new line (or a blank line if the field is empty that you are looking for. In other words, you will need something like:
-
-This way any script-based menu can find the correct icons for the theme
+As a CLI utility it returns a String printed on a new line (or a blank line if the field is empty that you are looking for.
 
 ## WORKS IN PROGRESS
 
-### desktop_menu/desktop-menu
+serde does not work for any xml library currently, due to "repeated, out of order elements", which is required for most xml files.  This will not be fixed in `serde-xml-rs`, so who knows if there will be a rust serde xml library that supports serde and xml and rust....
+This effects:
 
-This reads the menu file and generates a struct containing the entire menu which can be fed into another program to output it into a specific format.
+ * recently_used
+ * desktop_menu/desktop-menu
+ * user_places
+
+
+Until then, I may get around to manually reading it all...
 

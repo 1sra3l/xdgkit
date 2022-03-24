@@ -1,7 +1,7 @@
 # package info
 [package]
 name = "xdgkit"
-version = "3.1.0"
+version = "3.2.0"
 authors = ["Israel Dahl <israeldahl@protonmail.com>"]
 edition = "2018"
 description = "A command line kit for XDG specs.  As well as a Rust library"
@@ -30,7 +30,7 @@ tini = "1.2" # 1.2.0 fixes `#` comment!  Woot!!
 # command line parser
 clap = {version = "3.0.0-beta.2", features = ["yaml"]}
 quick-xml = { version = "0.21", features = [ "serialize" ] }# git = ""
-serde-xml-rs = "0.5"
+#serde-xml-rs = "0.5"
 # xml
 #cursive = "0.17"
 # serde
