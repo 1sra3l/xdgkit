@@ -25,6 +25,8 @@ This provides all the normal XDG variables, as well as locations for icons, menu
 The command line parser will automatically check for existing directories.
 The functions that have `Vec` like properties (applications directory for example) can all be easily expanded
 ```rust
+use xdgkit::basedir::*;
+
 // simple use
 let app_dirs:Vec<String> = convert_to_vec(applications());
 ```
@@ -45,6 +47,7 @@ As a CLI utility it returns a String printed on a new line (or a blank line if t
 Based off of the psuedo code on freedesktop.org
 ```rust
 use xdgkit::icon_finder;
+use std::path::PathBuf;
 
 let icon_name = "firefox";
 // look for the 48px icon
