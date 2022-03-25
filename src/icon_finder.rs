@@ -2,6 +2,45 @@
 # Icon finder
 
 This is the rustification of the example psuedo code for finding icons a.k.a "the algorithm described in the [Icon Theme Specification](https://specifications.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html#icon_lookup)"
+
+to find one single icon use:
+```
+use xdgkit::icon_finder::find_icon;
+let icon = find_icon("firefox".to_string(), 48, 1);
+```
+to find multiple icons use:
+```
+use xdgkit::icon_theme::IconTheme;
+use xdgkit::icon_finder::{multiple_find_icon, generate_dir_list, user_theme, DirList};
+
+let dir_list_vector = generate_dir_list();
+let mut theme = user_theme(dir_list_vector.clone());
+if theme.is_none() {
+    theme = Some(IconTheme::empty());
+}
+let theme:IconTheme = theme.unwrap();
+let list:Vec<String> = vec![
+    "firefox".to_string(),
+    "mypaint".to_string(),
+    "kate".to_string(),
+    "geany".to_string(),
+];
+for name in list.clone() {
+    let icon = match multiple_find_icon(name.clone(), 48, 1, dir_list_vector.clone(), theme.clone()) {
+        Some(i) => i,
+        None => continue,
+    };
+    let icon = match icon.to_str() {
+        Some(i) => {
+            println!("found:{}", i);
+            i
+        },
+        None => {
+            println!("Did not find:{}", name.as_str());
+            continue
+        },
+    };
+}
 */
 
 // icon_finder.rs
@@ -247,7 +286,6 @@ pub fn user_theme(dir_list_vector:Vec<DirList>) -> Option<IconTheme> {
 /// The exact algorithm (in rust) is now here:
 // this is our main function used by main.rs to find a single 'named' icon, regardless of type
 pub fn find_icon(icon:String, size:i32, scale:i32) -> Option<PathBuf> {
-
     let dir_list_vector = generate_dir_list();
     let mut theme = user_theme(dir_list_vector.clone());
     if theme.is_none() {
@@ -256,6 +294,9 @@ pub fn find_icon(icon:String, size:i32, scale:i32) -> Option<PathBuf> {
     }
     let theme:IconTheme = theme.unwrap();
     //println!("theme:{}", theme.clone().name.unwrap().as_str());
+    multiple_find_icon(icon, size, scale, dir_list_vector, theme)
+}
+pub fn multiple_find_icon(icon:String, size:i32, scale:i32, dir_list_vector:Vec<DirList>, theme:IconTheme) -> Option<PathBuf> {
     // try with the default theme
     let mut filename:Option<PathBuf> = find_icon_helper(icon.to_owned(), size, scale, theme, dir_list_vector.clone());
     if filename.is_some(){ return filename }

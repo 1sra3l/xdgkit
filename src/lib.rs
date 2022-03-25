@@ -116,6 +116,8 @@ pub mod user_dirs;
 mod tests {
     use crate::utils::*;
     use crate::basedir::*;
+    extern crate tini;
+    use tini::Ini;
     //use crate::desktop_entry::*;
     //use crate::categories::*;
 //basedir.rs
@@ -129,9 +131,23 @@ mod tests {
         }
     }
 // desktop_entry.rs
+    const TEST_DESKTOP_FILE:&str = r#"[Desktop Entry]
+Name=Test
+Name[en_US]=Test
+Name[en_GB]=Test
+Name[en]=Test
+GenericName=Generic Test
+Comment=A general test desktop file
+Icon=text-editor
+Exec=ls -lah
+Terminal=true
+Type=Application
+Categories=Utility;Core;System"#;
     #[test]
     fn desktop_entry_test_good() {
+
         //TODO make desktop file to test
+
     }
     #[test]
     fn desktop_entry_test_bad() {

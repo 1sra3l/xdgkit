@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Test
+Name[en_US]=Test
+Name[en_GB]=Test
+Name[en]=Test
+GenericName=Generic Test
+Comment=A general test desktop file
+Icon=text-editor
+Exec=ls -lah
+Terminal=true
+Type=Application
+Categories=Utility;Core;System;
