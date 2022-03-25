@@ -395,9 +395,11 @@ impl DesktopEntry {
         let ex:Option<String>                   = conf.get(section, "Exec");
         let pth:Option<String>                  = conf.get(section, "Path");
         let term:Option<String>                 = conf.get(section, "Terminal");
+        // TODO get_vec_with_sep does not work.... :(
         let act:Option<Vec<String>>     = conf.get_vec_with_sep(section, "Actions",";");
         let mime:Option<Vec<String>>    = conf.get_vec_with_sep(section, "MimeType",";");
         let cat:Option<Vec<String>>     = conf.get_vec_with_sep(section, "Categories",";");
+        //println!("cats:{:?}", cat.clone());
         let imp:Option<Vec<String>>     = conf.get_vec_with_sep(section, "Implements",";");
         let start:Option<String>                = conf.get(section,"StartupNotify");
         let wm:Option<String>                   = conf.get(section,"StartupWMClass");
@@ -478,8 +480,10 @@ impl DesktopEntry {
         }
         // make Category enums
         let mut cats:Vec<Categories> =vec![];
-        for item in cat.unwrap() {
-          cats.push(Categories::from_string(item));
+        if cat.is_some() {
+            for item in cat.unwrap() {
+                cats.push(Categories::from_string(item));
+            }
         }
         //make only show in enums
         let mut onlyshow:Vec<DesktopEnvironment> =vec![];

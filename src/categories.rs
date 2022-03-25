@@ -40,8 +40,10 @@ pub enum Categories {
     AudioVideo,
     /// An audio application **Desktop entry must include AudioVideo as well**
     Audio,
-    /// A video application **Desktop entry must include AudioVideo as well Development An application for development**
+    /// A video application **Desktop entry must include AudioVideo as well
     Video,
+    /// An application for development
+    Development,
     /// Educational software
     Education,
     /// A game
@@ -323,6 +325,7 @@ impl fmt::Display for Categories {
             Categories::AudioVideo => "AudioVideo".to_string(),
             Categories::Audio => "Audio".to_string(),
             Categories::Video => "Video".to_string(),
+            Categories::Development => "Development".to_string(),
             Categories::Education => "Education".to_string(),
             Categories::Game => "Game".to_string(),
             Categories::Graphics => "Graphics".to_string(),
@@ -475,6 +478,8 @@ impl Categories {
             Categories::Audio
         } else if item == "Video" {
             Categories::Video
+        } else if item == "Development" {
+            Categories::Development
         } else if item == "Education" {
             Categories::Education
         } else if item == "Game" {

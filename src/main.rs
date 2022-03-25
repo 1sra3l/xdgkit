@@ -41,14 +41,6 @@ use crate::menu::Menu;
 
 /// Our main binary function simply uses clap to read the arguments and pull up the right structs/functions
 fn main() {
-    let file = "/etc/xdg/menus/applications.menu";
-    let menu = DesktopMenu::read(file);
-    println!("{:?}", menu);
-    let file = "tests/recently-used.xbel";
-    //let recent = Xbel::read(file);
-    //println!("{:?}", recent);
-    
-    return;
     let yaml = load_yaml!("cli.yaml");
     let matches = App::from(yaml).get_matches();
     // basedir ARGS
