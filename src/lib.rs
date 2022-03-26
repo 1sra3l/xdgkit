@@ -145,7 +145,18 @@ Type=Application
 Categories=Utility;Core;System"#;
     #[test]
     fn desktop_entry_test_good() {
-
+let conf = Ini::from_string(TEST_DESKTOP_FILE).unwrap();
+// manual test
+let res:Option<String> = conf.get("Desktop Entry", "Categories");
+let res = res.unwrap();
+let mut split = res.split(";");
+let result:Vec<&str> = split.collect();
+// ALSO FAILS :(
+assert_eq!(result, vec![
+                                "Utility",
+                                "Core",
+                                "System",
+                                ]);
         //TODO make desktop file to test
 
     }

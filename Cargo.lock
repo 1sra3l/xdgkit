@@ -232,8 +232,7 @@ dependencies = [
 [[package]]
 name = "tini"
 version = "1.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e004df4c5f0805eb5f55883204a514cfa43a6d924741be29e871753a53d5565a"
+source = "git+https://github.com/1sra3l/tini.git#e4169395fb5f79e8f346d9334c18e0a6496c1b9f"
 
 [[package]]
 name = "unicode-segmentation"
