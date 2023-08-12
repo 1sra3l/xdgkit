@@ -72,6 +72,7 @@ use std::path::PathBuf;
 use std::path::Path;
 extern crate tini;
 use tini::Ini;
+use std::collections::HashMap;
 
 /// Our icon file extensions
 const EXTENTIONS:[&str; 3] = [".png", ".svg", ".xpm"];
@@ -84,52 +85,18 @@ const INDEX_FILE:&str = "index.theme";
 #[derive(Debug, Clone)]
 pub struct DirList {
     /// the PathBuf
-    pub dir:PathBuf,
+    pub dirs:Vec<PathBuf>,
     /// The name of the theme
     pub theme:String,
 }
 impl DirList {
-    /// easy peasy, make a new `Dirlist`
-    pub fn new (dir:String, theme:String) -> DirList {
-        DirList {
-            dir:PathBuf::from(dir.as_str()),
-            theme:theme,
-        }
-    }
     /// In a nutshell, return `dir.push("/index.theme")`
     pub fn index(&self) -> PathBuf {
-        let mut return_value = self.dir.to_owned();
+        let mut return_value = self.dirs[0].to_owned();
         return_value.push(INDEX_FILE);
         return_value
     }
 }
-/// Get a `DirList` struct when we look for a theme name in the `Vec<DirList>` we send in, and return our Vector when we are done looking in it.
-pub fn find_by_name(name:String, dir_list_vector:Vec<DirList>) -> Option<DirList> {
-    if dir_list_vector.is_empty() {
-        return None
-    }
-    for dir in dir_list_vector {
-        let theme_name = dir.dir.to_owned();
-        for part in theme_name.iter() {
-            let check:String = match part.to_str() {
-                Some(c)=>String::from(c),
-                None => continue,
-            };
-            if check ==  "usr" ||
-               check ==  "share" ||
-               check ==  "/" ||
-               check ==  "home" ||
-               check ==  "icons" {
-                continue;
-            }
-            if check.to_lowercase() == name.to_lowercase() {
-                return Some(dir)
-            }
-        }
-    }
-    None
-}
-
 /// Make the list of `DirList` structures by reading the `$XDG_DATA_DIRS/icons`
 pub fn generate_dir_list() -> Vec<DirList>{
     let mut return_value:Vec< DirList> = vec![];
@@ -137,79 +104,83 @@ pub fn generate_dir_list() -> Vec<DirList>{
     // make our directory of icons
     let directory_vec = icon_dirs_vector();
     //println!("search");
+
+    let mut themes = HashMap::<String, Vec<PathBuf>>::new(); // theme dirname -> path to topmost directory of the theme
+    // find all theme dir basenames, put those in a hashmap, then make a DirList each to traverse all of the directories that are named the same.
     for directory in directory_vec {
         let path = Path::new(directory.as_str());
         if path.is_dir() {
             let dir_path = std::fs::read_dir(path);
             if let Ok(dp) = dir_path {
                 for entity in dp.flatten() {
-                    //println!("entity:{:?}", entity);
+                    //println!("entity:{:?}", entity.file_name());
                     let return_path = entity.path();
-                    let value = match return_path.to_str(){
-                        Some(v) =>v,
-                        None => {
-                            continue
-                        },
+                    let basename = entity.file_name();
+                    let theme_name = match basename.to_str() {
+                        Some(v) => v,
+                        None => continue
                     };
-                    let index = format!("{}/{}", value, INDEX_FILE);
-                    if Path::new(index.as_str()).is_file() {
-                        let theme = IconTheme::new(index.to_owned());
-                        let theme_name = match theme.name {
-                            Some(name) => name.to_owned(),
-                            None => continue,
-                        };
-                        //println!("index file:{}", index.as_str());
-                        //println!("{:?}",index.to_owned());
-                        return_value.push(
-                            DirList{
-                                dir:PathBuf::from(value),
-                                theme:theme_name.to_owned(),
-                            }
-                        );
-                    }
+                    themes.entry(theme_name.to_string()).and_modify(|paths| paths.push(return_path.clone())).or_insert(Vec::<PathBuf>::from([return_path.clone()]));
                 }
             }
         }
+    }
+
+    for (theme_name, ref mut return_paths) in themes {
+        let mut index_theme_path = None;
+        let mut index_theme_index = 0;
+        for (i, return_path) in return_paths.iter().enumerate() {
+            let mut index = return_path.clone();
+            index.push(INDEX_FILE);
+            if index.is_file() {
+                index_theme_path = Some(index);
+                index_theme_index = i;
+            }
+        }
+        if index_theme_path.is_none() {
+            continue
+        }
+        // make sure that the entry with index.theme in it is in front
+        return_paths.swap(0, index_theme_index);
+        let index_theme_path = index_theme_path.unwrap();
+        let theme = IconTheme::new(index_theme_path.to_owned().to_str().unwrap().to_string());
+        let theme_name = match theme.name {
+            Some(name) => name.to_owned(),
+            None => continue,
+        };
+        //println!("index file:{}", index_theme_path.display());
+        //println!(" dirs: {:?}", return_paths);
+        //println!("{:?}",index.to_owned());
+        return_value.push(
+                            DirList{
+                                theme:theme_name.to_owned(),
+                                dirs:return_paths.clone(),
+                            }
+                        );
     }
     //return_value.sort();
     return_value
 }
 
-
-fn look_for_theme_directory(name:String, dir_list_vector:Vec<DirList> )->Option<PathBuf> {
-    for dir_list in dir_list_vector {
-        let nm = dir_list.theme.to_owned();
-        let dir = dir_list.dir.to_owned();
-        let fname = match dir.file_name() {
-            Some (f) => f,
-            None => continue,
-        };
-        let fname = match fname.to_str() {
-            Some (f) => f.to_string(),
-            None => continue,
-        };
-        let trim_fname = fname.chars().filter(|c| c.is_alphabetic()).collect::<String>();
-        let trim_name = name.chars().filter(|c| c.is_alphabetic()).collect::<String>();
-        //println!("{} vs {} dir:{}", trim_fname.as_str(), trim_name.as_str(), dir.to_str().unwrap());
-
-        if trim_fname.to_lowercase() != trim_name.to_lowercase() {
-            continue;
-        }
-        if nm.to_lowercase() == name.to_lowercase() {
-            return Some(dir)
+fn get_theme(place: &str, dir_list_vector:Vec<DirList>) -> Option<DirList> {
+    for theme in &dir_list_vector {
+        if theme.theme == place {
+            return Some(theme.clone())
         }
     }
-    None
+    // maybe that's actually trying to find PLACE as a filename? That sounds weird.
+    for theme in dir_list_vector {
+        for dir in theme.dirs.iter() {
+            if let Some(file_name) = dir.file_name() {
+                if file_name == place {
+                    return Some(theme.clone())
+                }
+            }
+        }
+    }
+    return None
 }
 
-// should this be doc'd?
-fn get_first_index_theme(place:String, dir_list_vector:Vec<DirList>) ->Option<PathBuf> {
-    let dirlist = find_by_name(place, dir_list_vector);
-    if let Some(d) = dirlist {
-        return Some(d.index())
-    }
-    None
-}
 fn check_user_config(file:&str, section:&str, item:&str, dir_list_vector:Vec<DirList>) -> Option<IconTheme> {
     let conf:String = match config_home() {
         Ok(conf) => format!("{}/{}",conf, file),
@@ -224,11 +195,11 @@ fn check_user_config(file:&str, section:&str, item:&str, dir_list_vector:Vec<Dir
             let theme:Option<String> = conf.get(section,item);
             //println!("{:?}", theme.clone());
             if let Some(themed) = theme {
-                let theme_file:PathBuf = match get_first_index_theme(
-                                                 themed,
+                let theme_file:PathBuf = match get_theme(
+                                                 &themed,
                                                  dir_list_vector.
                                                           clone()
-                                                  ) {
+                                                  ).map(|theme| theme.index()) {
                      Some(theme_file) =>theme_file,
                      None =>PathBuf::new(),
                 };
@@ -265,7 +236,7 @@ pub fn user_theme(dir_list_vector:Vec<DirList>) -> Option<IconTheme> {
         };
     }
     // Default to `hicolor` theme if we can't figure it out
-    let theme_file:PathBuf = match get_first_index_theme("hicolor".to_string(), dir_list_vector) {
+    let theme_file:PathBuf = match get_theme("hicolor", dir_list_vector).map(|theme| theme.index()) {
         Some(theme_file) =>theme_file,
         None =>PathBuf::new(),
     };
@@ -302,7 +273,7 @@ pub fn multiple_find_icon(icon:String, size:i32, scale:i32, dir_list_vector:Vec<
     if filename.is_some(){ return filename }
 
     // check hi-color a.k.a the "default" theme
-    let theme_file:PathBuf = match get_first_index_theme("hicolor".to_string(), dir_list_vector.clone()){
+    let theme_file:PathBuf = match get_theme("hicolor", dir_list_vector.clone()).map(|theme| theme.index()) {
         Some(theme_file) => theme_file,
         None => PathBuf::new(),
     };
@@ -326,7 +297,7 @@ pub fn find_icon_helper(icon:String, size:i32, scale:i32, theme:IconTheme, dir_l
     if let Some(parents) = theme.inherits {
         for parent in parents {
         // make a theme from the 'parent'
-            let theme_file:PathBuf = match get_first_index_theme(parent, dir_list_vector.clone()){
+            let theme_file:PathBuf = match get_theme(&parent, dir_list_vector.clone()).map(|theme| theme.index()) {
                 Some(theme_file) => theme_file,
                 None => PathBuf::new(),
             };
@@ -346,6 +317,7 @@ pub fn find_icon_helper(icon:String, size:i32, scale:i32, theme:IconTheme, dir_l
 /// One of the "following helper functions"
 pub fn lookup_icon (iconname:String, size:i32, scale:i32, theme:IconTheme, dir_list_vector:Vec<DirList>) -> Option<PathBuf> {
     let list = theme.directories.to_owned();
+    //eprintln!("LIST {:?} {:?}", theme, list);
     match list.as_ref() {
         Some(_r) => (),
         None => {
@@ -359,31 +331,25 @@ pub fn lookup_icon (iconname:String, size:i32, scale:i32, theme:IconTheme, dir_l
     let mut closest_filename:PathBuf = PathBuf::new();
     let theme_subdir_list:Vec<Directory> = list.unwrap();
 
-    // first look check for size matching directories
-    for subdir in theme_subdir_list.clone() {
-        let subdir_name = subdir.name
-                                .to_owned()
-                                .unwrap();
-        let directory:PathBuf = match look_for_theme_directory(theme_name.to_owned(),
-                                 dir_list_vector.clone()) {
-            Some(directory) => directory,
-            None => PathBuf::new(),
-        };
-        // empty string from above?
-        if !directory.exists() {
-            continue 
-        }
-        for extension in EXTENTIONS.iter() {
-            let mut path = directory.to_owned();
-            path.push(subdir_name.as_str());
-            let mut file_name:String = iconname.to_owned();
-            file_name.push_str(extension);
-            path.push(file_name.as_str());
-            //println!("{:?} exists:{:?}", path, path.as_path().is_file());
-            if directory_matches_size(subdir.to_owned(), size, scale)
-               && path.as_path().is_file() {
-                    
-                    return Some(path)
+    if let Some(theme) = get_theme(&theme_name, dir_list_vector) {
+        for directory in theme.dirs {
+            // first look check for size matching directories
+            for subdir in theme_subdir_list.clone() {
+                let subdir_name = subdir.name
+                                        .to_owned()
+                                        .unwrap();
+                for extension in EXTENTIONS.iter() {
+                    let mut path = directory.to_owned();
+                    path.push(subdir_name.as_str());
+                    let mut file_name:String = iconname.to_owned();
+                    file_name.push_str(extension);
+                    path.push(file_name.as_str());
+                    //println!("{:?} exists:{:?}", path, path.as_path().is_file());
+                    if directory_matches_size(subdir.to_owned(), size, scale)
+                    && path.as_path().is_file() {
+                        return Some(path)
+                    }
+                }
             }
         }
     }
@@ -410,7 +376,11 @@ pub fn lookup_icon (iconname:String, size:i32, scale:i32, theme:IconTheme, dir_l
             }
         }
     }
-    Some(closest_filename)
+    if closest_filename.as_path() == Path::new("") {
+        None
+    } else {
+        Some(closest_filename)
+    }
 }
 
 /// Look in the basic icon directories (like /us/share/pixmaps, /usr/share/icons) for anything that matches the icon name!
@@ -578,10 +548,10 @@ pub fn find_best_icon(icon_list:Vec<String>, size:i32, scale:i32) -> Option<Path
 
     // check hicolor a.k.a the "default theme"
 
-    let theme_file:PathBuf = match get_first_index_theme("hicolor".to_string(), dir_list_vector.clone()) {
+    let theme_file:PathBuf = match get_theme("hicolor", dir_list_vector.clone()).map(|theme| theme.index()) {
                 Some(theme_file) => theme_file,
                 None => PathBuf::new(),
-            };
+    };
     let i_theme_file:String = match theme_file.as_path().to_str() {
         Some(t) => String::from(t),
         None => String::from(""),
@@ -615,7 +585,7 @@ pub fn find_best_icon_helper(icon_list:Vec<String>, size:i32, scale:i32, theme:I
     if  let Some(parents) = inherits {
         for parent in parents {
             // make a theme from the 'parent'
-            let theme_file:PathBuf = match get_first_index_theme(parent, dir_list_vector.clone()) {
+            let theme_file:PathBuf = match get_theme(&parent, dir_list_vector.clone()).map(|theme| theme.index()) {
                 Some(theme_file) => theme_file,
                 None => PathBuf::new(),
             };
