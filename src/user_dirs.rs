@@ -15,11 +15,10 @@ let documents = user_dirs.documents; // usually ~/Documents
 ```
 
 */
-use std::fs::File;
-use std::io::{Write, BufRead, BufReader};
-use std::path::Path;
-use std::env::VarError;
 use crate::basedir;
+use std::env::VarError;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 
 /// get the `user-dirs.dirs` full path + filename
 pub fn filename() -> Result<String, VarError> {
@@ -34,34 +33,34 @@ pub fn filename() -> Result<String, VarError> {
 /// it contains the locations of each directory
 pub struct UserDirs {
     /// xdg default is: $HOME/Desktop
-    pub desktop:String,
+    pub desktop: String,
     /// xdg default is: $HOME/Downloads
-    pub download:String,
+    pub download: String,
     /// xdg default is: $HOME/Templates
-    pub template:String,
+    pub template: String,
     /// xdg default is: $HOME/Public
-    pub public_share:String,
+    pub public_share: String,
     /// xdg default is: $HOME/Documents
-    pub documents:String,
+    pub documents: String,
     /// xdg default is: $HOME/Music
-    pub music:String,
+    pub music: String,
     /// xdg default is: $HOME/Pictures
-    pub pictures:String,
+    pub pictures: String,
     /// xdg default is: $HOME/Videos
-    pub videos:String,
+    pub videos: String,
 }
 impl UserDirs {
     /// make and empty one
     pub fn empty() -> Self {
         Self {
-            desktop:String::new(),
-            download:String::new(),
-            template:String::new(),
-            public_share:String::new(),
-            documents:String::new(),
-            music:String::new(),
-            pictures:String::new(),
-            videos:String::new(),
+            desktop: String::new(),
+            download: String::new(),
+            template: String::new(),
+            public_share: String::new(),
+            documents: String::new(),
+            music: String::new(),
+            pictures: String::new(),
+            videos: String::new(),
         }
     }
     /// Attempt to create and populate, or send an empty one
@@ -100,9 +99,9 @@ impl UserDirs {
                     continue;
                 }
             }
-            line.retain(|c| c != '"');//remove_matches('"');
-            if let Some((var, mut dir)) = line.rsplit_once('=') {
-                dir.replace("$HOME", home.as_str());
+            line.retain(|c| c != '"'); //remove_matches('"');
+            if let Some((var, dir)) = line.rsplit_once('=') {
+                let dir = dir.replace("$HOME", home.as_str());
                 if var == "XDG_DESKTOP_DIR" {
                     desktop = dir.to_string();
                 } else if var == "XDG_DOWNLOAD_DIR" {
