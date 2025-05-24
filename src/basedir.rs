@@ -297,7 +297,7 @@ pub fn desktop_directories() -> Result<String, VarError> {
 pub fn desktop_directories_vec() -> Vec<String> {
     data_dirs_vec("/desktop-directories".to_string())
 }
-///
+/// Autostart directories
 #[allow(dead_code)]
 pub fn autostart() -> Result<String, VarError> {
     loop_config_dirs("/autostart".to_string())

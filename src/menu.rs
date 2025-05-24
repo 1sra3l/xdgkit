@@ -36,7 +36,7 @@ The result is a tree of desktop entries, of course.
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 extern crate serde;
-use quick_xml::{events::Event};
+use quick_xml::events::Event;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]
@@ -348,14 +348,13 @@ impl Menu {
         let mut reader = quick_xml::Reader::from_str(file_string.as_str());
         let mut buf = Vec::new();
 
-        loop { // todo this look can be removed as it's not doing anything really?
+        loop {
+            // todo this look can be removed as it's not doing anything really?
             match reader.read_event_into(&mut buf) {
                 Ok(Event::Start(e)) => {
-                    match e.name().as_ref() {
-                        b"AppDir" => {
-                            // Handle <AppDir>
-                        }
-                        _ => {}
+                    if let b"AppDir" = e.name().as_ref() {
+
+                        // Handle <AppDir>
                     }
                 }
                 Ok(Event::Eof) => break, // Always break on EOF
@@ -371,6 +370,7 @@ impl Menu {
     }
 }
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub struct MenuItem {
     /// Name
     pub name: String,

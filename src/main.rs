@@ -21,8 +21,8 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-use std::path::PathBuf;
 use clap::{Parser, Subcommand};
+use std::path::PathBuf;
 
 mod basedir;
 mod categories;
@@ -210,7 +210,7 @@ fn main() {
             }
         }
         Some(Commands::Findicon { icon_name }) => {
-            let icon = icon_finder::find_icon(icon_name, 48, 1).unwrap_or_else(PathBuf::new);
+            let icon = icon_finder::find_icon(icon_name, 48, 1).unwrap_or_default();
             println!("{:?}", icon);
         }
         Some(Commands::DesktopEntry {

@@ -150,24 +150,17 @@ pub struct Menuname {
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub enum Rules {
     /// The `<Filename>` element is the most basic matching rule. It matches a desktop entry if the desktop entry has the given desktop-file id. [See Desktop-File Id](https://specifications.freedesktop.org/menu-spec/latest/go01.html#term-desktop-file-id).
-    #[serde(rename = "$value")]
     Filename(String),
     /// The `<Category>` element is another basic matching predicate. It matches a desktop entry if the desktop entry has the given category in its `Menu` field.
-    #[serde(rename = "$value")]
     Category(String),
     /// The `<All>` element is a matching rule that matches all desktop entries.
-    #[serde(rename = "$value")]
     All(Vec<Rules>),
     /// The `<And>` element contains a list of matching rules. If each of the matching rules inside the `<And>` element match a desktop entry, then the entire `<And>` rule matches the desktop entry.
-    #[serde(rename = "$value")]
     And(Vec<Rules>),
     /// The `<Or>` element contains a list of matching rules. If any of the matching rules inside the `<Or>` element match a desktop entry, then the entire `<Or>` rule matches the desktop entry.
-    #[serde(rename = "$value")]
     Or(Vec<Rules>),
     /// The `<Not>` element contains a list of matching rules. If any of the matching rules inside the `<Not>` element matches a desktop entry, then the entire `<Not>` rule does not match the desktop entry. That is, matching rules below `<Not>` have a logical OR relationship.
-    #[serde(rename = "$value")]
     Not(Vec<Rules>),
-    #[serde(other, deserialize_with = "deserialize_ignore_any")]
     Other,
 }
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
