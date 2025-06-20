@@ -10,14 +10,14 @@ This comes complete with `Categories::default()` as well as implementing `Displa
 
 // categories.rs
 // Rusified in 2021 Copyright Israel Dahl. All rights reserved.
-// 
+//
 //        /VVVV\
 //      /V      V\
 //    /V          V\
 //   /      0 0     \
 //   \|\|\</\/\>/|/|/
 //        \_/\_/
-// 
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License version 2 as
 // published by the Free Software Foundation.
@@ -26,13 +26,13 @@ This comes complete with `Categories::default()` as well as implementing `Displa
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-use std::fmt;
 use serde::{Deserialize, Serialize};
+use std::fmt;
 #[allow(dead_code, clippy::upper_case_acronyms)]
 #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]
 pub enum Categories {
@@ -63,7 +63,7 @@ pub enum Categories {
     /// Small utility application, "Accessories"
     Utility,
 
-// ADDITIONAL CATEGORIES ---------------------------------------------------------------------------------------------------------------------
+    // ADDITIONAL CATEGORIES ---------------------------------------------------------------------------------------------------------------------
     /// A tool to build applications `Development`
     Building,
     /// A tool to debug applications `Development`
@@ -74,7 +74,7 @@ pub enum Categories {
     GUIDesigner,
     /// A profiling tool `Development`
     Profiling,
-    /// Applications like cvs or subversion `Development` 
+    /// Applications like cvs or subversion `Development`
     RevisionControl,
     /// A translation tool `Development`
     Translation,
@@ -162,7 +162,7 @@ pub enum Categories {
     WebBrowser,
     /// A tool for web developers `Network` or `Development`
     WebDevelopment,
-    /// An app related to MIDI `AudioVideo;Audio` 
+    /// An app related to MIDI `AudioVideo;Audio`
     Midi,
     /// Just a mixer `AudioVideo;Audio`
     Mixer,
@@ -194,7 +194,7 @@ pub enum Categories {
     CardGame,
     /// A game for kids `Game`
     KidsGame,
-    /// Logic games like puzzles, etc `Game` 
+    /// Logic games like puzzles, etc `Game`
     LogicGame,
     /// A role playing game `Game`
     RolePlaying,
@@ -206,7 +206,7 @@ pub enum Categories {
     SportsGame,
     /// A strategy game `Game`
     StrategyGame,
-    /// Software to teach arts `Education` or `Science`` 
+    /// Software to teach arts `Education` or `Science``
     Art,
     ///``Education` or `Science``
     Construction,
@@ -244,13 +244,13 @@ pub enum Categories {
     ImageProcessing,
     /// Literature software `Education` or `Science`
     Literature,
-    /// Sofware for viewing maps, navigation, mapping, GPS `Education` or `Science` or `Utility` 
+    /// Sofware for viewing maps, navigation, mapping, GPS `Education` or `Science` or `Utility`
     Maps,
-    /// Math software `Education` or `Science` 
+    /// Math software `Education` or `Science`
     Math,
-    /// Numerical analysis software `Education;Math` or `Science;Math` 
+    /// Numerical analysis software `Education;Math` or `Science;Math`
     NumericalAnalysis,
-    /// Medical software `Education` or `Science` 
+    /// Medical software `Education` or `Science`
     MedicalSoftware,
     /// Physics software `Education` or `Science`
     Physics,
@@ -321,7 +321,7 @@ pub enum Categories {
 }
 impl fmt::Display for Categories {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let v:String = match *self {
+        let v: String = match *self {
             Categories::AudioVideo => "AudioVideo".to_string(),
             Categories::Audio => "Audio".to_string(),
             Categories::Video => "Video".to_string(),
@@ -335,7 +335,7 @@ impl fmt::Display for Categories {
             Categories::Settings => "Settings".to_string(),
             Categories::System => "System".to_string(),
             Categories::Utility => "Utility".to_string(),
-// ADDITIONAL CATEGORIES ---------------------------------------------------------------------------------------------------------------------
+            // ADDITIONAL CATEGORIES ---------------------------------------------------------------------------------------------------------------------
             Categories::Building => "Building".to_string(),
             Categories::Debugger => "Debugger".to_string(),
             Categories::IDE => "IDE".to_string(),
@@ -471,7 +471,7 @@ impl fmt::Display for Categories {
 
 impl Categories {
     /// This function returns a `Categories` based on a matching string
-    pub fn from_string(item:String) ->  Categories {
+    pub fn from_string(item: String) -> Categories {
         if item == "AudioVideo" {
             Categories::AudioVideo
         } else if item == "Audio" {
@@ -498,8 +498,7 @@ impl Categories {
             Categories::System
         } else if item == "Utility" {
             Categories::Utility
-// ADDITIONAL CATEGORIES ---------------------------------------------------------------------------------------------------------------------
-
+        // ADDITIONAL CATEGORIES ---------------------------------------------------------------------------------------------------------------------
         } else if item == "Building" {
             Categories::Building
         } else if item == "Debugger" {
@@ -756,7 +755,7 @@ impl Categories {
             Categories::Java
         } else if item == "ConsoleOnly" {
             Categories::ConsoleOnly
-        } else  {
+        } else {
             Categories::None
         }
     }

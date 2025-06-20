@@ -6,14 +6,14 @@ This rustifies the freedesktop specifications for icon themes
 
 // icon_theme.rs
 // Rusified in 2021 Copyright Israel Dahl. All rights reserved.
-// 
+//
 //        /VVVV\
 //      /V      V\
 //    /V          V\
 //   /      0 0     \
 //   \|\|\</\/\>/|/|/
 //        \_/\_/
-// 
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License version 2 as
 // published by the Free Software Foundation.
@@ -22,15 +22,14 @@ This rustifies the freedesktop specifications for icon themes
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-
 extern crate tini;
-use tini::Ini;
 use std::path::PathBuf;
+use tini::Ini;
 
 use crate::utils::to_bool;
 use crate::utils::to_int;
@@ -39,7 +38,7 @@ use crate::utils::to_int;
 /// ## Type
 ///
 /// (a.k.a DirectoryType/xdg_type)
-/// 
+///
 /// The type of icon sizes for the icons in this directory.
 /// Valid types are:
 /// * Fixed
@@ -87,7 +86,7 @@ pub enum IconContext {
 ///
 /// #### Icon file
 ///
-/// An icon file is an image that can be loaded and used as an icon. The supported image file formats are PNG, XPM and SVG. PNG is the recommended bitmap format, and SVG is for vectorized icons. XPM is supported due to backwards compability reasons, and it is not recommended that new themes use XPM files. Support for SVGs is optional. 
+/// An icon file is an image that can be loaded and used as an icon. The supported image file formats are PNG, XPM and SVG. PNG is the recommended bitmap format, and SVG is for vectorized icons. XPM is supported due to backwards compability reasons, and it is not recommended that new themes use XPM files. Support for SVGs is optional.
 ///
 /// #### Base Directory
 ///
@@ -113,38 +112,37 @@ pub enum IconContext {
 /// The image files must be one of the types: PNG, XPM, or SVG, and the extension must be ".png", ".xpm", or ".svg" (lower case). The support for SVG files is optional. Implementations that do not support SVGs should just ignore any ".svg" files. In addition to this there may be an additional file with extra icon-data for each file. It should have the same basename as the image file, with the extension ".icon". e.g. if the icon file is called "mime_source_c.png" the corresponding file would be named "mime_source_c.icon".
 /// #File Formats
 /// Both the icon theme description file and the icon data files are ini-style text files, as described in the desktop file specification. They don't have any encoding field. Instead, they must **always be stored in UTF-8 encoding**.
-/// 
+///
 /// The `index.theme` file must start with a section called `[Icon Theme]`, with contents according to the items below. All lists in the ini file, are to be comma-separated.
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
 pub struct Directory {
     /// **[REQUIRED BY SPECS]** directory name
-    pub name:Option<String>,
+    pub name: Option<String>,
     /// Nominal (unscaled) size of the icons in this directory.
-    pub size:Option<i32>,
+    pub size: Option<i32>,
     /// **[REQUIRED BY SPECS]** Target scale of of the icons in this directory. Defaults to the value `1` if not present. Any directory with a scale other than `1` should be listed in the `scaled_directories` list rather than `directories` for backwards compatibility.
-    pub scale:Option<i32>,
+    pub scale: Option<i32>,
     /// The context the icon is normally used in.  See: [Context](https://specifications.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html#context)
-    pub context:Option<IconContext>,
+    pub context: Option<IconContext>,
     /// The type of icon sizes for the icons in this directory. Valid types are `Fixed`, `Scalable` and `Threshold`. The type decides what other keys in the section are used. If not specified, the default is `Threshold`.
-    pub xdg_type:Option<DirectoryType>,
+    pub xdg_type: Option<DirectoryType>,
     /// Specifies the maximum (unscaled) size that the icons in this directory can be scaled to. Defaults to the value of `size` if not present.
-    pub max_size:Option<i32>,
+    pub max_size: Option<i32>,
     /// Specifies the minimum (unscaled) size that the icons in this directory can be scaled to. Defaults to the value of `size` if not present.
-    pub min_size:Option<i32>,
+    pub min_size: Option<i32>,
     /// The icons in this directory can be used if the size differ at most this much from the desired (unscaled) size. Defaults to `2` if not present.
-    pub threshold:Option<i32>,
+    pub threshold: Option<i32>,
 }
-impl Directory{
+impl Directory {
     /// Convert an `Option<String>` to a `DirectoryType`
     #[allow(dead_code)]
-    pub fn convert_xdg_type(directory_type:Option<String>)->Option<DirectoryType> {
+    pub fn convert_xdg_type(directory_type: Option<String>) -> Option<DirectoryType> {
         if let Some(dt) = directory_type {
             if dt == "Fixed" {
-                return Some(DirectoryType::Fixed)
-            }
-            else if dt == "Scalable" {
-                return Some(DirectoryType::Scalable)
+                return Some(DirectoryType::Fixed);
+            } else if dt == "Scalable" {
+                return Some(DirectoryType::Scalable);
             }
         }
         Some(DirectoryType::Threshold)
@@ -152,7 +150,7 @@ impl Directory{
 
     /// This function will return a Some(String) from a DirectoryType **Threshold is returned by default**
     #[allow(dead_code)]
-    pub fn string_xdg_type(dt:DirectoryType)->Option<String> {
+    pub fn string_xdg_type(dt: DirectoryType) -> Option<String> {
         match dt {
             DirectoryType::Fixed => Some(String::from("Fixed")),
             DirectoryType::Scalable => Some(String::from("Scalable")),
@@ -161,19 +159,16 @@ impl Directory{
     }
     /// Convert an `Option<String>` to an `Option<IconContext>`
     #[allow(dead_code)]
-    pub fn context(icon_context:Option<String>)->Option<IconContext> {
+    pub fn context(icon_context: Option<String>) -> Option<IconContext> {
         if let Some(ic) = icon_context {
             if ic == "Actions" {
-                return Some(IconContext::Actions)
-            }
-            else if ic == "Devices" {
-                return Some(IconContext::Devices)
-            }
-            else if ic == "FileSystems" {
-                return Some(IconContext::FileSystems)
-            }
-            else if ic == "MimeTypes" {
-                return Some(IconContext::MimeTypes)
+                return Some(IconContext::Actions);
+            } else if ic == "Devices" {
+                return Some(IconContext::Devices);
+            } else if ic == "FileSystems" {
+                return Some(IconContext::FileSystems);
+            } else if ic == "MimeTypes" {
+                return Some(IconContext::MimeTypes);
             }
         }
         // This was added to mimic Desktop Entry behavior
@@ -182,42 +177,40 @@ impl Directory{
 }
 /// Makes an `Option<Vec<Directory>>` from an `Option<Vec<String>>` of directories in the `Directories=` field
 #[allow(dead_code)]
-pub fn make_directories(dirs:Option<Vec<String>>, file_string:String)->Option<Vec<Directory>> {
-    let mut result:Vec<Directory> = Vec::new();
+pub fn make_directories(dirs: Option<Vec<String>>, file_string: String) -> Option<Vec<Directory>> {
+    let mut result: Vec<Directory> = Vec::new();
     dirs.as_ref()?;
     let test_ini = Ini::from_string(file_string);
     if test_ini.is_err() {
-        return None
+        return None;
     }
     let conf = test_ini.unwrap();
     let directories = dirs.unwrap();
 
-    for dir in directories{
+    for dir in directories {
         if !dir.is_empty() {
             let section = dir.as_str();
-            let mut nom:Option<String> = conf.get(section, "Name");
+            let mut nom: Option<String> = conf.get(section, "Name");
             if nom.is_none() {
                 nom = Some(String::from(section));
             }
-            let sz:Option<String> = conf.get(section, "Size");
-            let scl:Option<String> = conf.get(section, "Scale");
-            let cntxt:Option<String> = conf.get(section, "Context");
-            let x_type:Option<String> = conf.get(section, "Type");
-            let max_sz:Option<String> = conf.get(section, "MaxSize");
-            let min_sz:Option<String> = conf.get(section, "MinSize");
-            let thresh:Option<String> = conf.get(section, "Threshold");
-            result.push(
-                Directory {
-                    name:nom,
-                    size:to_int(sz),
-                    scale:to_int(scl),
-                    context:Directory::context(cntxt),
-                    xdg_type:Directory::convert_xdg_type(x_type),
-                    max_size:to_int(max_sz),
-                    min_size:to_int(min_sz),
-                    threshold:to_int(thresh),
-                }
-            );
+            let sz: Option<String> = conf.get(section, "Size");
+            let scl: Option<String> = conf.get(section, "Scale");
+            let cntxt: Option<String> = conf.get(section, "Context");
+            let x_type: Option<String> = conf.get(section, "Type");
+            let max_sz: Option<String> = conf.get(section, "MaxSize");
+            let min_sz: Option<String> = conf.get(section, "MinSize");
+            let thresh: Option<String> = conf.get(section, "Threshold");
+            result.push(Directory {
+                name: nom,
+                size: to_int(sz),
+                scale: to_int(scl),
+                context: Directory::context(cntxt),
+                xdg_type: Directory::convert_xdg_type(x_type),
+                max_size: to_int(max_sz),
+                min_size: to_int(min_sz),
+                threshold: to_int(thresh),
+            });
         }
     }
     Some(result)
@@ -226,22 +219,20 @@ pub fn make_directories(dirs:Option<Vec<String>>, file_string:String)->Option<Ve
 #[allow(dead_code)]
 pub struct IconTheme {
     /// **[REQUIRED BY SPECS]** short name of the icon theme, used in e.g. lists when selecting themes.
-    pub name:Option<String>,
+    pub name: Option<String>,
     /// **[REQUIRED BY SPECS]**  longer string describing the theme
-    pub comment:Option<String>,
+    pub comment: Option<String>,
     /// The name of the theme that this theme inherits from. If an icon name is not found in the current theme, it is searched for in the inherited theme (and recursively in all the inherited themes). If no theme is specified implementations are required to add the "hicolor" theme to the inheritance tree. An implementation may optionally add other default themes in between the last specified theme and the hicolor theme.
-    pub inherits:Option<Vec<String>>,
+    pub inherits: Option<Vec<String>>,
     /// **[REQUIRED BY SPECS]** list of subdirectories for this theme. For every subdirectory there must be a section in the `index.theme` file describing that directory.
-    pub directories:Option<Vec<Directory>>,
+    pub directories: Option<Vec<Directory>>,
     /// Additional list of subdirectories for this theme, in addition to the ones in Directories. These directories should only be read by implementations supporting scaled directories and was added to keep compatibility with old implementations that don't support these.
-    pub scaled_directories:Option<Vec<String>>,
+    pub scaled_directories: Option<Vec<String>>,
     /// Whether to hide the theme in a theme selection user interface. This is used for things such as fallback-themes that are not supposed to be visible to the user.
-    pub hidden:Option<bool>,
+    pub hidden: Option<bool>,
     /// The name of an icon that should be used as an example of how this theme looks.
-    pub example:Option<String>,
+    pub example: Option<String>,
 }
-
-
 
 ///  Implementations
 impl IconTheme {
@@ -249,19 +240,25 @@ impl IconTheme {
     ///
     /// You **must** specify a `name`,`comment`, and `directories` to be inline with the specs
     #[allow(dead_code)]
-    pub fn empty()->Self where Self:Sized {
+    pub fn empty() -> Self
+    where
+        Self: Sized,
+    {
         IconTheme {
-            name:None,
-            comment:None,
-            inherits:None,
-            directories:None,
-            scaled_directories:None,
-            hidden:None,
-            example:None,
+            name: None,
+            comment: None,
+            inherits: None,
+            directories: None,
+            scaled_directories: None,
+            hidden: None,
+            example: None,
         }
     }
-    pub fn from_pathbuff(file_name:PathBuf)->Self where Self:Sized {
-        let filename:String = match file_name.as_path().to_str() {
+    pub fn from_pathbuff(file_name: PathBuf) -> Self
+    where
+        Self: Sized,
+    {
+        let filename: String = match file_name.as_path().to_str() {
             Some(t) => String::from(t),
             None => String::from(""),
         };
@@ -270,33 +267,41 @@ impl IconTheme {
 
     #[allow(dead_code)]
     /// Creates a new struct from a full desktop file path
-    pub fn new(file_name:String)->Self where Self:Sized {
-        if file_name.is_empty() { return Self::empty() }
+    pub fn new(file_name: String) -> Self
+    where
+        Self: Sized,
+    {
+        if file_name.is_empty() {
+            return Self::empty();
+        }
         let test_ini = Ini::from_file(&file_name);
         if test_ini.is_err() {
-            println!("___________________\nERROR: {:?}\nin file:{}\n___________________",test_ini,file_name);
-            return Self::empty()
+            println!(
+                "___________________\nERROR: {:?}\nin file:{}\n___________________",
+                test_ini, file_name
+            );
+            return Self::empty();
         }
         let conf = test_ini.unwrap();
 
         let section = "Icon Theme";
         //Populate our struct
-        let nom:Option<String> = conf.get(section, "Name");
-        let comm:Option<String> = conf.get(section, "Comment");
-        let hid:Option<String> = conf.get(section, "Hidden");
-        let ex:Option<String> = conf.get(section, "Example");
-        let inh:Option<Vec<String>> = conf.get_vec_with_sep(section, "Inherits",",");
-        let dirs:Option<Vec<String>> = conf.get_vec_with_sep(section, "Directories",",");
-        let scaled:Option<Vec<String>> = conf.get_vec_with_sep(section, "ScaledDirectories",",");
+        let nom: Option<String> = conf.get(section, "Name");
+        let comm: Option<String> = conf.get(section, "Comment");
+        let hid: Option<String> = conf.get(section, "Hidden");
+        let ex: Option<String> = conf.get(section, "Example");
+        let inh: Option<Vec<String>> = conf.get_vec_with_sep(section, "Inherits", ",");
+        let dirs: Option<Vec<String>> = conf.get_vec_with_sep(section, "Directories", ",");
+        let scaled: Option<Vec<String>> = conf.get_vec_with_sep(section, "ScaledDirectories", ",");
 
         IconTheme {
-            name:nom,
-            comment:comm,
-            inherits:inh,
-            directories:make_directories(dirs, conf.to_string()),
-            scaled_directories:scaled,
-            hidden:to_bool(hid),
-            example:ex,
+            name: nom,
+            comment: comm,
+            inherits: inh,
+            directories: make_directories(dirs, conf.to_string()),
+            scaled_directories: scaled,
+            hidden: to_bool(hid),
+            example: ex,
         }
     }
 }

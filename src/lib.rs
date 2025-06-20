@@ -81,14 +81,14 @@ Until then, I may get around to manually reading it all...
 
 // xdgkit
 // Rusified in 2021 Copyright Israel Dahl. All rights reserved.
-// 
+//
 //        /VVVV\
 //      /V      V\
 //    /V          V\
 //   /      0 0     \
 //   \|\|\</\/\>/|/|/
 //        \_/\_/
-// 
+//
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License version 2 as
 // published by the Free Software Foundation.
@@ -97,41 +97,41 @@ Until then, I may get around to manually reading it all...
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-pub mod utils;
+pub mod basedir;
 pub mod categories;
 pub mod desktop_entry;
-pub mod basedir;
-pub mod icon_theme;
 pub mod desktop_menu;
 pub mod icon_finder;
+pub mod icon_theme;
 pub mod user_dirs;
+pub mod utils;
 //pub mod recently_used;
 
 #[cfg(test)]
 mod tests {
-    use crate::utils::*;
     use crate::basedir::*;
+    use crate::utils::*;
     extern crate tini;
     use tini::Ini;
     //use crate::desktop_entry::*;
     //use crate::categories::*;
-//basedir.rs
+    //basedir.rs
     #[test]
-    fn basedir_test(){
+    fn basedir_test() {
         if cfg!(target_os = "linux") {
             let res = data_dirs();
             let result2 = res.unwrap().to_owned();
-            let vec:Vec<String> = convert_to_vec(data_dirs());
+            let vec: Vec<String> = convert_to_vec(data_dirs());
             assert!(!result2.is_empty() && !vec.is_empty());
         }
     }
-// desktop_entry.rs
-    const TEST_DESKTOP_FILE:&str = r#"[Desktop Entry]
+    // desktop_entry.rs
+    const TEST_DESKTOP_FILE: &str = r#"[Desktop Entry]
 Name=Test
 Name[en_US]=Test
 Name[en_GB]=Test
@@ -145,31 +145,26 @@ Type=Application
 Categories=Utility;Core;System"#;
     #[test]
     fn desktop_entry_test_good() {
-let conf = Ini::from_string(TEST_DESKTOP_FILE).unwrap();
-// manual test
-let res:Option<String> = conf.get("Desktop Entry", "Categories");
-let res = res.unwrap();
-let mut split = res.split(";");
-let result:Vec<&str> = split.collect();
-// ALSO FAILS :(
-assert_eq!(result, vec![
-                                "Utility",
-                                "Core",
-                                "System",
-                                ]);
+        let conf = Ini::from_string(TEST_DESKTOP_FILE).unwrap();
+        // manual test
+        let res: Option<String> = conf.get("Desktop Entry", "Categories");
+        let res = res.unwrap();
+        let split = res.split(";");
+        let result: Vec<&str> = split.collect();
+        // ALSO FAILS :(
+        assert_eq!(result, vec!["Utility", "Core", "System",]);
         //TODO make desktop file to test
-
     }
     #[test]
     fn desktop_entry_test_bad() {
         //TODO make bad desktop file to test
     }
-// utils.rs
+    // utils.rs
     #[test]
     fn utils_converter() {
-        let true_bool:String = "true".to_string();
+        let true_bool: String = "true".to_string();
         assert_eq!(Some(true), to_bool(Some(true_bool)));
-        let one_int:String = "1".to_string();
+        let one_int: String = "1".to_string();
         assert_eq!(Some(1), to_int(Some(one_int)));
         if cfg!(target_os = "linux") {
             let lang = get_language();
@@ -192,16 +187,15 @@ assert_eq!(result, vec![
                 return
             },
         };*/
-        
     }
-const TEST_MENU_XML:&str = "<!DOCTYPE Menu PUBLIC \"-//freedesktop//DTD Menu 1.0//EN\"           \"http://www.freedesktop.org/standards/menu-spec/menu-1.0.dtd\">
+    const TEST_MENU_XML:&str = "<!DOCTYPE Menu PUBLIC \"-//freedesktop//DTD Menu 1.0//EN\"           \"http://www.freedesktop.org/standards/menu-spec/menu-1.0.dtd\">
 <Menu>
     <Name>Test</Name>
     <Menu>
         <Name>Testing</Name>
     </Menu>
 </Menu>";
-//
+    //
     #[test]
     fn menu_test() {
         use crate::desktop_menu::DesktopMenu;

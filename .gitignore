@@ -3,3 +3,4 @@ _*.rs
 /scrape
 *.kate-swp
 *~
+.idea
